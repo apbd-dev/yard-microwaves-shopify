@@ -1,0 +1,295 @@
+{% assign discount_2_percent = product.metafields.custom.descuento_para_2_unidades | plus: 0 %}
+{% assign discount_3_percent = product.metafields.custom.descuento_para_3_unidades | plus: 0 %}
+
+{% assign price = product.selected_or_first_available_variant.price %}
+{% assign price2_qty = price | times: 2 %}
+{% assign price3_qty = price | times: 3 %}
+
+{% comment %} Calcular descuentos {% endcomment %}
+{% assign discount_2_multiplier = 100 | minus: discount_2_percent %}
+{% assign discount_3_multiplier = 100 | minus: discount_3_percent %}
+{% assign discount_10_price = price2_qty | times: discount_2_multiplier | divided_by: 100 %}
+{% assign discount_20_price = price3_qty | times: discount_3_multiplier | divided_by: 100 %}
+
+{% comment %} Calcular ahorro {% endcomment %}
+{% assign discount_10_savings = price2_qty | minus: discount_10_price %}
+{% assign discount_20_savings = price3_qty | minus: discount_20_price %}
+
+<style>
+  .product-section {
+    background: none;
+    padding: 0;
+  }
+
+  .upselling-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: white;
+    border: 2px solid #e5e5e5;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    margin: 10px 0;
+  }
+
+  .upselling-option.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
+  .upselling-option:hover {
+    border-color: #2c5530;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(44, 85, 48, 0.1);
+  }
+
+  .upselling-option.selected {
+    border-color: #2c5530;
+    background: #f0f8f0;
+  }
+
+  .upselling-option.selected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 4px;
+    background: #2c5530;
+  }
+
+  .option-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+
+  .option-radio {
+    display: block !important;
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .selected .option-radio {
+    border-color: #2c5530;
+  }
+
+  .selected .option-radio::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: #2c5530;
+    border-radius: 50%;
+  }
+
+  .option-details {
+    flex: 1;
+  }
+
+  .option-title {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+  }
+
+  .option-description {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .option-pricing {
+    text-align: right;
+  }
+
+  .option-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2c5530;
+  }
+
+  .option-savings {
+    font-size: 12px;
+    color: #ff4757;
+    font-weight: 600;
+  }
+
+  .option-original {
+    font-size: 12px;
+    color: #999;
+    text-decoration: line-through;
+  }
+
+  /* Animaciones y efectos */
+  .pulse-animation {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(44, 85, 48, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(44, 85, 48, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(44, 85, 48, 0);
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .product-section {
+      padding: 20px;
+    }
+
+    .upselling-option {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .option-pricing {
+      align-self: flex-end;
+    }
+  }
+
+  .success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 15px;
+    text-align: center;
+    display: none;
+  }
+</style>
+
+{%- liquid
+  assign default_add_to_cart_text = 'actions.add_to_cart' | t
+  assign product_variant_media = product.selected_or_first_available_variant.featured_media.preview_image | image_url: width: 100
+  if product.selected_or_first_available_variant.featured_media.preview_image == blank
+    assign product_variant_media = product.featured_media.preview_image | image_url: width: 100
+  endif
+-%}
+
+<div id="form__upsell-options-{{ section.id }}">
+  <div class="product-section">
+    <product-upsell-options class="form-upsell-options">
+      <div
+        id="upsell-options"
+        data-price="{{ price }}"
+      >
+        <!-- 1 Unidad -->
+        <div
+          class="upselling-option selected  {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}"
+          data-quantity="1"
+          data-discount="0"
+        >
+          <div class="option-content">
+            <div class="option-radio"></div>
+            <div class="option-details">
+              <div class="option-title">1 Unidad</div>
+              <div class="option-description">Precio regular</div>
+            </div>
+          </div>
+          <div class="option-pricing">
+            <div class="option-price js-price-1">{{ price | money }}</div>
+          </div>
+        </div>
+        <!-- 2 Unidades (-10%) -->
+        <div
+          class="upselling-option {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}"
+          data-quantity="2"
+          data-discount="{{ discount_2_percent }}"
+        >
+          <div class="option-content">
+            <div class="option-radio"></div>
+            <div class="option-details">
+              <div class="option-title">2 Unidades</div>
+              <div class="option-description">¡Ahorra {{ discount_2_percent }}%!</div>
+            </div>
+          </div>
+          <div class="option-pricing">
+            <div class="option-price js-price-2">{{ discount_10_price | money }}</div>
+            <div class="option-savings js-savings-2">{{ discount_10_savings | money }}</div>
+            <div class="option-original js-original-2">{{ price2_qty | money }}</div>
+          </div>
+        </div>
+        <!-- 3 Unidades (-20%) -->
+        <div
+          class="upselling-option {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}"
+          data-quantity="3"
+          data-discount="{{ discount_3_percent }}"
+        >
+          <div class="option-content">
+            <div class="option-radio"></div>
+            <div class="option-details">
+              <div class="option-title">3 Unidades</div>
+              <div class="option-description">¡Máximo ahorro {{ discount_3_percent }}%!</div>
+            </div>
+          </div>
+          <div class="option-pricing">
+            <div class="option-price js-price-3">{{ discount_20_price | money }}</div>
+            <div class="option-savings js-savings-3">{{ discount_20_savings | money }}</div>
+            <div class="option-original js-original-3">{{ price3_qty | money }}</div>
+          </div>
+        </div>
+      </div>
+    </product-upsell-options>
+
+    <add-to-cart-component
+      ref="addToCartButtonContainer"
+      data-product-variant-media="{{ product_variant_media }}"
+      data-add-to-cart-animation="{{ settings.add_to_cart_animation }}"
+    >
+      <button
+        id="{{ id }}"
+        type="submit"
+        name="add"
+        ref="addToCartButton"
+        on:click="/handleClick"
+        class="button {{ class }}"
+        {% unless can_add_to_cart %}
+          disabled
+        {% endunless %}
+      >
+        <span
+          class="add-to-cart-text"
+        >
+          {% if can_add_to_cart %}
+            <span class="svg-wrapper add-to-cart-icon">
+              {{- 'icon-add-to-cart.svg' | inline_asset_content -}}
+            </span>
+          {% endif %}
+          <span class="add-to-cart-text__content{% if icon_only_on_mobile %} is-visually-hidden-mobile{% endif %}">
+            {{- add_to_cart_text | default: default_add_to_cart_text -}}
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          class="add-to-cart-text--added"
+        >
+          <span class="svg-wrapper add-to-cart-icon--added">
+            {{- 'icon-checkmark.svg' | inline_asset_content -}}
+          </span>
+          <span class="{% if icon_only_on_mobile %}is-visually-hidden-mobile{% endif %}">
+            {{- 'actions.added' | t -}}
+          </span>
+        </span>
+      </button>
+    </add-to-cart-component>
+  </div>
+</div>

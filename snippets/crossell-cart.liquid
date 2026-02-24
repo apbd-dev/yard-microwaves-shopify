@@ -1,0 +1,263 @@
+
+{% comment %} <div class="cart-cross-sell">
+  <h3 class="cart-cross-sell__title">Productos que te pueden interesar</h3>
+     <crossell-cart>
+      <div class="splide splide-crossell-cart" ref="splide">
+        <div class="splide__track" ref="track">
+          <ul
+            class="splide__list"
+            ref="list"
+            id="Slider-{{ section.id }}"
+            data-id="{{ section.id }}"
+            role="list"
+          >
+            {%- for product in settings.cross_sell_cart.products -%}
+              {% liquid
+                assign variant = product.selected_or_first_available_variant
+                assign inventory_quantity = variant.inventory_quantity
+                assign inventory_policy = variant.inventory_policy
+
+                assign product_card_id = 'product-card-link-' | append: block.id | append: '-' | append: product.id
+
+                assign class = 'add-to-cart-button button'
+                assign id = 'BuyButtons-ProductSubmitButton-' | append: product.id
+
+                assign default_add_to_cart_text = 'actions.add_to_cart' | t
+
+                if variant.inventory_management == 'shopify'
+                  assign inventory_managed = true
+                endif
+
+                if variant.quantity_rule.min > variant.inventory_quantity and inventory_managed and inventory_policy == 'deny'
+                  assign quantity_rule_soldout = true
+                endif
+
+                if inventory_managed
+                  if inventory_quantity <= 0 and inventory_policy == 'deny' or quantity_rule_soldout
+                    assign can_add_to_cart = false
+                    assign add_to_cart_text = 'products.product.sold_out' | t
+                  else
+                    assign can_add_to_cart = true
+                    assign add_to_cart_text = 'products.product.add_to_cart' | t
+                  endif
+                else
+                  if product.selected_or_first_available_variant != null
+                    assign can_add_to_cart = true
+                    assign add_to_cart_text = 'products.product.add_to_cart' | t
+                  else
+                    assign can_add_to_cart = false
+                    assign add_to_cart_text = 'products.product.unavailable' | t
+                  endif
+                endif
+
+                assign onboarding = false
+                if product.id == empty or product == blank
+                  assign onboarding = true
+                endif
+              %}
+
+              {%- assign product_form_id = 'BuyButtons-ProductForm-' | append: section.id -%}
+              <li class="splide__slide" ref="slides[]">
+                <product-card
+                  data-product-id="{{ product.id }}"
+                  data-product-variants-size="{{ product.variants.size }}"
+                  id="product-card-{{ block.id }}"
+                >
+                  <a
+                    id="{{ product_card_id | md5 }}"
+                    {% unless onboarding %}
+                      href="{{ product.selected_or_first_available_variant.url }}"
+                    {% endunless %}
+                    ref="productCardLink"
+                  >
+                    <span class="visually-hidden">
+                      {{ product.title }}
+                    </span>
+                  </a>
+
+                  <quick-add-component
+                    class="quick-add quick-add-crsll-cart color-{{ settings.quick_add_color_scheme }} "
+                    ref="quickAdd"
+                    data-product-title="{{ product.title }}"
+                  >
+                    <product-form-component
+                      data-section-id="{{ section.id }}"
+                      data-product-id="{{ product.id }}"
+                      data-product-url="{{ product.url }}"
+                      on:submit="/handleSubmit"
+                      data-quantity-default="{% if product.selected_or_first_available_variant.quantity_rule.min %}{{ product.selected_or_first_available_variant.quantity_rule.min }}{% else %}1{% endif %}"
+                    >
+                      <div
+                        class="visually-hidden"
+                        aria-live="assertive"
+                        role="status"
+                        aria-atomic="true"
+                        ref="liveRegion"
+                      ></div>
+                      {%- form 'product', product, id: product_form_id, data-type: 'add-to-cart-form' -%}
+                        <input
+                          type="hidden"
+                          name="id"
+                          ref="variantId"
+                          value="{{ product.selected_or_first_available_variant.id }}"
+                        >
+                        <div class="cart-cross-sell__item">
+                          <a href="{{ product.url }}" class="cart-cross-sell__image">
+                            <img
+                              src="{{ product.featured_image | image_url: width: 533 }}"
+                              alt="{{ product.title }}"
+                              width="{{ product.featured_media.width }}"
+                              height="{{ product.featured_media.height }}"
+                            >
+                          </a>
+                          <div class="cart-cross-sell__info">
+                            <a href="{{ product.url }}" class="cart-cross-sell__name">
+                              {{ product.title }}
+                            </a>
+                            <span class="cart-cross-sell__price">
+                              {{ product.price | money }}
+                            </span>
+
+                            {% if product.variants.size == 1 %}
+                              <add-to-cart-component
+                                ref="addToCartButtonContainer"
+                              >
+                                <button
+                                  id="{{ id }}"
+                                  type="submit"
+                                  name="add"
+                                  ref="addToCartButton"
+                                  on:click="/handleClick"
+                                  class="button button-crsll-cart {{ class }}"
+                                  {% unless can_add_to_cart %}
+                                    disabled
+                                  {% endunless %}
+                                >
+                                  <span
+                                    class="add-to-cart-text"
+                                  >
+                                    {% if can_add_to_cart %}
+                                      <span class="svg-wrapper add-to-cart-icon">
+                                        {{- 'icon-add-to-cart.svg' | inline_asset_content -}}
+                                      </span>
+                                    {% endif %}
+                                    <span class="add-to-cart-text__content{% if icon_only_on_mobile %} is-visually-hidden-mobile{% endif %}">
+                                      {{- add_to_cart_text | default: default_add_to_cart_text -}}
+                                    </span>
+                                  </span>
+
+                                  <span
+                                    aria-hidden="true"
+                                    class="add-to-cart-text--added"
+                                  >
+                                    <span class="svg-wrapper add-to-cart-icon--added">
+                                      {{- 'icon-checkmark.svg' | inline_asset_content -}}
+                                    </span>
+                                    <span class="{% if icon_only_on_mobile %}is-visually-hidden-mobile{% endif %}">
+                                      {{- 'actions.added' | t -}}
+                                    </span>
+                                  </span>
+                                </button>
+                              </add-to-cart-component>
+                            {% else %}
+                              <button
+                                class="button button-crsll-cart"
+                                {% comment %} type="submit" is the default, so we explicitly set it to "button" to prevent the ProductFormComponent.handleSubmit from being triggered {% endcomment %}
+                                type="button"
+                                name="add"
+                                on:click="quick-add-component/handleClick"
+                              >
+                                <span
+                                  class="add-to-cart-text"
+                                >
+                                  <span class="add-to-cart-text__content is-visually-hidden-mobile">
+                                    Seleccionar variante
+                                  </span>
+                                </span>
+                              </button>
+                            {% endif %}
+                          </div>
+                        </div>
+                      {% endform %}
+                    </product-form-component>
+                  </quick-add-component>
+                </product-card>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {% comment %} </div>
+      </div>
+    </crossell-cart> 
+</div> {% endcomment %} {% endcomment %}
+
+{% comment %} <style>
+  .splide-crossell-cart{
+    padding: 0 1rem;
+  }
+
+  .splide-crossell-cart > .splide__pagination{
+    bottom: -1.2rem
+  }
+
+  .cart-cross-sell__title {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .cart-cross-sell__list {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .cart-cross-sell__item {
+    display: flex;
+    flex-direction: row;
+    gap: 0.8rem;
+    border-radius: 8px;
+    padding: 0.6rem;
+    min-width: 350px;
+    background: #fff;
+  }
+
+  .cart-cross-sell__image img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  .cart-cross-sell__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .cart-cross-sell__name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .cart-cross-sell__price {
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+   .button.button-crsll-cart{
+    padding: 1rem !important;
+  }
+
+  .button.button-crsll-cart > .add-to-cart-text{
+    font-size: 0.7rem
+  }
+
+  .button.button-crsll-cart > .add-to-cart-text{
+    .svg-wrapper{
+      width: 1.1rem;
+    }
+  }
+</style> {% endcomment %}

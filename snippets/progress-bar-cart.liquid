@@ -1,0 +1,275 @@
+<style>
+  .shipping-progress-container {
+    border: 1px solid #c9c9c9;
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 400px;
+    margin: 20px auto;
+    margin-top: 0;
+  }
+
+  .shipping-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .shipping-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+  }
+
+  .shipping-message {
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+
+  .shipping-message.incomplete {
+    color: #e17055;
+  }
+
+  .shipping-message.complete {
+    color: #00b894;
+    font-weight: 500;
+  }
+
+  .progress-bar-container {
+    position: relative;
+    background-color: #e9ecef;
+    border-radius: 20px;
+    height: 16px;
+    margin-bottom: 20px;
+    overflow: visible;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00b894 0%, #55efc4 100%);
+    border-radius: 20px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-levels {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .level-marker {
+    position: absolute;
+    top: -2px;
+    width: 2px;
+    height: 20px;
+    background-color: #ffffff;
+    border-radius: 1px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .level-marker.level-25 {
+    left: 25%;
+  }
+  .level-marker.level-50 {
+    left: 50%;
+  }
+  .level-marker.level-75 {
+    left: 75%;
+  }
+
+  .cart-indicator {
+    position: absolute;
+    top: -30px;
+    font-size: 24px;
+    transform: translateX(-50%);
+    transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: cart-bounce 0.6s ease-in-out;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+
+  @keyframes cart-bounce {
+    0%,
+    100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-5px);
+    }
+  }
+
+  .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #6c757d;
+  }
+
+  .current-amount {
+    font-weight: 600;
+    color: #2d3748;
+  }
+
+  .free-shipping-threshold {
+    font-weight: 600;
+    color: #00b894;
+  }
+
+  .celebration {
+    animation: celebrate 0.6s ease-out;
+  }
+
+  @keyframes celebrate {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .confetti {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    animation: confetti-fall 3s linear forwards;
+  }
+
+  @keyframes confetti-fall {
+    0% {
+      transform: translateY(-100vh) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  .level-indicator {
+    position: absolute;
+    bottom: 25px;
+    font-size: 11px;
+    color: #6c757d;
+    transform: translateX(-50%);
+    font-weight: 500;
+  }
+
+  .level-indicator.level-25 {
+    left: 25%;
+  }
+  .level-indicator.level-50 {
+    left: 50%;
+  }
+  .level-indicator.level-75 {
+    left: 75%;
+  }
+
+  .truck-icon {
+    display: inline-block;
+    animation: truck-bounce 1s infinite;
+  }
+
+  @keyframes truck-bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .shipping-progress-container {
+      padding: 16px;
+      margin: 0 10px;
+    }
+  }
+</style>
+
+{% assign threshold_raw = settings.free_shipping_threshold %}
+{% assign threshold_cents = threshold_raw | times: 100 %}
+{% assign cart_total_cents = cart.total_price %}
+{% assign remaining_cents = threshold_cents | minus: cart_total_cents %}
+
+{% if threshold_cents > 0 %}
+  {% assign progress = cart_total_cents | times: 100 | divided_by: threshold_cents %}
+{% else %}
+  {% assign progress = 0 %}
+{% endif %}
+
+<free-shipping-progress-bar
+  data-free-shipping-threshold="{{ settings.free_shipping_threshold }}"
+  data-current-progress="{{ progress | default: 0 }}"
+  class="free-shipping-progress"
+>
+  <div class="shipping-progress-container" id="shippingContainer">
+    <div class="shipping-header">
+      <h2 class="shipping-title">Camion aquí</h2>
+    </div>
+
+    <div class="shipping-message" id="shippingMessage">
+      {% if remaining_cents > 0 %}
+        Te faltan
+        <strong
+          ><span id="remainingAmount">{{ remaining_cents | money }}</span></strong
+        >
+        para obtener envío gratis
+      {% else %}
+        🎉 ¡Felicidades! Ya tienes envío gratis 🎉
+      {% endif %}
+    </div>
+
+    <div class="progress-bar-container">
+      <p class="progress-bar" id="progressBar" style="width: {{ progress | at_most: 100 }}%">&nbsp;</p>
+    </div>
+
+    <div class="progress-info">
+      <span class="current-amount" id="currentAmount">{{ cart.total_price | money }}</span>
+      <span class="free-shipping-threshold" id="threshold">
+        {{- threshold_cents | money -}}
+      </span>
+    </div>
+  </div>
+</free-shipping-progress-bar>

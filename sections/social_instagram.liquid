@@ -1,0 +1,244 @@
+<style>
+  .section_social-instagram {
+      padding: 0 1.5rem;
+      padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .content-social-instagram-title{
+    padding-top: 2.5rem;
+    padding-bottom: 3rem;
+  }
+
+  .title-social-instagram{
+    font-size: var(--font-h3--size);
+    text-align: center;
+    margin: 0;
+
+    strong{
+      text-decoration: underline;
+    }
+  }
+
+  .social-instagram__item{
+    background-color: #000;
+    position: relative;
+  }
+
+  .widget-social-instagram{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+
+    p{
+      margin: 0;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: underline;
+    }
+  }
+
+  .lucide-instagram-icon{
+      width: 25px;
+      height: 25px;
+      margin-bottom: 0.3rem;
+  }
+
+  .social-instagram__link{
+      display: block;
+      height: 600px;
+      transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      overflow: hidden;
+  }
+
+  .social-instagram__image{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .social-instagram__item:hover .widget-social-instagram {
+      opacity: 1;
+  }
+
+  .social-instagram__item:hover .social-instagram__image {
+      transform: scale(1.05);
+  }
+
+  .social-instagram__item:hover .social-instagram__link{
+      opacity: 0.5;
+  }
+
+  .splide-social-instagram{
+    width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+      .social-instagram__link{
+          height: 450px;
+      }
+  }
+
+  @media screen and (max-width: 452px) {
+
+      .social-instagram__link{
+          height: 320px;
+      }
+  }
+</style>
+
+<div
+  class="section_social-instagram color-{{ section.settings.color_scheme }}"
+>
+  <div class="content-social-instagram-title">
+    <h3 class="title-social-instagram">
+      Síguenos en Instagram <strong>{{ section.settings.name_social }}</strong>
+    </h3>
+  </div>
+  <social-instagram-splide data-grid-columns="{{ section.settings.grid_columns }}" data-spacing-horizontal-grid="{{ section.settings.spacing_horizontal }}">
+  <div class="splide splide-social-instagram splide-instagram-movil" ref="splide">
+    <div class="splide__track">
+      <ul
+        class="splide__list"
+        id="Slider-{{ section.id }}"
+        data-id="{{ section.id }}"
+        role="list"
+      >
+        {% for block in section.blocks %}
+          <li class="social-instagram__item splide__slide">
+            <a
+              href="{{ block.settings.url_post-ins | default: '#urltext'}}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-instagram__link"
+            >
+              {{
+                block.settings.image
+                | image_url: width: 800
+                | image_tag: loading: 'lazy', alt: block.settings.title, class: 'social-instagram__image'
+              }}
+            </a>
+            <div class="widget-social-instagram">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-instagram-icon lucide-instagram"
+              >
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+              </svg>
+              <p>Ver mas</p>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  </social-instagram-splide>
+</div>
+
+{% schema %}
+{
+  "name": "Social Instagram",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Add images with links to your Instagram profile."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "name_social",
+      "label": "Nombre de instagram",
+      "default": "@name_instagram"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "padding bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "spacing_horizontal",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "relleno horizontal",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "grid_columns",
+      "label": "Número de columnas",
+      "default": 4,
+      "min": 4,
+      "max": 6
+    }
+  ],
+
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "url_post-ins",
+          "label": "Link URL del post"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Social Instagram",
+      "category": "Custom",
+      "blocks": [{ "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }]
+    }
+  ]
+}
+{% endschema %}

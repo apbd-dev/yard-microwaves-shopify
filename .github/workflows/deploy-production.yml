@@ -1,0 +1,32 @@
+name: Deploy to Shopify
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy theme to production
+    runs-on: ubuntu-latest
+    concurrency:
+      group: shopify-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Shopify CLI
+        uses: shopify/shopify-cli-action@v1
+
+      - name: Deploy theme
+        env:
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE_URL }}
+          SHOPIFY_FLAG_PATH: .
+        run: |
+          if [ -n "${{ secrets.SHOPIFY_THEME_ID }}" ]; then
+            shopify theme push --theme "${{ secrets.SHOPIFY_THEME_ID }}"
+          else
+            shopify theme push --live
+          fi

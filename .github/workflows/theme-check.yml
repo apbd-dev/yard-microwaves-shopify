@@ -1,0 +1,20 @@
+name: Theme Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  theme-check:
+    name: Run Shopify theme check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Theme Check
+        uses: shopify/theme-check-action@v2
+        with:
+          theme_root: "."
+          version: latest

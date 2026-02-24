@@ -1,0 +1,42 @@
+<!-- blocks/_crossell-cart.liquid -->  
+{% comment %} {%- assign block_settings = block.settings -%}  
+  
+{% capture children %}  
+  {% content_for 'blocks' %}  
+{% endcapture %}  
+  
+<div class="crossell-cart spacing-style"   
+     style="{% render 'spacing-style', settings: block_settings %}">  
+  {% render 'crossell-cart',   
+     children: children,   
+     settings: block_settings,   
+     shopify_attributes: block.shopify_attributes %}  
+</div>   {% endcomment %}
+
+
+
+{% comment %} 
+{  
+  "name": "Cross-sell Cart",  
+  "settings": [  
+    {  
+      "type": "collection",  
+      "id": "crossell_collection",  
+      "label": "Cross-sell Collection"  
+    },  
+    {  
+      "type": "range",  
+      "id": "max_products",  
+      "min": 2,  
+      "max": 8,  
+      "default": 4,  
+      "label": "Maximum Products"  
+    }  
+  ],  
+  "blocks": [  
+    {  
+      "type": "@theme"  
+    }  
+  ]  
+}   {% endcomment %}
+
