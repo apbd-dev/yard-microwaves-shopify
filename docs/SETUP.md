@@ -1,6 +1,6 @@
 # Yard Microwaves — Shopify Theme Setup Guide
 
-A Shopify theme for Yard Microwaves, built on **Fabric 2.1.5** by Shopify. BBQ lifestyle apparel via print-on-demand.
+A Shopify theme for Yard Microwaves, built on **Fabric 2.1.5** by Shopify. BBQ lifestyle apparel and gear.
 
 ---
 
@@ -154,17 +154,6 @@ Edit `templates/index.json` to modify homepage sections, or use the visual theme
 
 ---
 
-## Print-on-Demand Integration
-
-This is a manual setup step:
-
-1. **Choose a POD provider** — [Printful](https://www.printful.com), [Printify](https://www.printify.com), or [Gooten](https://www.gooten.com)
-2. **Install the app** from the [Shopify App Store](https://apps.shopify.com)
-3. **Create products** in the POD provider's dashboard with your designs
-4. **Sync products** to your Shopify store
-5. **Configure shipping** — POD apps typically handle fulfillment and shipping automatically
-
----
 
 ## Useful Commands
 
