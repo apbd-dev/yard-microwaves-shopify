@@ -1,0 +1,17 @@
+{%- comment -%} #25: branded 404. Replaces auto-generated templates/404.json. {%- endcomment -%}
+<section class="ym-section ym-paper-bg ym-404">
+  <div class="ym-container ym-404__container">
+    <p class="ym-404__label">404</p>
+    <h1 class="ym-script-heading ym-404__heading">This page went up in smoke</h1>
+    <p class="ym-404__body">Either the link burned or the page never existed. Either way, the brisket's still going.</p>
+    <a href="/" class="ym-btn-red ym-404__cta">Back to the smoker</a>
+    <img
+      src="{{ 'ym-mascot.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      class="ym-404__mascot"
+      width="320"
+    >
+  </div>
+</section>

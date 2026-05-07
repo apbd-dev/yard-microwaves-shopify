@@ -1,0 +1,1381 @@
+/* ==========================================================================
+   Yard Microwaves – Custom Theme Styles
+   ========================================================================== */
+
+/* ---------- Custom Font Faces ---------- */
+@font-face {
+  font-family: 'Milenia';
+  src: url('milenia.woff2') format('woff2'),
+       url('milenia.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bananas VF';
+  src: url('bananas-vf-regular.woff2') format('woff2'),
+       url('bananas-vf-regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bananas VF';
+  src: url('bananas-vf-bold-expanded.woff2') format('woff2'),
+       url('bananas-vf-bold-expanded.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Permanent Marker';
+  src: url('permanent-marker.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- CSS Custom Properties ---------- */
+:root {
+  --font-ym-script: 'Milenia', cursive;
+  --font-ym-heading: 'Bananas VF', sans-serif;
+  --font-ym-accent: 'Permanent Marker', cursive;
+
+  /* Brand tokens – sourced from Figma export (test.html) */
+  --color-ym-gold: #918450;        /* olive/tan – headings, body copy on paper */
+  --color-ym-red: #FF0000;         /* Buy Now CTA */
+  --color-ym-red-dark: #cc0000;
+  --color-ym-orange: #F16022;      /* accent / underlines / footer link */
+  --color-ym-peach: #FFB563;       /* "BONE" label + decorative dot clusters */
+  --color-ym-cream: #F0EEE2;       /* primary cream background */
+  --color-ym-cream-alt: #F1F0E1;   /* mascot fill cream */
+  --color-ym-dark: #1a1a1a;
+  --color-ym-dark-soft: #2c2c2c;
+  --color-ym-paper: #ede4d3;       /* butcher paper tone */
+}
+
+/* ---------- Shared Section Base ---------- */
+.ym-section {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.ym-section--dark {
+  background-color: var(--color-ym-dark);
+  color: #fff;
+}
+
+/* Paper texture is applied once at the body level below so it spans the whole
+   page continuously — no section seams. .ym-paper-bg just keeps the cream
+   fallback color for older browsers / if the body bg fails to load. */
+.ym-paper-bg {
+  background-color: transparent;
+}
+
+body {
+  background-color: var(--color-ym-paper);
+  background-image: url('ym-page-texture.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-attachment: fixed;
+}
+
+.ym-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+@media (max-width: 749px) {
+  .ym-container {
+    padding: 0 20px;
+  }
+}
+
+/* ---------- Typography ---------- */
+.ym-script-heading {
+  font-family: var(--font-ym-script);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.ym-block-heading {
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+.ym-accent-text {
+  font-family: var(--font-ym-accent);
+  font-weight: 400;
+}
+
+/* ---------- Buttons ---------- */
+/* Node 2422:12 — "Buy Now" button. Figma: 309×57, padding 20px, border-radius 20px,
+   bg red, text Milenia 35px white, leading 97px. */
+.ym-btn-red {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FF0000;
+  color: #fff;
+  font-family: var(--font-ym-script);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 1.82vw, 2.1875rem); /* up to 35px */
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: 0;
+  padding: 20px;
+  width: 309px;
+  max-width: 100%;
+  height: 57px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+.ym-btn-red:hover {
+  background-color: #cc0000;
+  color: #fff;
+}
+
+/* ---------- Decorative Elements ---------- */
+.ym-deco {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ym-deco img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 749px) {
+  .ym-deco {
+    display: none;
+  }
+}
+
+/* ---------- Two-Column Grid ---------- */
+.ym-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+@media (max-width: 749px) {
+  .ym-two-col {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* =============================================
+   HERO SECTION
+   ============================================= */
+/* Figma: 1920×1080 full-bleed video hero → aspect-ratio 16/9 so height = 56.25vw.
+   On extremely tall viewports (rare) this caps at 100vh to avoid leaving space below
+   the fold without any hero visible at all. */
+.ym-hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-ym-dark);
+  overflow: visible;
+}
+
+.ym-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ym-hero__bg img,
+.ym-hero__bg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ym-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
+  z-index: 1;
+}
+
+.ym-hero__content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: #fff;
+}
+
+/* Figma node 2337:1442 — merged torn paper strip at hero/pioneers seam.
+   PNG is pre-composited 2576×263 (aspect 9.79:1), transparent bg.
+   Positioned relative to hero height so it stays locked to the seam even when
+   hero is capped by max-height:100vh on non-16:9 viewports. */
+.ym-hero__torn-edge {
+  position: absolute;
+  bottom: -11.76%;   /* 127 / 1080 — Figma: image bottom lands 127px below hero bottom at 1920px viewport */
+  left: 0;
+  right: 0;
+  z-index: 4;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.ym-hero__torn-edge img {
+  display: block;
+  width: 100%;
+  height: auto;      /* keep natural aspect; prevents vertical squish/stretch */
+}
+
+/* =============================================
+   PIONEERS SECTION — 1:1 Figma port
+   All child elements are absolutely positioned inside a 1920×1269 canvas,
+   using percentages derived from the Figma Web/Desktop frame (2318:1384).
+   The canvas scales with viewport width up to max-width 1920, preserving
+   aspect ratio via aspect-ratio. ≤749px falls back to a stacked layout.
+   ============================================= */
+.ym-pioneers {
+  padding: 0;
+  position: relative;
+  z-index: 2; /* above hero overlay (z:1), below torn-edge (z:4) */
+}
+
+.ym-pioneers__canvas {
+  position: relative;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  aspect-ratio: 1920 / 1269;
+}
+
+.ym-pioneers__canvas > * {
+  position: absolute;
+}
+
+/* Butcher paper — Figma node 2318:1381 at page-rel (-410, -2), 1756×1309,
+   rotated -7.94°. Extends left beyond the canvas; section overflow:hidden clips. */
+.ym-pioneers__paper {
+  left: -21.35%;       /* -410 / 1920 */
+  top: -0.16%;         /* -2 / 1269 */
+  width: 91.46%;       /* 1756 / 1920 */
+  aspect-ratio: 1756 / 1309;
+  background: url('ym-butcher-paper-2.png') no-repeat center / 100% 100%;
+  transform: rotate(-7.94deg);
+  transform-origin: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Polaroid photo — Figma node 2318:1387 at (226, 131), 1045×1138 */
+.ym-pioneers__photo {
+  left: 11.77%;        /* 226 / 1920 */
+  top: 10.32%;         /* 131 / 1269 */
+  width: 54.43%;       /* 1045 / 1920 */
+  aspect-ratio: 1045 / 1138;
+  object-fit: cover;
+  transform: rotate(-2deg);
+  filter: drop-shadow(3px 5px 12px rgba(0, 0, 0, 0.2));
+  z-index: 1;
+  display: block;
+}
+
+/* Top pellet cluster — Figma node 2371:139 at (1625, 83), 614×302 */
+.ym-pioneers__pellets {
+  pointer-events: none;
+  height: auto;
+  z-index: 2;
+}
+
+.ym-pioneers__pellets--top {
+  left: 84.64%;        /* 1625 / 1920 */
+  top: 6.54%;          /* 83 / 1269 */
+  width: 31.98%;       /* 614 / 1920 */
+}
+
+/* Bottom pellet scatter — Figma node 2371:143 at (1238, 764), 181×318 */
+.ym-pioneers__pellets--bottom {
+  left: 64.48%;        /* 1238 / 1920 */
+  top: 60.20%;         /* 764 / 1269 */
+  width: 9.43%;        /* 181 / 1920 */
+}
+
+/* Text column — Figma Group 49 (2318:1376) at (1249, 408), 516×271 */
+.ym-pioneers__content {
+  left: 65.05%;        /* 1249 / 1920 */
+  top: 32.15%;         /* 408 / 1269 */
+  width: 26.88%;       /* 516 / 1920 */
+  text-align: center;
+  z-index: 3;
+}
+
+/* Node 2318:1379 — "Welcome" label. 35px at 1920 frame ⇒ 1.823vw, capped. */
+.ym-pioneers__label {
+  font-family: var(--font-ym-heading);
+  font-weight: 500;
+  font-size: clamp(18px, 1.823vw, 35px);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-ym-gold);
+  margin: 0 0 0.4em;
+  white-space: nowrap;
+}
+
+/* Node 2318:1377 — "Pellet Pioneers" heading. 100px ⇒ 5.208vw.
+   Figma lists the text box at 516px wide but the font renders wider here, so
+   allow it to overflow the content column on a single line. */
+.ym-pioneers__title {
+  font-family: var(--font-ym-script);
+  font-weight: 400;
+  font-size: clamp(56px, 5.208vw, 100px);
+  line-height: 0.97;    /* 97/100 per Figma */
+  color: var(--color-ym-gold);
+  margin: 0 0 0.24em;
+  white-space: nowrap;
+}
+
+/* Node 2318:1378 — Body copy. 20px ⇒ 1.042vw */
+.ym-pioneers__body {
+  font-family: var(--font-ym-heading);
+  font-weight: 500;
+  font-size: clamp(14px, 1.042vw, 20px);
+  line-height: normal;
+  color: var(--color-ym-gold);
+  margin: 0 0 1.4em;
+}
+
+.ym-pioneers__body p { margin: 0; }
+
+.ym-pioneers__cta {
+  /* CTA inherits .ym-btn-red styling; just ensures inline-block in canvas flow. */
+  display: inline-flex;
+}
+
+/* Mobile fallback — abandon the canvas and stack everything naturally. */
+@media (max-width: 749px) {
+  .ym-pioneers__canvas {
+    aspect-ratio: auto;
+    padding: 48px 20px;
+  }
+  .ym-pioneers__canvas > * { position: static; }
+  .ym-pioneers__paper,
+  .ym-pioneers__pellets { display: none; }
+  .ym-pioneers__photo {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto 32px;
+    aspect-ratio: 1045 / 1138;
+  }
+  .ym-pioneers__content {
+    width: 100%;
+    max-width: 516px;
+    margin: 0 auto;
+  }
+}
+
+/* =============================================
+   TAGLINE SECTION — 1:1 Figma port
+   Group 50 (recipe card w/ baked-in heading + bullets) and Group 56
+   (brisket photo w/ torn paper) layered inside a 1920×957 canvas.
+   ============================================= */
+.ym-tagline {
+  padding: 0;
+  position: relative;
+}
+
+.ym-tagline__canvas {
+  position: relative;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  aspect-ratio: 1920 / 957;
+}
+
+.ym-tagline__canvas > * {
+  position: absolute;
+}
+
+/* Group 56 (2357:17) — brisket + torn paper at (1219, 0), 1430×957 */
+.ym-tagline__brisket {
+  left: 63.49%;           /* 1219 / 1920 */
+  top: 0;
+  width: 74.48%;          /* 1430 / 1920 */
+  aspect-ratio: 1430 / 957;
+  object-fit: contain;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Group 50 (2318:1409) — recipe card at (-57, 225), 1320×548 */
+.ym-tagline__card {
+  left: -2.97%;           /* -57 / 1920 */
+  top: 23.51%;            /* 225 / 957 */
+  width: 68.75%;          /* 1320 / 1920 */
+  aspect-ratio: 1320 / 548;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Ingredient labels — each positioned absolutely on the canvas so y-pitch
+   scales with the recipe-card dotted rules at every viewport.
+   All share left=223, width=773 (Figma). Y positions (section-rel):
+   375, 437, 499, 559, 619, 680 — tops expressed as % of canvas height (957). */
+.ym-tagline__list {
+  inset: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ym-tagline__item {
+  position: absolute;
+  left: 11.61%;       /* 223 / 1920 */
+  width: 40.26%;      /* 773 / 1920 */
+  font-family: var(--font-ym-heading);
+  font-weight: 500;
+  font-size: clamp(14px, 1.823vw, 35px);
+  line-height: 1;
+  color: #000;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.ym-tagline__item:nth-child(1) { top: 39.18%; } /* 375 / 957 */
+.ym-tagline__item:nth-child(2) { top: 45.66%; } /* 437 / 957 */
+.ym-tagline__item:nth-child(3) { top: 52.14%; } /* 499 / 957 */
+.ym-tagline__item:nth-child(4) { top: 58.41%; } /* 559 / 957 */
+.ym-tagline__item:nth-child(5) { top: 64.68%; } /* 619 / 957 */
+.ym-tagline__item:nth-child(6) { top: 71.06%; } /* 680 / 957 */
+
+/* Mobile fallback — canvas → natural flow */
+@media (max-width: 749px) {
+  .ym-tagline__canvas {
+    aspect-ratio: auto;
+    padding: 48px 20px;
+  }
+  .ym-tagline__canvas > * { position: static; }
+  .ym-tagline__brisket {
+    width: 100%;
+    margin-bottom: 24px;
+  }
+  .ym-tagline__card {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  .ym-tagline__list { width: 100%; }
+  .ym-tagline__item { margin-bottom: 12px; font-size: 14px; }
+}
+
+/* =============================================
+   OUR STORY SECTION — 1:1 Figma port
+   Canvas 1920 × 1217 (height driven by the scrapbook collage).
+   ============================================= */
+.ym-story {
+  padding: 0;
+  position: relative;
+}
+
+.ym-story__canvas {
+  position: relative;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  aspect-ratio: 1920 / 1217;
+}
+
+.ym-story__canvas > * {
+  position: absolute;
+}
+
+/* Scrapbook collage — Figma 2355:9 at (105, 0), 974×1217 */
+.ym-story__collage {
+  left: 5.47%;         /* 105 / 1920 */
+  top: 0;
+  width: 50.73%;       /* 974 / 1920 */
+  aspect-ratio: 974 / 1217;
+  object-fit: contain;
+  z-index: 2;
+  display: block;
+  pointer-events: none;
+}
+
+/* Decorative pellet groups (each exported with its Figma shadow baked in) */
+.ym-story__pellets {
+  pointer-events: none;
+  height: auto;
+  z-index: 1;
+}
+
+/* Figma 2360:33 — top-right cluster at (1002, 117), 173×324 */
+.ym-story__pellets--tr {
+  left: 52.19%;        /* 1002 / 1920 */
+  top: 9.61%;          /* 117 / 1217 */
+  width: 9.01%;        /* 173 / 1920 */
+}
+
+/* Figma 2360:37 — bottom-left strip at (105, 575), 201×436 */
+.ym-story__pellets--bl {
+  left: 5.47%;         /* 105 / 1920 */
+  top: 47.25%;         /* 575 / 1217 */
+  width: 10.47%;       /* 201 / 1920 */
+}
+
+/* Figma 2360:26 — right-side strip at (993, 584), 171×436 */
+.ym-story__pellets--r {
+  left: 51.72%;        /* 993 / 1920 */
+  top: 47.99%;         /* 584 / 1217 */
+  width: 8.91%;        /* 171 / 1920 */
+}
+
+/* Right-column text — gold, centered, Figma font sizing */
+.ym-story__label {
+  left: 74.11%;        /* 1423 / 1920 */
+  top: 33.28%;         /* 405 / 1217 */
+  width: 8.80%;        /* 169 / 1920 */
+  font-family: var(--font-ym-heading);
+  font-weight: 500;
+  font-size: clamp(18px, 1.823vw, 35px);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-ym-gold);
+  text-align: center;
+  white-space: nowrap;
+  margin: 0;
+  z-index: 3;
+}
+
+.ym-story__title {
+  left: 65.05%;        /* 1249 / 1920 */
+  top: 37.72%;         /* 459 / 1217 */
+  width: 26.88%;       /* 516 / 1920 */
+  font-family: var(--font-ym-script);
+  font-weight: 400;
+  font-size: clamp(56px, 5.208vw, 100px);
+  line-height: 0.97;
+  color: var(--color-ym-gold);
+  text-align: center;
+  white-space: nowrap;
+  margin: 0;
+  z-index: 3;
+}
+
+.ym-story__body {
+  left: 65.63%;        /* 1260 / 1920 */
+  top: 46.84%;         /* 570 / 1217 */
+  width: 25.47%;       /* 489 / 1920 */
+  font-family: var(--font-ym-heading);
+  font-weight: 500;
+  font-size: clamp(14px, 1.042vw, 20px);
+  line-height: normal;
+  color: var(--color-ym-gold);
+  text-align: center;
+  z-index: 3;
+}
+
+.ym-story__body p { margin: 0; }
+
+.ym-story__cta {
+  left: 70.26%;        /* 1349 / 1920 */
+  top: 57.36%;         /* 698 / 1217 */
+  z-index: 3;
+  display: inline-flex;
+}
+
+/* Mobile fallback — stacked flow */
+@media (max-width: 749px) {
+  .ym-story__canvas {
+    aspect-ratio: auto;
+    padding: 48px 20px;
+  }
+  .ym-story__canvas > * { position: static; }
+  .ym-story__pellets { display: none; }
+  .ym-story__collage { width: 100%; margin: 0 auto 32px; }
+  .ym-story__label,
+  .ym-story__title,
+  .ym-story__body { width: 100%; max-width: 516px; margin: 0 auto 16px; }
+  .ym-story__cta { margin: 0 auto; }
+}
+
+/* =============================================
+   PRODUCT SHOWCASE SECTION — 1:1 Figma port
+   Canvas 1920 × 1604 — Figma nodes 2597:565 (front shirt, 1604 square),
+   2354:8 (back shirt w/ Rub & Plug graphic), 2508:79 (tag card bg).
+   ============================================= */
+.ym-showcase {
+  padding: 0;
+  position: relative;
+}
+
+.ym-showcase__canvas {
+  position: relative;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  aspect-ratio: 1920 / 1604;
+}
+
+.ym-showcase__canvas > * {
+  position: absolute;
+}
+
+/* Front shirt — Figma 2597:565 at (-255, 0), 1604×1604 */
+.ym-showcase__shirt--front {
+  left: -13.28%;         /* -255 / 1920 */
+  top: 0;
+  width: 83.54%;         /* 1604 / 1920 */
+  aspect-ratio: 1;
+  object-fit: contain;
+  z-index: 1;
+  pointer-events: none;
+  filter: drop-shadow(4px 4px 12px rgba(0, 0, 0, 0.18));
+}
+
+/* Back shirt — Figma 2354:8 at (-364, 37), 1294×1080 — overlapping on top */
+.ym-showcase__shirt--back {
+  left: -18.96%;         /* -364 / 1920 */
+  top: 2.31%;            /* 37 / 1604 */
+  width: 67.40%;         /* 1294 / 1920 */
+  aspect-ratio: 1294 / 1080;
+  object-fit: contain;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Tag card — Figma 2508:79 at (1274, 294), 591×908. The tag image is the
+   card background; interactive card UI is absolutely positioned inside. */
+.ym-showcase__card {
+  left: 66.35%;          /* 1274 / 1920 */
+  top: 18.33%;           /* 294 / 1604 */
+  width: 30.78%;         /* 591 / 1920 */
+  aspect-ratio: 591 / 908;
+  background: url('ym-product-tag-bg.png') no-repeat center / 100% 100%;
+  z-index: 3;
+  box-sizing: border-box;
+}
+
+.ym-showcase__card > * {
+  position: absolute;
+}
+
+/* Ribbon banner (Figma 2422:11 "Group 76") at (97, 13), 368×82 over 591×908 tag */
+.ym-showcase__ribbon {
+  left: 16.41%;            /* 97 / 591 */
+  top: 1.43%;              /* 13 / 908 */
+  width: 62.27%;           /* 368 / 591 */
+  aspect-ratio: 368 / 82;
+}
+
+.ym-showcase__ribbon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.ym-showcase__ribbon-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ym-script);
+  font-size: clamp(14px, 1.56vw, 30px);   /* 30px at 1920 */
+  color: var(--color-ym-gold);
+  white-space: nowrap;
+}
+
+/* BONE color label — Figma 2514:166 at (236, 83), 77×33.
+   Bananas VF Medium, 35px, color #ffb563, uppercase, centered. */
+.ym-showcase__color-label {
+  left: 39.93%;            /* 236 / 591 */
+  top: 9.14%;              /* 83 / 908 */
+  width: 13.03%;           /* 77 / 591 */
+  font-family: var(--font-ym-heading);
+  font-weight: 500;
+  font-size: clamp(14px, 1.823vw, 35px);
+  line-height: normal;
+  text-transform: uppercase;
+  color: #ffb563;
+  text-align: center;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* Main card-hero shirt image (Figma 2362:8 Bone Back) at (36, 94), 478×442 */
+.ym-showcase__card-hero {
+  left: 6.09%;             /* 36 / 591 */
+  top: 10.35%;             /* 94 / 908 */
+  width: 80.88%;           /* 478 / 591 */
+  aspect-ratio: 478 / 442;
+}
+
+.ym-showcase__card-hero-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+/* Bone Folded thumb (Figma 2597:567) at (285, 465), 194×194 */
+.ym-showcase__card-thumb--front {
+  left: 48.22%;            /* 285 / 591 */
+  top: 51.21%;             /* 465 / 908 */
+  width: 32.83%;           /* 194 / 591 */
+  aspect-ratio: 1;
+  object-fit: contain;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Briquette Folded thumb (Figma 2363:55) at (308, 596), 146×146 */
+.ym-showcase__card-thumb--back {
+  left: 52.12%;            /* 308 / 591 */
+  top: 65.64%;             /* 596 / 908 */
+  width: 24.70%;           /* 146 / 591 */
+  aspect-ratio: 1;
+  object-fit: contain;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Size menu (Figma 2508:111) at (75, 509), 188×197 — uses Figma's sizemenu
+   image as background so orange bullets + dotted rules look pixel-identical.
+   Size labels are overlaid as clickable buttons. */
+.ym-showcase__sizemenu {
+  left: 12.69%;            /* 75 / 591 */
+  top: 56.06%;             /* 509 / 908 */
+  width: 31.81%;           /* 188 / 591 */
+  aspect-ratio: 188 / 197;
+  background: url('ym-card-sizemenu.png') no-repeat center / 100% 100%;
+}
+
+.ym-showcase__size-list {
+  position: absolute;
+  inset: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+}
+
+.ym-showcase__size-list li {
+  display: flex;
+  align-items: center;
+}
+
+.ym-showcase__size-option {
+  width: 100%;
+  height: 100%;
+  display: block;
+  padding: 0;
+  font-family: var(--font-ym-heading);
+  font-weight: 500;
+  font-size: clamp(8px, 0.73vw, 14px);
+  text-transform: uppercase;
+  color: transparent;        /* Size labels are in the sizemenu background image */
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+}
+
+/* .size-radio is unused as a visible element — the orange circle lives in the
+   sizemenu background image. The X marker is drawn as a ::before on is-active. */
+.ym-showcase__size-radio { display: none; }
+
+/* X marker (Figma 2508:112) — overlaid on the orange circle for the selected
+   size. ym-card-x.png is tight-cropped to the ink bounds so contain/center
+   actually centers on the ink. Circle center sits at 22.34% of row width. */
+.ym-showcase__size-option.is-active::before {
+  content: '';
+  position: absolute;
+  left: 22%;
+  top: 50%;
+  width: 30%;
+  aspect-ratio: 66 / 78;
+  transform: translate(-50%, -50%);
+  background: url('ym-card-x.png') no-repeat center / contain;
+  pointer-events: none;
+}
+
+/* Line 4 (Figma 2508:147) — horizontal divider at (96, 732), 356×0, above Total */
+.ym-showcase__divider {
+  left: 16.24%;            /* 96 / 591 */
+  top: 80.62%;             /* 732 / 908 */
+  width: 60.24%;           /* 356 / 591 */
+  height: 1px;
+  background: #9c8f66;
+}
+
+/* Total line (Figma 2508:149) at (80, 755), 389×26 — "Total ....... $price" */
+.ym-showcase__total {
+  left: 13.54%;            /* 80 / 591 */
+  top: 83.15%;             /* 755 / 908 */
+  width: 65.82%;           /* 389 / 591 */
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  font-size: clamp(10px, 1.04vw, 20px);
+  color: #9c8f66;
+}
+
+.ym-showcase__total-label,
+.ym-showcase__total-price {
+  background: #f0e8d7;       /* cover the baked-in dotted line if using image */
+  padding: 0 2px;
+  z-index: 1;
+  position: relative;
+}
+
+.ym-showcase__total::before {
+  content: '';
+  position: absolute;
+  left: 2em;
+  right: 3em;
+  top: 60%;
+  border-bottom: 1px dotted #9c8f66;
+  z-index: 0;
+}
+
+/* Add to Cart (Figma 2508:125) at (175, 824), 206×35 — sits on red zigzag.
+   Position applies whether rendered as <a> (no product) or <form><button>. */
+.ym-showcase__cart-form,
+.ym-showcase__cart-btn {
+  left: 29.61%;            /* 175 / 591 */
+  top: 90.75%;             /* 824 / 908 */
+  width: 34.86%;           /* 206 / 591 */
+  margin: 0;
+}
+
+.ym-showcase__cart-btn {
+  display: block;
+  text-align: center;
+  font-family: var(--font-ym-script);
+  font-size: clamp(12px, 1.04vw, 20px);
+  color: #fff;
+  text-decoration: none;
+  background: transparent;
+  padding: 0;
+  border: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* When wrapped in a form, the form owns the position; button fills it. */
+.ym-showcase__cart-form .ym-showcase__cart-btn {
+  position: static;
+  width: 100%;
+  left: auto;
+  top: auto;
+}
+
+.ym-showcase__cart-btn:hover { color: #fff; }
+
+/* Mobile fallback — canvas → natural flow */
+@media (max-width: 749px) {
+  .ym-showcase__canvas {
+    aspect-ratio: auto;
+    padding: 40px 20px;
+  }
+  .ym-showcase__canvas > * { position: static; }
+  .ym-showcase__shirt--front,
+  .ym-showcase__shirt--back {
+    width: 100%;
+    margin: 0 auto 16px;
+  }
+  .ym-showcase__card {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    aspect-ratio: auto;
+  }
+}
+
+/* =============================================
+   QUALITY BANNER SECTION — Figma node 2393:157.
+   Permanent Marker 25px, gold #918450, centered, uppercase.
+   ============================================= */
+.ym-quality-banner {
+  padding: 20px 0;
+  text-align: center;
+  /* Override .ym-section's overflow:hidden so pellet/sparkle accents can spill
+     into the adjacent showcase sections, matching the Figma composition where
+     decorations span multiple regions. */
+  overflow: visible;
+}
+
+.ym-quality-banner__text {
+  font-family: var(--font-ym-accent);     /* Permanent Marker */
+  font-weight: 400;
+  font-size: clamp(14px, 1.302vw, 25px);  /* 25 / 1920 */
+  line-height: normal;
+  text-transform: uppercase;
+  color: var(--color-ym-gold);
+  max-width: 844px;                        /* Figma text width */
+  margin: 0 auto;
+}
+
+/* =============================================
+   FOOTER CTA SECTION
+   ============================================= */
+.ym-footer-cta {
+  padding: 60px 0 50px;
+  text-align: center;
+  position: relative;
+  margin-top: 20px;
+}
+
+/* Zigzag/torn edge at top of footer */
+.ym-footer-cta::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background:
+    linear-gradient(45deg, var(--color-ym-dark) 50%, transparent 50%) 0 0,
+    linear-gradient(-45deg, var(--color-ym-dark) 50%, transparent 50%) 0 0;
+  background-size: 20px 20px;
+  background-repeat: repeat-x;
+  z-index: 1;
+}
+
+.ym-footer-cta__heading {
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  text-transform: uppercase;
+  color: var(--color-ym-red);
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  margin-bottom: 20px;
+}
+
+.ym-footer-cta__mascot {
+  width: 70px;
+  height: auto;
+  margin: 0 auto 24px;
+  display: block;
+}
+
+.ym-footer-cta__socials {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.ym-footer-cta__social-link {
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.ym-footer-cta__social-link:hover {
+  opacity: 0.7;
+}
+
+.ym-footer-cta__social-link img {
+  height: 28px;
+  width: auto;
+}
+
+/* =============================================
+   DEFAULT FOOTER – dark theme to match CTA
+   ============================================= */
+footer.shopify-section-group-footer-group .section-background {
+  background-color: var(--color-ym-dark) !important;
+}
+
+footer.shopify-section-group-footer-group {
+  background-color: var(--color-ym-dark);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+footer.shopify-section-group-footer-group .section {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+footer.shopify-section-group-footer-group h1,
+footer.shopify-section-group-footer-group h2,
+footer.shopify-section-group-footer-group h3,
+footer.shopify-section-group-footer-group h4,
+footer.shopify-section-group-footer-group h5,
+footer.shopify-section-group-footer-group h6 {
+  color: #fff;
+}
+
+footer.shopify-section-group-footer-group a {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+footer.shopify-section-group-footer-group a:hover {
+  color: #fff;
+}
+
+footer.shopify-section-group-footer-group input {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+footer.shopify-section-group-footer-group input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+footer.shopify-section-group-footer-group svg {
+  fill: rgba(255, 255, 255, 0.7);
+}
+
+footer.shopify-section-group-footer-group button svg,
+footer.shopify-section-group-footer-group a svg {
+  fill: rgba(255, 255, 255, 0.7);
+}
+
+/* =============================================
+   HEADER — Pure CSS override
+   Regardless of what's in Shopify admin, the first two desktop
+   menu items are forcibly rendered as "Our Story" + "The Shop"
+   with the Figma's Milenia-over-Bananas VF type treatment.
+   Any 3rd+ desktop menu item is hidden.
+   Mobile drawer is untouched and shows real menu titles.
+   ============================================= */
+
+/* Base link type */
+header-menu .menu-list__link,
+.header-menu .menu-list__link {
+  font-family: var(--font-ym-heading) !important;
+  font-weight: 700 !important;
+  font-size: clamp(1.25rem, 1.6vw, 2rem) !important; /* 20→32px */
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  text-transform: none !important;
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* Hide the real link title visually but keep it for screen readers */
+header-menu .menu-list__list-item:nth-child(-n+2) .menu-list__link-title,
+.header-menu .menu-list__list-item:nth-child(-n+2) .menu-list__link-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Item 1 → "Our Story" stacked */
+header-menu .menu-list__list-item:nth-child(1) .menu-list__link::before,
+.header-menu .menu-list__list-item:nth-child(1) .menu-list__link::before {
+  content: "Our";
+  display: block;
+  font-family: var(--font-ym-script);
+  font-weight: 400;
+  font-size: 0.6875em;
+  line-height: 0.85;
+  letter-spacing: 0;
+  margin-bottom: -0.12em;  /* pull "Story"/"Shop" closer to the script */
+}
+
+header-menu .menu-list__list-item:nth-child(1) .menu-list__link::after,
+.header-menu .menu-list__list-item:nth-child(1) .menu-list__link::after {
+  content: "Story";
+  display: block;
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Item 2 → "The Shop" stacked */
+header-menu .menu-list__list-item:nth-child(2) .menu-list__link::before,
+.header-menu .menu-list__list-item:nth-child(2) .menu-list__link::before {
+  content: "The";
+  display: block;
+  font-family: var(--font-ym-script);
+  font-weight: 400;
+  font-size: 0.6875em;
+  line-height: 0.85;
+  letter-spacing: 0;
+  margin-bottom: -0.12em;  /* pull "Story"/"Shop" closer to the script */
+}
+
+header-menu .menu-list__list-item:nth-child(2) .menu-list__link::after,
+.header-menu .menu-list__list-item:nth-child(2) .menu-list__link::after {
+  content: "Shop";
+  display: block;
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Hide any additional desktop menu items (Figma has exactly two). */
+header-menu .menu-list__list-item:nth-child(n+3),
+.header-menu .menu-list__list-item:nth-child(n+3) {
+  display: none;
+}
+
+/* Split the nav around the centered logo so the layout reads
+   [Our Story]  [LOGO]  [The Shop]  ...  [cart icons].
+   Both items are fixed-positioned at mirror offsets from viewport center so
+   they are exactly equidistant from the logo. */
+.header__row--top .header__columns {
+  position: relative;
+}
+
+.header__column--left {
+  justify-content: flex-end;
+}
+
+header-menu .menu-list,
+.header-menu .menu-list,
+header-menu overflow-list,
+.header-menu overflow-list {
+  justify-content: flex-end !important;
+  justify-items: end !important;
+}
+
+.header__column--left header-menu {
+  margin-left: auto;
+}
+
+/* Shared offset controls: logo half-width + gap between logo edge and nav item. */
+:root {
+  --ym-nav-logo-half: 70px;
+  --ym-nav-gap: 48px;
+}
+
+/* Both items anchor at left: 50vw (viewport center) and use translateX with
+   mirror-symmetric offsets so they end up exactly equidistant from the logo,
+   regardless of each item's own width or internal padding. */
+header-menu .menu-list__list-item:nth-child(1),
+.header-menu .menu-list__list-item:nth-child(1) {
+  position: fixed !important;
+  top: 34px !important;
+  left: 50vw !important;
+  right: auto !important;
+  /* -100% shifts right edge to left: 50vw. Then additional offset moves it the gap+logo_half further left. */
+  transform: translate(calc(-100% - var(--ym-nav-logo-half) - var(--ym-nav-gap)), -50%) !important;
+  z-index: 100;
+}
+
+header-menu .menu-list__list-item:nth-child(2),
+.header-menu .menu-list__list-item:nth-child(2) {
+  display: block !important;
+  position: fixed !important;
+  top: 34px !important;
+  left: 50vw !important;
+  right: auto !important;
+  /* Left edge sits gap+logo_half to the right of viewport center. */
+  transform: translate(calc(var(--ym-nav-logo-half) + var(--ym-nav-gap)), -50%) !important;
+  z-index: 100;
+}
+
+@media (max-width: 989px) {
+  header-menu .menu-list__list-item:nth-child(1),
+  .header-menu .menu-list__list-item:nth-child(1),
+  header-menu .menu-list__list-item:nth-child(2),
+  .header-menu .menu-list__list-item:nth-child(2) {
+    position: static;
+    transform: none;
+    right: auto;
+    left: auto;
+  }
+}
+
+/* Mobile drawer: Bananas VF, no stacked prefix. */
+.header__drawer .menu-list__item,
+.header__drawer .menu-list a,
+.header-drawer .menu-list__item,
+.header-drawer .menu-list a {
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  text-transform: none;
+}
+
+/* YM brand logo (SVG fallback, white fill). Scales with header height. */
+.header-logo .ym-brand-logo {
+  height: clamp(40px, 4.5vw, 64px) !important;
+  width: auto !important;
+  max-width: none;
+  object-fit: contain;
+  display: block;
+}
+
+/* Transparent home header: force white text on nav + prefix. */
+.shopify-section-group-header-group [data-transparent="always"] .menu-list__link,
+.shopify-section-group-header-group [data-transparent="always"] .menu-list__link-title,
+.shopify-section-group-header-group [data-transparent="always"] .menu-list__link::before,
+header [data-transparent="always"] .menu-list__link,
+header [data-transparent="always"] .menu-list__link-title,
+header [data-transparent="always"] .menu-list__link::before {
+  color: #fff !important;
+}
+
+/* ============================================================
+   HEADER SCROLL BEHAVIOR
+   While scrolling over the dark hero video, force the transparent
+   header to stay transparent (overriding the theme's default of
+   "go opaque as soon as sticky activates"). The ym-over-hero class
+   is toggled by ym-header-scroll.js based on the torn edge position.
+   ============================================================ */
+body.ym-over-hero #header-component[transparent] .header__row,
+body.ym-over-hero #header-component[transparent='not-sticky'] .header__row {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+body.ym-over-hero #header-component[transparent],
+body.ym-over-hero #header-component[transparent='not-sticky'] {
+  --header-bg-color: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Keep nav text white over the dark video. */
+body.ym-over-hero #header-component .menu-list__link,
+body.ym-over-hero #header-component .menu-list__link-title,
+body.ym-over-hero #header-component .menu-list__link::before,
+body.ym-over-hero #header-component .menu-list__link::after {
+  color: #fff !important;
+}
+
+/* Hide the bottom border that the solid header sometimes paints. */
+body.ym-over-hero #header-component .header__row {
+  border-color: transparent !important;
+}
+
+/* ─────────────────────────────────────────
+ * 404 page (#25)
+ * ───────────────────────────────────────── */
+.ym-404 {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ym-404__container {
+  text-align: center;
+  max-width: 720px;
+  padding-block: clamp(48px, 8vw, 120px);
+}
+.ym-404__label {
+  font-family: var(--font-accent--family, 'Permanent Marker', cursive);
+  font-size: clamp(64px, 10vw, 128px);
+  letter-spacing: 0.04em;
+  color: var(--ym-red, #c8311a);
+  margin: 0 0 8px;
+  line-height: 1;
+}
+.ym-404__heading {
+  font-size: clamp(40px, 7vw, 80px);
+  margin: 0 0 16px;
+}
+.ym-404__body {
+  font-size: clamp(16px, 1.6vw, 20px);
+  margin: 0 auto 32px;
+  max-width: 520px;
+}
+.ym-404__cta { margin-bottom: 40px; }
+.ym-404__mascot {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+}
+
+/* ─────────────────────────────────────────
+ * Password / coming-soon page (#25)
+ * ───────────────────────────────────────── */
+.ym-password {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ym-password__container {
+  text-align: center;
+  max-width: 640px;
+  padding-block: clamp(48px, 8vw, 120px);
+}
+.ym-password__logo {
+  display: block;
+  margin: 0 auto 32px;
+  height: auto;
+}
+.ym-password__heading {
+  font-size: clamp(48px, 8vw, 96px);
+  margin: 0 0 16px;
+}
+.ym-password__body {
+  font-size: clamp(16px, 1.6vw, 20px);
+  margin: 0 auto 32px;
+  max-width: 480px;
+}
+.ym-password__signup {
+  max-width: 520px;
+  margin: 0 auto;
+}
+.ym-password__signup-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.ym-password__input {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 14px 18px;
+  border: 2px solid currentColor;
+  background: rgb(255 255 255 / 0.7);
+  font: inherit;
+  font-size: 16px;
+  border-radius: 4px;
+}
+.ym-password__input:focus-visible {
+  outline: 3px solid var(--ym-red, #c8311a);
+  outline-offset: 2px;
+}
+.ym-password__submit { flex: 0 0 auto; }
+.ym-password__notice {
+  margin-top: 16px;
+  font-size: 14px;
+}
+.ym-password__notice--error { color: var(--ym-red, #c8311a); }
+
+@media (max-width: 600px) {
+  .ym-password__signup-row { flex-direction: column; align-items: stretch; }
+  .ym-password__submit { width: 100%; }
+}
