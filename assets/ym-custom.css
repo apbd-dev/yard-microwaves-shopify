@@ -355,12 +355,12 @@ body {
   white-space: nowrap;
 }
 
-/* Node 2318:1378 — Body copy. 20px ⇒ 1.042vw */
+/* Node 2318:1378 — Body copy. Bumped per #41 for legibility on textured bg. */
 .ym-pioneers__body {
   font-family: var(--font-ym-heading);
   font-weight: 500;
-  font-size: clamp(14px, 1.042vw, 20px);
-  line-height: normal;
+  font-size: clamp(16px, 1.4vw, 22px);
+  line-height: 1.45;
   color: var(--color-ym-gold);
   margin: 0 0 1.4em;
 }
@@ -952,20 +952,25 @@ body {
   margin-top: 20px;
 }
 
-/* Zigzag/torn edge at top of footer */
-.ym-footer-cta::before {
-  content: '';
+/* Torn-paper edge at top of footer (#44/#16). Replaces the old CSS zigzag with
+   the same butcher-paper PNG used by the hero, flipped vertically so the rip
+   appears to tear upward into the cream section above. */
+.ym-footer-cta__torn-edge {
   position: absolute;
-  top: -20px;
   left: 0;
   right: 0;
-  height: 20px;
-  background:
-    linear-gradient(45deg, var(--color-ym-dark) 50%, transparent 50%) 0 0,
-    linear-gradient(-45deg, var(--color-ym-dark) 50%, transparent 50%) 0 0;
-  background-size: 20px 20px;
-  background-repeat: repeat-x;
-  z-index: 1;
+  bottom: 100%;
+  margin-bottom: -1px; /* hairline overlap to kill any sub-pixel seam */
+  pointer-events: none;
+  z-index: 2;
+  line-height: 0;
+}
+
+.ym-footer-cta__torn-edge img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: scaleY(-1);
 }
 
 .ym-footer-cta__heading {
@@ -1274,6 +1279,49 @@ body.ym-over-hero #header-component .menu-list__link::after {
 /* Hide the bottom border that the solid header sometimes paints. */
 body.ym-over-hero #header-component .header__row {
   border-color: transparent !important;
+}
+
+/* ============================================================
+   HEADER — scrolled past hero (post-rip) state (#40)
+   On the homepage, once the user scrolls past the torn rip, we want the
+   header to be a solid dark bar with white content (not the theme default
+   white-bg / dark-text). Tighter vertical padding too.
+   Scoped to body.ym-has-hero so non-homepage templates keep their default.
+   ============================================================ */
+body.ym-has-hero:not(.ym-over-hero) #header-component .header__row {
+  background-color: var(--color-ym-dark) !important;
+  border-color: transparent !important;
+}
+
+body.ym-has-hero:not(.ym-over-hero) #header-component .header__columns {
+  --padding-block-start: 8px;
+  --padding-block-end: 8px;
+}
+
+body.ym-has-hero:not(.ym-over-hero) #header-component,
+body.ym-has-hero:not(.ym-over-hero) #header-component .header-actions__action,
+body.ym-has-hero:not(.ym-over-hero) #header-component .menu-list__link,
+body.ym-has-hero:not(.ym-over-hero) #header-component .menu-list__link-title,
+body.ym-has-hero:not(.ym-over-hero) #header-component .menu-list__link::before,
+body.ym-has-hero:not(.ym-over-hero) #header-component .menu-list__link::after,
+body.ym-has-hero:not(.ym-over-hero) #header-component .dropdown-localization__button,
+body.ym-has-hero:not(.ym-over-hero) #header-component .header-logo {
+  color: #fff !important;
+}
+
+body.ym-has-hero:not(.ym-over-hero) #header-component svg {
+  color: #fff !important;
+  fill: currentColor;
+}
+
+/* ============================================================
+   Smooth scroll + sticky-header offset for in-page anchors (#42)
+   ============================================================ */
+html { scroll-behavior: smooth; }
+
+[id^="shopify-section-ym_showcase_"],
+[id^="ym-showcase-"] {
+  scroll-margin-top: var(--header-height, 60px);
 }
 
 /* ─────────────────────────────────────────
