@@ -1,6 +1,6 @@
 {%- doc -%}
-  Renders the cart icon (#39: YM smoker), with a cart count bubble and orange
-  smoke puffs above the chimney when the cart has items.
+  Renders the cart icon (#39: YM smoker). Smoke puffs above the chimney
+  signal a non-empty cart; no numeric bubble.
 {%- enddoc -%}
 <cart-icon
   class="
@@ -23,18 +23,10 @@
     {{ 'ym-icon-smoker.svg' | inline_asset_content }}
   </span>
 
-  {% render 'cart-bubble', limit: 100, live_region: true, test_id: test_id %}
+  {%- comment -%}
+    #39: count bubble intentionally omitted — smoke = cart has items, no smoke = empty.
+    Item count is still announced to screen readers via the parent button's aria-label
+    in snippets/header-actions.liquid.
+  {%- endcomment -%}
 </cart-icon>
 
-{% stylesheet %}
-  cart-icon:has(.cart-bubble__text-count:empty) {
-    --cart-bubble-size: 10px;
-    --cart-bubble-top: 9px;
-    --cart-bubble-right: 9px;
-
-    .svg-wrapper {
-      --cart-bubble-top: 4px;
-      --cart-bubble-right: 4px;
-    }
-  }
-{% endstylesheet %}
