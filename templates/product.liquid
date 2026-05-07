@@ -1,0 +1,24 @@
+{% layout none %}
+{%- comment -%}
+  Single-page launch (#46): all PDPs redirect to homepage.
+  When the product's handle matches a known showcase, anchor there.
+{%- endcomment -%}
+{%- assign target = '/' -%}
+{%- assign handle = product.handle | downcase -%}
+{%- if handle contains 'rub' or handle contains 'plug' -%}
+  {%- assign target = '/#shopify-section-ym_showcase_rubplug' -%}
+{%- elsif handle contains 'smoke' or handle contains 'signal' -%}
+  {%- assign target = '/#shopify-section-ym_showcase_smokesig' -%}
+{%- endif -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex,nofollow">
+    <meta http-equiv="refresh" content="0; url={{ target }}">
+    <title>Redirecting…</title>
+    <link rel="canonical" href="{{ shop.url }}/">
+    <script>window.location.replace({{ target | json }});</script>
+  </head>
+  <body></body>
+</html>

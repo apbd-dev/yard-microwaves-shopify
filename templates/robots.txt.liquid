@@ -1,0 +1,19 @@
+{%- comment -%}
+  Single-page launch (#46): tell crawlers to skip /products, /collections, /cart.
+  Built on top of Shopify's default robots so we keep their other rules + sitemap.
+{%- endcomment -%}
+{%- for group in robots.default_groups -%}
+  {{- group.user_agent }}
+  {%- for rule in group.rules -%}
+    {{ rule }}
+  {%- endfor -%}
+  {%- if group.user_agent.value == '*' %}
+Disallow: /products/
+Disallow: /collections/
+Disallow: /cart
+  {%- endif -%}
+  {%- if group.sitemap != blank %}
+{{ group.sitemap }}
+  {%- endif %}
+
+{% endfor -%}

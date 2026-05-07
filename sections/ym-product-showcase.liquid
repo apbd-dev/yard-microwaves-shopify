@@ -1,0 +1,259 @@
+{%- assign product = section.settings.product -%}
+
+<section
+  class="ym-section ym-paper-bg ym-showcase"
+  id="ym-showcase-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+>
+  {%- comment -%}
+    Figma-accurate 1:1 port of the Rub & Plug showcase composition.
+    Canvas 1920 × 1604. Figma nodes:
+      2597:565 — front shirt (bone/folded, 1604×1604), back layer
+      2354:8   — back shirt w/ Rub & Plug graphic (1294×1080), overlapping
+      2508:79  — tag/flag (591×908), anchor for the interactive product card
+  {%- endcomment -%}
+  <div class="ym-showcase__canvas" data-showcase-mockups>
+    {%- comment -%} Front shirt (white, folded, small YM patch) — bottom layer {%- endcomment -%}
+    {%- if section.settings.front_mockup != blank -%}
+      {{
+        section.settings.front_mockup
+        | image_url: width: 1800
+        | image_tag:
+          loading: 'lazy',
+          sizes: '(max-width: 749px) 100vw, 84vw',
+          widths: '600, 1200, 1800',
+          class: 'ym-showcase__shirt ym-showcase__shirt--front'
+      }}
+    {%- else -%}
+      <img
+        src="{{ section.settings.fallback_front | default: 'ym-rubplug-front.png' | asset_url }}"
+        alt="{{ product.title | default: 'Front mockup' }}"
+        loading="lazy"
+        class="ym-showcase__shirt ym-showcase__shirt--front"
+      >
+    {%- endif -%}
+
+    {%- comment -%} Back shirt (Rub & Plug graphic) — overlapping on top {%- endcomment -%}
+    {%- if section.settings.hero_mockup != blank -%}
+      {{
+        section.settings.hero_mockup
+        | image_url: width: 1500
+        | image_tag:
+          loading: 'lazy',
+          sizes: '(max-width: 749px) 100vw, 68vw',
+          widths: '600, 1000, 1500',
+          class: 'ym-showcase__shirt ym-showcase__shirt--back',
+          data-showcase-hero: ''
+      }}
+    {%- else -%}
+      <img
+        src="{{ section.settings.fallback_hero | default: 'ym-rubplug-back-full.png' | asset_url }}"
+        alt="{{ product.title | default: 'Back mockup' }}"
+        loading="lazy"
+        class="ym-showcase__shirt ym-showcase__shirt--back"
+        data-showcase-hero
+      >
+    {%- endif -%}
+
+    {%- comment -%} Tag card — red-zigzag paper tag with interactive product UI inside {%- endcomment -%}
+    <div class="ym-showcase__card">
+      {%- comment -%} Rub & Plug ribbon banner {%- endcomment -%}
+      <div class="ym-showcase__ribbon">
+        <img src="{{ 'ym-ribbon-banner.png' | asset_url }}" alt="" role="presentation" width="280" height="70">
+        <span class="ym-showcase__ribbon-text">
+          {{ section.settings.display_name | default: product.title | default: 'Product Name' }}
+        </span>
+      </div>
+
+      <p class="ym-showcase__color-label">BONE</p>
+
+      {%- comment -%} Main card-hero shirt — Figma node 2362:8 {%- endcomment -%}
+      <div class="ym-showcase__card-hero">
+        {%- if section.settings.hero_mockup != blank -%}
+          {{ section.settings.hero_mockup | image_url: width: 960 | image_tag: loading: 'lazy', class: 'ym-showcase__card-hero-img' }}
+        {%- else -%}
+          <img
+            src="{{ section.settings.fallback_hero | default: 'ym-rubplug-back-full.png' | asset_url }}"
+            alt="{{ section.settings.display_name | default: 'Product' }}"
+            class="ym-showcase__card-hero-img"
+          >
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Color thumbnails — Figma 2597:567 (Bone Folded) + 2363:55 (Briquette Folded) {%- endcomment -%}
+      <img
+        class="ym-showcase__card-thumb ym-showcase__card-thumb--front"
+        src="{{ section.settings.card_front | default: section.settings.fallback_card_front | default: 'ym-rubplug-bone-folded.png' | asset_url }}"
+        alt="Bone"
+      >
+      <img
+        class="ym-showcase__card-thumb ym-showcase__card-thumb--back"
+        src="{{ section.settings.card_back | default: section.settings.fallback_card_back | default: 'ym-rubplug-briquette-folded.png' | asset_url }}"
+        alt="Briquette"
+      >
+
+      {%- comment -%}
+        SIZEMENU (2508:111) — 5 sizes with orange circle bullets and dotted rules.
+        X marker (2508:112) tracks the currently-selected size.
+        Line 2 (2508:113) sits inside the sizemenu as a subtle divider.
+      {%- endcomment -%}
+      <div class="ym-showcase__sizemenu">
+        {%- if product != blank -%}
+          {%- assign size_option = nil -%}
+          {%- assign size_option_index = 0 -%}
+          {%- for option in product.options_with_values -%}
+            {%- assign downcased = option.name | downcase -%}
+            {%- if downcased == 'size' -%}
+              {%- assign size_option = option -%}
+              {%- assign size_option_index = forloop.index -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if size_option -%}
+            <ul class="ym-showcase__size-list" data-showcase-sizes data-product-url="{{ product.url }}">
+              {%- for value in size_option.values -%}
+                {%- comment -%} Find the matching variant by iterating variants {%- endcomment -%}
+                {%- assign matched_variant = nil -%}
+                {%- assign option_idx = size_option_index | minus: 1 -%}
+                {%- for variant in product.variants -%}
+                  {%- assign variant_size = variant.options[option_idx] -%}
+                  {%- if variant_size == value and matched_variant == nil -%}
+                    {%- assign matched_variant = variant -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                <li>
+                  <button
+                    type="button"
+                    class="ym-showcase__size-option{% if matched_variant and matched_variant.id == product.selected_or_first_available_variant.id %} is-active{% endif %}"
+                    data-size-value="{{ value }}"
+                    {% if matched_variant %}
+                      data-variant-id="{{ matched_variant.id }}"
+                      data-variant-price="{{ matched_variant.price | money_without_trailing_zeros }}"
+                      data-variant-available="{{ matched_variant.available }}"
+                    {% endif %}
+                  >
+                    <span class="ym-showcase__size-radio"></span>
+                    <span class="ym-showcase__size-label">{{ value }}</span>
+                  </button>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        {%- else -%}
+          <ul class="ym-showcase__size-list" data-showcase-sizes>
+            <li><button type="button" class="ym-showcase__size-option"><span class="ym-showcase__size-radio"></span><span class="ym-showcase__size-label">Small</span></button></li>
+            <li><button type="button" class="ym-showcase__size-option is-active"><span class="ym-showcase__size-radio"></span><span class="ym-showcase__size-label">Medium</span></button></li>
+            <li><button type="button" class="ym-showcase__size-option"><span class="ym-showcase__size-radio"></span><span class="ym-showcase__size-label">Large</span></button></li>
+            <li><button type="button" class="ym-showcase__size-option"><span class="ym-showcase__size-radio"></span><span class="ym-showcase__size-label">X Large</span></button></li>
+            <li><button type="button" class="ym-showcase__size-option"><span class="ym-showcase__size-radio"></span><span class="ym-showcase__size-label">2X Large</span></button></li>
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Line 4 (2508:147) — horizontal divider above Total {%- endcomment -%}
+      <div class="ym-showcase__divider"></div>
+
+      {%- comment -%} Total line (2508:149) — Total ......... $price {%- endcomment -%}
+      <div class="ym-showcase__total">
+        <span class="ym-showcase__total-label">Total</span>
+        <span class="ym-showcase__total-price" data-showcase-price>
+          {%- if product != blank -%}{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}{%- else -%}$ 40.00{%- endif -%}
+        </span>
+      </div>
+
+      {%- comment -%} Add to Cart (2508:125) — /cart/add with selected variant {%- endcomment -%}
+      {%- if product != blank -%}
+        <form action="/cart/add" method="post" class="ym-showcase__cart-form" data-showcase-cart-form>
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-showcase-variant-input>
+          <button type="submit" class="ym-showcase__cart-btn">Add to Cart</button>
+        </form>
+      {%- else -%}
+        <a href="{{ section.settings.cta_link | default: '#' }}" class="ym-showcase__cart-btn">Add to Cart</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'ym-product-showcase.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "YM - Product Showcase",
+  "tag": "section",
+  "class": "ym-product-showcase-section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "text",
+      "id": "display_name",
+      "label": "Display name (overrides product title)"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_mockup",
+      "label": "Hero mockup image"
+    },
+    {
+      "type": "image_picker",
+      "id": "front_mockup",
+      "label": "Front mockup image"
+    },
+    {
+      "type": "text",
+      "id": "fallback_front",
+      "label": "Fallback front asset filename (e.g. ym-rubplug-front.png)"
+    },
+    {
+      "type": "text",
+      "id": "fallback_hero",
+      "label": "Fallback hero asset filename (e.g. ym-rubplug-back-full.png)"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_front",
+      "label": "Card front thumbnail"
+    },
+    {
+      "type": "text",
+      "id": "fallback_card_front",
+      "label": "Fallback card front filename"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_back",
+      "label": "Card back thumbnail"
+    },
+    {
+      "type": "text",
+      "id": "fallback_card_back",
+      "label": "Fallback card back filename"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Fallback CTA link (if no product selected)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mockup_thumb",
+      "name": "Mockup Thumbnail",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Thumbnail image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YM - Product Showcase"
+    }
+  ]
+}
+{% endschema %}
