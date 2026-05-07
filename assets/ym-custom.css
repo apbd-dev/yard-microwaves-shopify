@@ -1519,3 +1519,94 @@ html { scroll-behavior: smooth; }
   font-size: clamp(28px, 3vw, 40px);
   color: var(--color-ym-dark, #1a1a1a);
 }
+
+/* ─────────────────────────────────────────
+ * Cart icon — YM smoker (#39)
+ * Replaces Dawn's icon-cart.svg with a smoker SVG. When the cart has items
+ * (Dawn adds .header-actions__cart-icon--has-cart), three orange smoke puffs
+ * drift up out of the chimney on a staggered loop.
+ * ───────────────────────────────────────── */
+.ym-cart-smoker {
+  position: relative;
+  display: inline-flex;
+}
+
+.ym-cart-smoker__icon {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+}
+
+.ym-cart-smoker__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ym-cart-smoker__smoke {
+  position: absolute;
+  /* Chimney top sits at viewBox (~3, 0.5) inside a 36×39 box → ~8% from left, top of icon */
+  left: 8%;
+  top: -45%;
+  width: 16%;
+  height: 60%;
+  pointer-events: none;
+  display: block;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.ym-cart-smoker__puff {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-ym-orange, #F16022);
+  transform: translate(-50%, 0) scale(0.6);
+  opacity: 0;
+}
+
+/* Activate smoke only when cart has items */
+.header-actions__cart-icon--has-cart .ym-cart-smoker__smoke {
+  opacity: 1;
+}
+
+.header-actions__cart-icon--has-cart .ym-cart-smoker__puff {
+  animation: ym-smoker-puff 2.4s ease-out infinite;
+}
+
+.header-actions__cart-icon--has-cart .ym-cart-smoker__puff:nth-child(2) {
+  animation-delay: 0.8s;
+  width: 5px;
+  height: 5px;
+  background-color: rgba(241, 96, 34, 0.85);
+}
+
+.header-actions__cart-icon--has-cart .ym-cart-smoker__puff:nth-child(3) {
+  animation-delay: 1.6s;
+  width: 4px;
+  height: 4px;
+  background-color: rgba(241, 96, 34, 0.7);
+}
+
+@keyframes ym-smoker-puff {
+  0%   { transform: translate(-50%, 0) scale(0.6); opacity: 0; }
+  20%  { opacity: 0.95; }
+  100% { transform: translate(-50%, -180%) scale(1.6); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-actions__cart-icon--has-cart .ym-cart-smoker__puff {
+    animation: none;
+    opacity: 0.85;
+    transform: translate(-50%, -60%) scale(1);
+  }
+}
+
+/* Dawn paints a donut mask over the cart svg where the bubble sits — that
+   was tuned for the boxy cart icon. Disable for the smoker so the rendering
+   isn't clipped. */
+.header-actions__cart-icon.ym-cart-smoker.header-actions__cart-icon--has-cart svg {
+  mask: none;
+}

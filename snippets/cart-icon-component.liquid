@@ -1,18 +1,26 @@
 {%- doc -%}
-  Renders the cart icon, which displays the number of items in the cart via a bubble.
+  Renders the cart icon (#39: YM smoker), with a cart count bubble and orange
+  smoke puffs above the chimney when the cart has items.
 {%- enddoc -%}
 <cart-icon
   class="
     header-actions__cart-icon
+    ym-cart-smoker
     {% unless cart == empty %} header-actions__cart-icon--has-cart{% endunless %}
   "
   data-testid="cart-icon"
 >
+  <span class="ym-cart-smoker__smoke" aria-hidden="true">
+    <span class="ym-cart-smoker__puff"></span>
+    <span class="ym-cart-smoker__puff"></span>
+    <span class="ym-cart-smoker__puff"></span>
+  </span>
+
   <span
-    class="svg-wrapper"
+    class="svg-wrapper ym-cart-smoker__icon"
     aria-hidden="true"
   >
-    {{ 'icon-cart.svg' | inline_asset_content }}
+    {{ 'ym-icon-smoker.svg' | inline_asset_content }}
   </span>
 
   {% render 'cart-bubble', limit: 100, live_region: true, test_id: test_id %}
