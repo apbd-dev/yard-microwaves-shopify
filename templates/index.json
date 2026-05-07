@@ -136,19 +136,22 @@
         "social_instagram": {
           "type": "social_link",
           "settings": {
-            "platform": "Instagram"
+            "platform": "Instagram",
+            "url": "#"
           }
         },
         "social_facebook": {
           "type": "social_link",
           "settings": {
-            "platform": "Facebook"
+            "platform": "Facebook",
+            "url": "#"
           }
         },
         "social_tiktok": {
           "type": "social_link",
           "settings": {
-            "platform": "TikTok"
+            "platform": "TikTok",
+            "url": "#"
           }
         }
       },
