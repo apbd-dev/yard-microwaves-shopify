@@ -6,6 +6,8 @@
 (function () {
   function init() {
     var hero = document.querySelector('.ym-hero');
+    // ym-has-hero is also added by Liquid in layout/theme.liquid for FOUC-free
+    // styling on first paint. JS keeps it in sync for safety.
     if (!hero) return;
     document.body.classList.add('ym-has-hero');
     var torn = hero.querySelector('.ym-hero__torn-edge');

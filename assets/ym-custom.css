@@ -967,7 +967,13 @@ body {
 
 /* Torn-paper edge at top of footer (#44/#16). Replaces the old CSS zigzag with
    the same butcher-paper PNG used by the hero, flipped vertically so the rip
-   appears to tear upward into the cream section above. */
+   appears to tear upward into the cream section above.
+   The .ym-section base sets overflow:hidden which would clip an edge that
+   bleeds above the section bounds — opt back into visible here. */
+.ym-footer-cta {
+  overflow: visible;
+}
+
 .ym-footer-cta__torn-edge {
   position: absolute;
   left: 0;
@@ -1263,47 +1269,47 @@ header [data-transparent="always"] .menu-list__link::before {
 }
 
 /* ============================================================
-   HEADER SCROLL BEHAVIOR
-   While scrolling over the dark hero video, force the transparent
-   header to stay transparent (overriding the theme's default of
-   "go opaque as soon as sticky activates"). The ym-over-hero class
-   is toggled by ym-header-scroll.js based on the torn edge position.
+   HEADER on the homepage (#40)
+   Foreground stays WHITE in every state — over the hero, mid-rip, and
+   scrolled past. The over-hero class only swaps the BACKGROUND between
+   transparent (when over the hero video) and solid dark (post-rip).
+   Scoped to body.ym-has-hero so non-homepage templates keep theme defaults.
+   The ym-has-hero class is set by Liquid in layout/theme.liquid for FOUC-free
+   first paint, then kept in sync by ym-header-scroll.js.
    ============================================================ */
-body.ym-over-hero #header-component[transparent] .header__row,
-body.ym-over-hero #header-component[transparent='not-sticky'] .header__row {
+
+/* --- 1. Foreground: white at all times on the homepage --- */
+body.ym-has-hero #header-component,
+body.ym-has-hero #header-component .header-actions__action,
+body.ym-has-hero #header-component .menu-list__link,
+body.ym-has-hero #header-component .menu-list__link-title,
+body.ym-has-hero #header-component .menu-list__link::before,
+body.ym-has-hero #header-component .menu-list__link::after,
+body.ym-has-hero #header-component .dropdown-localization__button,
+body.ym-has-hero #header-component .header-logo {
+  color: #fff !important;
+}
+
+body.ym-has-hero #header-component svg {
+  color: #fff !important;
+  fill: currentColor;
+}
+
+/* --- 2. Background: transparent over hero, solid dark after the rip --- */
+body.ym-has-hero.ym-over-hero #header-component[transparent] .header__row,
+body.ym-has-hero.ym-over-hero #header-component[transparent='not-sticky'] .header__row {
   background-color: transparent !important;
   background: transparent !important;
 }
 
-body.ym-over-hero #header-component[transparent],
-body.ym-over-hero #header-component[transparent='not-sticky'] {
+body.ym-has-hero.ym-over-hero #header-component[transparent],
+body.ym-has-hero.ym-over-hero #header-component[transparent='not-sticky'] {
   --header-bg-color: transparent !important;
   background-color: transparent !important;
 }
 
-/* Keep nav text white over the dark video. */
-body.ym-over-hero #header-component .menu-list__link,
-body.ym-over-hero #header-component .menu-list__link-title,
-body.ym-over-hero #header-component .menu-list__link::before,
-body.ym-over-hero #header-component .menu-list__link::after {
-  color: #fff !important;
-}
-
-/* Hide the bottom border that the solid header sometimes paints. */
-body.ym-over-hero #header-component .header__row {
-  border-color: transparent !important;
-}
-
-/* ============================================================
-   HEADER — scrolled past hero (post-rip) state (#40)
-   On the homepage, once the user scrolls past the torn rip, we want the
-   header to be a solid dark bar with white content (not the theme default
-   white-bg / dark-text). Tighter vertical padding too.
-   Scoped to body.ym-has-hero so non-homepage templates keep their default.
-   ============================================================ */
 body.ym-has-hero:not(.ym-over-hero) #header-component .header__row {
   background-color: var(--color-ym-dark) !important;
-  border-color: transparent !important;
 }
 
 body.ym-has-hero:not(.ym-over-hero) #header-component .header__columns {
@@ -1311,20 +1317,9 @@ body.ym-has-hero:not(.ym-over-hero) #header-component .header__columns {
   --padding-block-end: 8px;
 }
 
-body.ym-has-hero:not(.ym-over-hero) #header-component,
-body.ym-has-hero:not(.ym-over-hero) #header-component .header-actions__action,
-body.ym-has-hero:not(.ym-over-hero) #header-component .menu-list__link,
-body.ym-has-hero:not(.ym-over-hero) #header-component .menu-list__link-title,
-body.ym-has-hero:not(.ym-over-hero) #header-component .menu-list__link::before,
-body.ym-has-hero:not(.ym-over-hero) #header-component .menu-list__link::after,
-body.ym-has-hero:not(.ym-over-hero) #header-component .dropdown-localization__button,
-body.ym-has-hero:not(.ym-over-hero) #header-component .header-logo {
-  color: #fff !important;
-}
-
-body.ym-has-hero:not(.ym-over-hero) #header-component svg {
-  color: #fff !important;
-  fill: currentColor;
+/* --- 3. No bottom border in either state --- */
+body.ym-has-hero #header-component .header__row {
+  border-color: transparent !important;
 }
 
 /* ============================================================
