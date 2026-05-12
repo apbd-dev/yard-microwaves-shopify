@@ -1,0 +1,92 @@
+<section class="ym-section ym-hero" id="ym-hero">
+  <div class="ym-hero__bg">
+    {%- if section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, loading: 'eager' }}
+    {%- elsif section.settings.bg_image != blank -%}
+      {{
+        section.settings.bg_image
+        | image_url: width: 1920
+        | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          widths: '720, 1080, 1440, 1920',
+          class: 'ym-hero__bg-img'
+      }}
+    {%- else -%}
+      <video
+        class="ym-hero__bg-video"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto"
+        poster="{{ 'ym-hero-smoker.png' | asset_url }}"
+      >
+        <source src="{{ 'ym-hero.mp4' | asset_url }}" type="video/mp4">
+      </video>
+    {%- endif -%}
+  </div>
+
+  <div class="ym-hero__overlay"></div>
+
+  <div class="ym-hero__content">
+    {%- if section.settings.logo != blank -%}
+      {{
+        section.settings.logo
+        | image_url: width: 400
+        | image_tag:
+          loading: 'eager',
+          widths: '200, 300, 400',
+          style: 'max-width: 300px; height: auto;'
+      }}
+    {%- endif -%}
+  </div>
+
+  <script src="{{ 'ym-header-scroll.js' | asset_url }}" defer></script>
+
+  <div class="ym-hero__torn-edge">
+    {%- comment -%}
+      Figma node 2337:1442 — VidFrame 1 (flipped-Y) + VidFrame 2 (rotated 180°)
+      pre-composited into a single 1920×196 PNG with transparent bg.
+    {%- endcomment -%}
+    <img
+      src="{{ 'ym-torn-edge-merged.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="eager"
+      width="2576"
+      height="263"
+    >
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YM - Video Hero",
+  "tag": "section",
+  "class": "ym-video-hero-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background video (optional)"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo overlay"
+    }
+  ],
+  "presets": [
+    {
+      "name": "YM - Video Hero"
+    }
+  ]
+}
+{% endschema %}

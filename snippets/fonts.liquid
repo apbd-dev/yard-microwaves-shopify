@@ -47,3 +47,7 @@
   >
 {%- endunless -%}
 {% # theme-check-enable %}
+
+{%- comment -%} Yard Microwaves custom font preloads {%- endcomment -%}
+<link rel="preload" as="font" href="{{ 'milenia.woff2' | asset_url }}" type="font/woff2" crossorigin>
+<link rel="preload" as="font" href="{{ 'bananas-vf-bold-expanded.woff2' | asset_url }}" type="font/woff2" crossorigin>

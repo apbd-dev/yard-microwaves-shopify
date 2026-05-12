@@ -235,41 +235,31 @@
 
 {% if threshold_cents > 0 %}
   {% assign progress = cart_total_cents | times: 100 | divided_by: threshold_cents %}
-{% else %}
-  {% assign progress = 0 %}
+
+  <free-shipping-progress-bar
+    data-free-shipping-threshold="{{ settings.free_shipping_threshold }}"
+    data-current-progress="{{ progress | default: 0 }}"
+    class="free-shipping-progress"
+  >
+    <div class="shipping-progress-container" id="shippingContainer">
+      <div class="shipping-message" id="shippingMessage">
+        {% if remaining_cents > 0 %}
+          You're
+          <strong><span id="remainingAmount">{{ remaining_cents | money }}</span></strong>
+          away from free shipping
+        {% else %}
+          🎉 You unlocked free shipping! 🎉
+        {% endif %}
+      </div>
+
+      <div class="progress-bar-container">
+        <p class="progress-bar" id="progressBar" style="width: {{ progress | at_most: 100 }}%">&nbsp;</p>
+      </div>
+
+      <div class="progress-info">
+        <span class="current-amount" id="currentAmount">{{ cart.total_price | money }}</span>
+        <span class="free-shipping-threshold" id="threshold">{{- threshold_cents | money -}}</span>
+      </div>
+    </div>
+  </free-shipping-progress-bar>
 {% endif %}
-
-<free-shipping-progress-bar
-  data-free-shipping-threshold="{{ settings.free_shipping_threshold }}"
-  data-current-progress="{{ progress | default: 0 }}"
-  class="free-shipping-progress"
->
-  <div class="shipping-progress-container" id="shippingContainer">
-    <div class="shipping-header">
-      <h2 class="shipping-title">Camion aquí</h2>
-    </div>
-
-    <div class="shipping-message" id="shippingMessage">
-      {% if remaining_cents > 0 %}
-        Te faltan
-        <strong
-          ><span id="remainingAmount">{{ remaining_cents | money }}</span></strong
-        >
-        para obtener envío gratis
-      {% else %}
-        🎉 ¡Felicidades! Ya tienes envío gratis 🎉
-      {% endif %}
-    </div>
-
-    <div class="progress-bar-container">
-      <p class="progress-bar" id="progressBar" style="width: {{ progress | at_most: 100 }}%">&nbsp;</p>
-    </div>
-
-    <div class="progress-info">
-      <span class="current-amount" id="currentAmount">{{ cart.total_price | money }}</span>
-      <span class="free-shipping-threshold" id="threshold">
-        {{- threshold_cents | money -}}
-      </span>
-    </div>
-  </div>
-</free-shipping-progress-bar>

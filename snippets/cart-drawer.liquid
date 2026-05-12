@@ -44,16 +44,18 @@
         data-section-id="{{ section.id }}"
       >
         {%- if cart.empty? -%}
-          <div class="cart-drawer__header">
+          <div class="cart-drawer__header ym-cart-header">
+            <span class="ym-cart-header__logo" aria-hidden="true">
+              <span class="ym-cart-header__logo-bg"></span>
+              <img class="ym-cart-header__logo-img" src="{{ 'ym-logo.svg' | asset_url }}" alt="Yard Microwaves" width="120" height="60">
+            </span>
             <button
               ref="closeButton"
               on:click="cart-drawer-component/close"
-              class="button close-button cart-drawer__close-button button-unstyled"
+              class="button close-button cart-drawer__close-button button-unstyled ym-cart-header__close"
               aria-label="{{ 'actions.close_dialog' | t }}"
             >
-              <span class="svg-wrapper">
-                {{- 'icon-close.svg' | inline_asset_content -}}
-              </span>
+              <span aria-hidden="true">×</span>
             </button>
           </div>
 
@@ -61,7 +63,7 @@
             class="cart-drawer__content motion-reduce"
             aria-label="{{ 'accessibility.cart' | t }}"
           >
-            <span class="cart-drawer__heading h3 cart-drawer__heading--empty">
+            <span class="cart-drawer__heading cart-drawer__heading--empty">
               {{ 'content.your_cart_is_empty' | t }}
             </span>
 
@@ -71,23 +73,20 @@
           </div>
         {%- else -%}
           <div
-            class="cart-drawer__header"
+            class="cart-drawer__header ym-cart-header"
             id="cart-drawer-header"
           >
-            <span class="cart-drawer__heading h3">
-              {{ 'content.cart_title' | t }}
-              {% render 'cart-bubble' %}
+            <span class="ym-cart-header__logo" aria-hidden="true">
+              <span class="ym-cart-header__logo-bg"></span>
+              <img class="ym-cart-header__logo-img" src="{{ 'ym-logo.svg' | asset_url }}" alt="Yard Microwaves" width="120" height="60">
             </span>
-
             <button
               ref="closeButton"
               on:click="cart-drawer-component/close"
-              class="button close-button cart-drawer__close-button button-unstyled"
+              class="button close-button cart-drawer__close-button button-unstyled ym-cart-header__close"
               aria-label="{{ 'actions.close_dialog' | t }}"
             >
-              <span class="svg-wrapper">
-                {{- 'icon-close.svg' | inline_asset_content -}}
-              </span>
+              <span aria-hidden="true">×</span>
             </button>
           </div>
 

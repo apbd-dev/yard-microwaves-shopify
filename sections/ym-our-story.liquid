@@ -1,0 +1,123 @@
+<section class="ym-section ym-paper-bg ym-story" id="ym-our-story">
+  {%- comment -%}
+    Figma-accurate 1:1 port of the "Our Story" composition.
+    Canvas is 1920 × 1217 (collage drives the height). Children are absolutely
+    positioned using % coords from the Figma Web/Desktop frame (2318:1384),
+    relative to section origin at page y≈3391.
+
+    Figma nodes:
+      2355:9  — scrapbook photo collage (left)
+      2360:37 — bottom-left pellet strip (group w/ shadow)
+      2360:33 — top-right pellet cluster (group w/ shadow)
+      2360:26 — right-side pellet strip (group w/ shadow)
+      2355:14 — "LEARN ABOUT" label
+      2355:12 — "Our Story" heading
+      2355:13 — body copy
+  {%- endcomment -%}
+  <div class="ym-story__canvas">
+    {%- comment -%} Scrapbook collage — left side, tallest element {%- endcomment -%}
+    {%- if section.settings.collage != blank -%}
+      {{
+        section.settings.collage
+        | image_url: width: 2000
+        | image_tag:
+          loading: 'lazy',
+          sizes: '(max-width: 749px) 100vw, 51vw',
+          widths: '600, 974, 1400, 2000',
+          class: 'ym-story__collage',
+          alt: 'Our BBQ story'
+      }}
+    {%- else -%}
+      <img
+        src="{{ 'ym-story-collage.png' | asset_url }}"
+        alt="Our BBQ story"
+        loading="lazy"
+        class="ym-story__collage"
+      >
+    {%- endif -%}
+
+    {%- comment -%} Decorative pellet groups with baked-in Figma shadows {%- endcomment -%}
+    <img
+      src="{{ 'ym-story-pellets-tr.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      class="ym-story__pellets ym-story__pellets--tr"
+    >
+    <img
+      src="{{ 'ym-story-pellets-bl.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      class="ym-story__pellets ym-story__pellets--bl"
+    >
+    <img
+      src="{{ 'ym-story-pellets-r.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      class="ym-story__pellets ym-story__pellets--r"
+    >
+
+    {%- comment -%} Right-side text column {%- endcomment -%}
+    <p class="ym-story__label">{{ section.settings.label | default: 'LEARN ABOUT' }}</p>
+    <h2 class="ym-story__title">{{ section.settings.heading | default: 'Our Story' }}</h2>
+    <div class="ym-story__body">
+      {{ section.settings.body }}
+    </div>
+    {%- if section.settings.cta_label != blank -%}
+      <a href="{{ section.settings.cta_link }}" class="ym-story__cta ym-btn-red">
+        {{ section.settings.cta_label }}
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YM - Our Story",
+  "tag": "section",
+  "class": "ym-our-story-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "collage",
+      "label": "Photo collage"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label text",
+      "default": "LEARN ABOUT"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Script heading",
+      "default": "Our Story"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>Welcome to Yard Microwaves, where childhood best friends-turned-grillmasters add a satirical twist to BBQ. Yard Microwaves' jam is mouthwatering flavor, belly laughs, and bringing families together. Igniting unforgettable moments and smoking meats.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Buy Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "YM - Our Story"
+    }
+  ]
+}
+{% endschema %}

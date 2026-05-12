@@ -1,102 +1,105 @@
 {%- doc -%}
-  Renders the cart summary totals.
+  YM-themed cart summary. Renders:
+    1. Orange-ruled totals block — TAX, SHIPPING (both calculated at checkout),
+       and the running TOTAL with a dotted leader.
+    2. Sticker pack upsell — only shows if a product with handle `sticker-pack`
+       exists in admin and is available. Uses compare_at_price for the
+       strikethrough so the savings (e.g. $15 → $10) come straight from product
+       data. AJAX add wires into cart:update so the drawer refreshes.
+    3. Payment method row — `shop.enabled_payment_types` maps to the gateways
+       the merchant has configured, so the icons stay in sync with reality.
+    4. Red Milenia-script "Checkout — $price" button with the torn-paper top.
 {%- enddoc -%}
 
-<div class="cart__summary-totals">
-  {% # We need to keep this node in place to allow morphing to work properly # %}
-  <div class="cart__original-total-container cart-primary-typography">
-    {%- if cart.cart_level_discount_applications.size > 0 -%}
-      <span class="cart__summary-item cart__original-total">
-        <span class="cart__original-total-label">{{ 'content.cart_subtotal' | t }}</span>
-        <span class="cart__original-total-value cart-secondary-typography">
-          {{- cart.original_total_price | money -}}
-        </span>
-      </span>
-      <div class="cart__summary-discounts">
-        <ul
-          class="discounts list-unstyled"
-          role="list"
-          aria-label="{{ 'content.discounts' | t }}"
-        >
-          {%- for discount in cart.cart_level_discount_applications -%}
-            <li class="cart__summary-item cart__discount">
-              <span class="cart__discount-label">
-                {{- 'icon-discount.svg' | inline_asset_content -}}
-                {{ discount.title | escape }}
-              </span>
-              <span class="cart__discount-value cart-secondary-typography"
-                >-{{ discount.total_allocated_amount | money -}}
-              </span>
-            </li>
-          {%- endfor -%}
-        </ul>
-      </div>
-    {%- endif -%}
+{%- assign total_price = cart.total_price | money -%}
+
+<div class="cart__summary-totals ym-cart-totals">
+  <div class="ym-cart-totals__row">
+    <span class="ym-cart-totals__label">Tax</span>
+    <span class="ym-cart-totals__value">$00.00</span>
+  </div>
+  <div class="ym-cart-totals__row">
+    <span class="ym-cart-totals__label">Shipping</span>
+    <span class="ym-cart-totals__value">$00.00</span>
   </div>
 
-  {% if settings.show_cart_note or settings.show_add_discount_code %}
-    <div class="cart-actions">
-      {% if settings.show_cart_note %}
-        {% render 'cart-note' %}
-      {% endif %}
-      {% if settings.show_cart_note and settings.show_add_discount_code %}
-        <div class="cart-actions__divider"></div>
-      {% endif %}
-      {% if settings.show_add_discount_code %}
-        {% render 'cart-discount', section_id: section.id %}
-      {% endif %}
-    </div>
-  {% endif %}
-
-  {%- liquid
-    if settings.currency_code_enabled_cart_total
-      assign total_price = cart.total_price | money_with_currency
-    else
-      assign total_price = cart.total_price | money
-    endif
-  -%}
-
-  <div class="cart__total-container">
-    <span
-      class="cart__summary-item cart__total"
-      role="status"
-    >
-      <span class="cart__total-label cart-primary-typography">{{ 'content.cart_estimated_total' | t }}</span>
+  <div class="cart__total-container ym-cart-totals__total-wrap" role="status">
+    <span class="ym-cart-totals__total-row">
+      <span class="ym-cart-totals__label ym-cart-totals__label--total">Total</span>
+      <span class="ym-cart-totals__leader" aria-hidden="true"></span>
       <text-component
         ref="cartTotal"
         value="{{ total_price | strip_html }}"
-        class="cart__total-value cart-secondary-typography"
-        {% comment %} Used by payment_terms web component {% endcomment %}
+        class="ym-cart-totals__value ym-cart-totals__value--total"
         data-cart-subtotal
       >
         {{ total_price }}
       </text-component>
     </span>
-    {% if settings.show_installments %}
-      <span class="cart__summary-item cart__installments">
-        {% form 'cart', cart %}
-          {{ form | payment_terms }}
-        {% endform %}
-      </span>
-    {% endif %}
-    <div class="cart__summary-item tax-note cart-primary-typography">
-      {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
-    </div>
   </div>
 </div>
 
-<div class="cart__ctas">
+{%- assign sticker_pack = all_products['sticker-pack'] -%}
+{%- if sticker_pack != blank and sticker_pack.available -%}
+  {%- assign sp_variant = sticker_pack.selected_or_first_available_variant -%}
+  {%- assign sp_in_cart = 0 -%}
+  {%- for line in cart.items -%}
+    {%- if line.variant_id == sp_variant.id -%}
+      {%- assign sp_in_cart = line.quantity -%}
+    {%- endif -%}
+  {%- endfor -%}
+  <div class="ym-cart-sticker" data-ym-sticker-upsell>
+    <div class="ym-cart-sticker__media">
+      {%- if sticker_pack.featured_image -%}
+        {{ sticker_pack.featured_image | image_url: width: 280 | image_tag:
+            loading: 'lazy',
+            alt: sticker_pack.title,
+            class: 'ym-cart-sticker__img' }}
+      {%- endif -%}
+    </div>
+    <div class="ym-cart-sticker__body">
+      <p class="ym-cart-sticker__title">Add a Sticker Pack</p>
+      {%- if sp_variant.compare_at_price > sp_variant.price -%}
+        <s class="ym-cart-sticker__compare">{{ sp_variant.compare_at_price | money_without_trailing_zeros }}</s>
+      {%- endif -%}
+    </div>
+    <span class="ym-cart-sticker__starburst">
+      <span class="ym-cart-sticker__starburst-text">{{ sp_variant.price | money_without_trailing_zeros }}</span>
+    </span>
+    <form
+      class="ym-cart-sticker__stepper"
+      data-ym-sticker-form
+      data-variant-id="{{ sp_variant.id }}"
+    >
+      <button type="button" class="ym-cart-sticker__btn" data-ym-sticker-decrement aria-label="Remove sticker pack" {% if sp_in_cart == 0 %}disabled{% endif %}>−</button>
+      <span class="ym-cart-sticker__count" data-ym-sticker-count>{{ sp_in_cart }}</span>
+      <button type="button" class="ym-cart-sticker__btn" data-ym-sticker-increment aria-label="Add sticker pack">+</button>
+    </form>
+  </div>
+{%- endif -%}
+
+{%- if shop.enabled_payment_types.size > 0 -%}
+  <ul class="ym-cart-payments" aria-label="Accepted payment methods">
+    {%- for type in shop.enabled_payment_types -%}
+      <li class="ym-cart-payments__item" aria-label="{{ type }}">
+        {{ type | payment_type_svg_tag: class: 'ym-cart-payments__icon' }}
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+
+<div class="cart__ctas ym-cart-checkout-wrap">
   <button
     type="submit"
     id="checkout"
-    class="cart__checkout-button button"
+    class="cart__checkout-button button ym-cart-checkout"
     name="checkout"
     {% if cart == empty %}
       disabled
     {% endif %}
     form="cart-form"
   >
-    {{ 'content.checkout' | t }}
+    Checkout — {{ total_price }}
   </button>
 
   {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
@@ -106,27 +109,73 @@
   {% endif %}
 </div>
 
-{% stylesheet %}
-  .cart-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-sm);
-    border-block: 1px solid var(--color-border);
-    padding-block: var(--padding-sm);
-    margin-block-start: var(--margin-3xs);
-  }
+<script>
+  (function () {
+    if (window.__ymStickerWired) return;
+    window.__ymStickerWired = true;
 
-  .cart-actions__divider {
-    border-block-start: 1px solid var(--color-border);
-  }
+    function rebuildSections() {
+      return Array.from(document.querySelectorAll('cart-items-component[data-section-id]'))
+        .map(function (el) { return el.dataset.sectionId; })
+        .filter(Boolean);
+    }
 
-  .cart__summary-totals:not(:has(.cart-actions)) {
-    margin-block-start: var(--margin-3xs);
-    border-block-start: 1px solid var(--color-border);
-    padding-block-start: var(--margin-xl);
-  }
+    function refreshCart(response) {
+      return fetch('/cart.js', { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (cart) {
+          document.dispatchEvent(new CustomEvent('cart:update', {
+            bubbles: true,
+            detail: {
+              resource: cart,
+              sourceId: 'ym-sticker-upsell',
+              data: {
+                source: 'ym-sticker-upsell',
+                itemCount: cart.item_count,
+                sections: response && response.sections ? response.sections : null,
+              },
+            },
+          }));
+        });
+    }
 
-  .cart__installments {
-    color: var(--color-foreground);
-  }
-{% endstylesheet %}
+    function addSticker(variantId) {
+      var fd = new FormData();
+      fd.append('id', variantId);
+      fd.append('quantity', '1');
+      var sections = rebuildSections();
+      if (sections.length) fd.append('sections', sections.join(','));
+      return fetch('/cart/add.js', { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(refreshCart);
+    }
+
+    function changeStickerQty(variantId, newQty) {
+      var sections = rebuildSections();
+      return fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: String(variantId), quantity: newQty, sections: sections.length ? sections.join(',') : undefined }),
+      })
+        .then(function (r) { return r.json(); })
+        .then(refreshCart);
+    }
+
+    document.addEventListener('click', function (e) {
+      var inc = e.target.closest('[data-ym-sticker-increment]');
+      var dec = e.target.closest('[data-ym-sticker-decrement]');
+      if (!inc && !dec) return;
+      var form = (inc || dec).closest('[data-ym-sticker-form]');
+      if (!form) return;
+      var variantId = form.getAttribute('data-variant-id');
+      var countEl = form.querySelector('[data-ym-sticker-count]');
+      var current = parseInt(countEl ? countEl.textContent : '0', 10) || 0;
+      if (inc) {
+        if (current === 0) addSticker(variantId);
+        else changeStickerQty(variantId, current + 1);
+      } else if (dec && current > 0) {
+        changeStickerQty(variantId, current - 1);
+      }
+    });
+  })();
+</script>

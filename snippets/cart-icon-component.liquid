@@ -1,21 +1,19 @@
 {%- doc -%}
-  Renders the cart icon (#39: YM smoker). Smoke puffs above the chimney
-  signal a non-empty cart; no numeric bubble.
+  Renders the cart icon (#39: YM smoker). When the cart has items, an orange
+  smoke cloud overlay (ym-icon-smoke.png) drifts out of the chimney and a
+  small orange count bubble appears at the bottom-right of the icon. Plain
+  <span> wrapper because Dawn's <cart-icon> custom element requires bubble
+  refs we don't render.
 {%- enddoc -%}
-<cart-icon
+<span
   class="
     header-actions__cart-icon
     ym-cart-smoker
-    {% unless cart == empty %} header-actions__cart-icon--has-cart{% endunless %}
+    {% if cart.item_count > 0 %}is-active{% endif %}
   "
   data-testid="cart-icon"
+  data-ym-cart-smoker
 >
-  <span class="ym-cart-smoker__smoke" aria-hidden="true">
-    <span class="ym-cart-smoker__puff"></span>
-    <span class="ym-cart-smoker__puff"></span>
-    <span class="ym-cart-smoker__puff"></span>
-  </span>
-
   <span
     class="svg-wrapper ym-cart-smoker__icon"
     aria-hidden="true"
@@ -23,10 +21,43 @@
     {{ 'ym-icon-smoker.svg' | inline_asset_content }}
   </span>
 
-  {%- comment -%}
-    #39: count bubble intentionally omitted — smoke = cart has items, no smoke = empty.
-    Item count is still announced to screen readers via the parent button's aria-label
-    in snippets/header-actions.liquid.
-  {%- endcomment -%}
-</cart-icon>
+  <img
+    src="{{ 'ym-icon-smoke.png' | asset_url }}"
+    alt=""
+    aria-hidden="true"
+    loading="eager"
+    class="ym-cart-smoker__smoke"
+  >
 
+  <span
+    class="ym-cart-smoker__count"
+    data-ym-cart-count
+    aria-label="{{ 'accessibility.cart_count' | t }}: {{ cart.item_count }}"
+  >{{ cart.item_count }}</span>
+</span>
+
+<script>
+  (function () {
+    if (window.__ymSmokerWired) return;
+    window.__ymSmokerWired = true;
+    function apply(count) {
+      document.querySelectorAll('[data-ym-cart-smoker]').forEach(function (el) {
+        el.classList.toggle('is-active', count > 0);
+      });
+      document.querySelectorAll('[data-ym-cart-count]').forEach(function (el) {
+        el.textContent = String(count);
+      });
+    }
+    document.addEventListener('cart:update', function (event) {
+      var d = event && event.detail;
+      var count = d && d.data && typeof d.data.itemCount === 'number'
+        ? d.data.itemCount
+        : (d && d.resource && d.resource.item_count);
+      if (typeof count === 'number') { apply(count); return; }
+      fetch('/cart.js', { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (c) { apply(c.item_count); })
+        .catch(function () {});
+    });
+  })();
+</script>

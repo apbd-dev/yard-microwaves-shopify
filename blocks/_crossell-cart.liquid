@@ -15,28 +15,29 @@
 
 
 
-{% comment %} 
-{  
-  "name": "Cross-sell Cart",  
-  "settings": [  
-    {  
-      "type": "collection",  
-      "id": "crossell_collection",  
-      "label": "Cross-sell Collection"  
-    },  
-    {  
-      "type": "range",  
-      "id": "max_products",  
-      "min": 2,  
-      "max": 8,  
-      "default": 4,  
-      "label": "Maximum Products"  
-    }  
-  ],  
-  "blocks": [  
-    {  
-      "type": "@theme"  
-    }  
-  ]  
-}   {% endcomment %}
+{% schema %}
+{
+  "name": "Cross-sell Cart",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "crossell_collection",
+      "label": "Cross-sell Collection"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "min": 2,
+      "max": 8,
+      "default": 4,
+      "label": "Maximum Products"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@theme"
+    }
+  ]
+}
+{% endschema %}
 

@@ -1,10 +1,76 @@
 {%- assign product = section.settings.product -%}
 
+{%- comment -%}
+  Detect Size + Color option indices once, plus the first variant per color.
+  Used downstream by the color thumbs (default variants) and size buttons
+  (per-color variant IDs so the cart respects the active color).
+{%- endcomment -%}
+{%- assign size_option = nil -%}
+{%- assign size_option_index = 0 -%}
+{%- assign color_option = nil -%}
+{%- assign color_option_index = 0 -%}
+{%- assign default_bone_variant = nil -%}
+{%- assign default_briquette_variant = nil -%}
+{%- if product != blank -%}
+  {%- for option in product.options_with_values -%}
+    {%- assign downcased = option.name | downcase -%}
+    {%- if downcased == 'size' -%}
+      {%- assign size_option = option -%}
+      {%- assign size_option_index = forloop.index -%}
+    {%- elsif downcased == 'color' or downcased == 'colour' -%}
+      {%- assign color_option = option -%}
+      {%- assign color_option_index = forloop.index -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if color_option -%}
+    {%- assign color_idx = color_option_index | minus: 1 -%}
+    {%- for variant in product.variants -%}
+      {%- assign v_color = variant.options[color_idx] | downcase -%}
+      {%- if v_color == 'bone' and default_bone_variant == nil -%}
+        {%- assign default_bone_variant = variant -%}
+      {%- elsif v_color == 'briquette' and default_briquette_variant == nil -%}
+        {%- assign default_briquette_variant = variant -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+
+  {%- comment -%}
+    Pick the variant that matches the visually-active default: first size in
+    the option list + bone color. Falls back to product.selected_or_first_available_variant
+    if no matching variant is found (e.g. partial variant set).
+  {%- endcomment -%}
+  {%- assign default_variant = nil -%}
+  {%- if size_option != nil -%}
+    {%- assign first_size_value = size_option.values | first -%}
+    {%- assign size_idx_lookup = size_option_index | minus: 1 -%}
+    {%- if color_option -%}
+      {%- assign color_idx_lookup = color_option_index | minus: 1 -%}
+      {%- for variant in product.variants -%}
+        {%- assign v_size = variant.options[size_idx_lookup] -%}
+        {%- assign v_color = variant.options[color_idx_lookup] | downcase -%}
+        {%- if v_size == first_size_value and v_color == 'bone' and default_variant == nil -%}
+          {%- assign default_variant = variant -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- else -%}
+      {%- for variant in product.variants -%}
+        {%- if variant.options[size_idx_lookup] == first_size_value and default_variant == nil -%}
+          {%- assign default_variant = variant -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endif -%}
+  {%- assign default_variant = default_variant | default: product.selected_or_first_available_variant -%}
+{%- endif -%}
+
 <section
   class="ym-section ym-paper-bg ym-showcase"
   id="ym-showcase-{{ section.id }}"
   data-section-id="{{ section.id }}"
 >
+  {%- if section.settings.anchor_id != blank -%}
+    <span id="{{ section.settings.anchor_id }}" class="ym-showcase__anchor" aria-hidden="true"></span>
+  {%- endif -%}
   {%- comment -%}
     Figma-accurate 1:1 port of the Rub & Plug showcase composition.
     Canvas 1920 × 1604. Figma nodes:
@@ -13,6 +79,18 @@
       2508:79  — tag/flag (591×908), anchor for the interactive product card
   {%- endcomment -%}
   <div class="ym-showcase__canvas" data-showcase-mockups>
+    {%- comment -%}
+      Decorations (#14, #15): orange/peach sparkles + pellet scatter sprinkled
+      around the canvas. Pure-presentational, lazy-loaded, hidden from a11y.
+      Coordinates are eyeballed against Figma; tweak in CSS.
+    {%- endcomment -%}
+    <img src="{{ 'ym-sparkle-1.png' | asset_url }}" alt="" role="presentation" loading="lazy" class="ym-showcase__sparkle ym-showcase__sparkle--tl">
+    <img src="{{ 'ym-sparkle-2.png' | asset_url }}" alt="" role="presentation" loading="lazy" class="ym-showcase__sparkle ym-showcase__sparkle--tr">
+    <img src="{{ 'ym-sparkle-1.png' | asset_url }}" alt="" role="presentation" loading="lazy" class="ym-showcase__sparkle ym-showcase__sparkle--mid">
+    <img src="{{ 'ym-sparkle-2.png' | asset_url }}" alt="" role="presentation" loading="lazy" class="ym-showcase__sparkle ym-showcase__sparkle--br">
+    <img src="{{ 'ym-pellets-cluster.png' | asset_url }}" alt="" role="presentation" loading="lazy" class="ym-showcase__pellets ym-showcase__pellets--right">
+    <img src="{{ 'ym-pellets-scatter.png' | asset_url }}" alt="" role="presentation" loading="lazy" class="ym-showcase__pellets ym-showcase__pellets--bottom">
+    <img src="{{ 'ym-pellets-sm.png' | asset_url }}" alt="" role="presentation" loading="lazy" class="ym-showcase__pellets ym-showcase__pellets--accent">
     {%- comment -%} Front shirt (white, folded, small YM patch) — bottom layer {%- endcomment -%}
     {%- if section.settings.front_mockup != blank -%}
       {{
@@ -22,7 +100,8 @@
           loading: 'lazy',
           sizes: '(max-width: 749px) 100vw, 84vw',
           widths: '600, 1200, 1800',
-          class: 'ym-showcase__shirt ym-showcase__shirt--front'
+          class: 'ym-showcase__shirt ym-showcase__shirt--front',
+          data-showcase-front-hero: ''
       }}
     {%- else -%}
       <img
@@ -30,10 +109,13 @@
         alt="{{ product.title | default: 'Front mockup' }}"
         loading="lazy"
         class="ym-showcase__shirt ym-showcase__shirt--front"
+        data-showcase-front-hero
       >
     {%- endif -%}
 
-    {%- comment -%} Back shirt (Rub & Plug graphic) — overlapping on top {%- endcomment -%}
+    {%- comment -%} Back shirt (Rub & Plug graphic) — overlapping on top.
+       Tagged data-showcase-hero so the color-swap JS updates both this big
+       back-print and the smaller card-hero inside the tag together. {%- endcomment -%}
     {%- if section.settings.hero_mockup != blank -%}
       {{
         section.settings.hero_mockup
@@ -65,31 +147,51 @@
         </span>
       </div>
 
-      <p class="ym-showcase__color-label">BONE</p>
+      <p class="ym-showcase__color-label" data-showcase-color-label>BONE</p>
 
-      {%- comment -%} Main card-hero shirt — Figma node 2362:8 {%- endcomment -%}
+      {%- comment -%} Main card-hero shirt — Figma node 2362:8. Tagged with
+         data-showcase-hero so the color swap JS updates it alongside the big
+         back-print shirt above the card. {%- endcomment -%}
       <div class="ym-showcase__card-hero">
         {%- if section.settings.hero_mockup != blank -%}
-          {{ section.settings.hero_mockup | image_url: width: 960 | image_tag: loading: 'lazy', class: 'ym-showcase__card-hero-img' }}
+          {{ section.settings.hero_mockup | image_url: width: 960 | image_tag: loading: 'lazy', class: 'ym-showcase__card-hero-img', data-showcase-hero: '' }}
         {%- else -%}
           <img
             src="{{ section.settings.fallback_hero | default: 'ym-rubplug-back-full.png' | asset_url }}"
             alt="{{ section.settings.display_name | default: 'Product' }}"
             class="ym-showcase__card-hero-img"
+            data-showcase-hero
           >
         {%- endif -%}
       </div>
 
-      {%- comment -%} Color thumbnails — Figma 2597:567 (Bone Folded) + 2363:55 (Briquette Folded) {%- endcomment -%}
+      {%- comment -%}
+        Color thumbnails — Figma 2597:567 (Bone Folded) + 2363:55 (Briquette Folded).
+        Bone is .is-active by default → occupies the big slot; Briquette sits in
+        the small slot. Click swaps which is active (handled in ym-product-showcase.js).
+        data-hero-src points at the back-print hero asset for each color. Until we
+        have a briquette-back-full asset, both fall back to the bone hero so the
+        swap still works visually below.
+      {%- endcomment -%}
       <img
-        class="ym-showcase__card-thumb ym-showcase__card-thumb--front"
+        class="ym-showcase__card-thumb ym-showcase__card-thumb--front is-active"
         src="{{ section.settings.card_front | default: section.settings.fallback_card_front | default: 'ym-rubplug-bone-folded.png' | asset_url }}"
         alt="Bone"
+        data-color="bone"
+        data-label="BONE"
+        data-hero-src="{{ section.settings.fallback_hero | default: 'ym-rubplug-back-full.png' | asset_url }}"
+        data-front-hero-src="{{ section.settings.fallback_front | default: 'ym-rubplug-front.png' | asset_url }}"
+        {% if default_bone_variant %}data-default-variant-id="{{ default_bone_variant.id }}"{% endif %}
       >
       <img
         class="ym-showcase__card-thumb ym-showcase__card-thumb--back"
         src="{{ section.settings.card_back | default: section.settings.fallback_card_back | default: 'ym-rubplug-briquette-folded.png' | asset_url }}"
         alt="Briquette"
+        data-color="briquette"
+        data-label="BRIQUETTE"
+        data-hero-src="{{ section.settings.fallback_briquette_hero | default: section.settings.fallback_hero | default: 'ym-rubplug-back-full.png' | asset_url }}"
+        data-front-hero-src="{{ section.settings.fallback_briquette_front | default: section.settings.fallback_front | default: 'ym-rubplug-front.png' | asset_url }}"
+        {% if default_briquette_variant %}data-default-variant-id="{{ default_briquette_variant.id }}"{% endif %}
       >
 
       {%- comment -%}
@@ -99,36 +201,54 @@
       {%- endcomment -%}
       <div class="ym-showcase__sizemenu">
         {%- if product != blank -%}
-          {%- assign size_option = nil -%}
-          {%- assign size_option_index = 0 -%}
-          {%- for option in product.options_with_values -%}
-            {%- assign downcased = option.name | downcase -%}
-            {%- if downcased == 'size' -%}
-              {%- assign size_option = option -%}
-              {%- assign size_option_index = forloop.index -%}
-            {%- endif -%}
-          {%- endfor -%}
           {%- if size_option -%}
             <ul class="ym-showcase__size-list" data-showcase-sizes data-product-url="{{ product.url }}">
+              {%- assign size_idx = size_option_index | minus: 1 -%}
               {%- for value in size_option.values -%}
-                {%- comment -%} Find the matching variant by iterating variants {%- endcomment -%}
                 {%- assign matched_variant = nil -%}
-                {%- assign option_idx = size_option_index | minus: 1 -%}
-                {%- for variant in product.variants -%}
-                  {%- assign variant_size = variant.options[option_idx] -%}
-                  {%- if variant_size == value and matched_variant == nil -%}
-                    {%- assign matched_variant = variant -%}
-                  {%- endif -%}
-                {%- endfor -%}
+                {%- assign bone_variant = nil -%}
+                {%- assign briquette_variant = nil -%}
+                {%- if color_option -%}
+                  {%- assign color_idx = color_option_index | minus: 1 -%}
+                  {%- for variant in product.variants -%}
+                    {%- assign v_size = variant.options[size_idx] -%}
+                    {%- assign v_color = variant.options[color_idx] | downcase -%}
+                    {%- if v_size == value -%}
+                      {%- if v_color == 'bone' and bone_variant == nil -%}
+                        {%- assign bone_variant = variant -%}
+                      {%- elsif v_color == 'briquette' and briquette_variant == nil -%}
+                        {%- assign briquette_variant = variant -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  {%- assign matched_variant = bone_variant | default: briquette_variant -%}
+                {%- else -%}
+                  {%- for variant in product.variants -%}
+                    {%- assign v_size = variant.options[size_idx] -%}
+                    {%- if v_size == value and matched_variant == nil -%}
+                      {%- assign matched_variant = variant -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
                 <li>
                   <button
                     type="button"
-                    class="ym-showcase__size-option{% if matched_variant and matched_variant.id == product.selected_or_first_available_variant.id %} is-active{% endif %}"
+                    class="ym-showcase__size-option{% if forloop.first %} is-active{% endif %}"
                     data-size-value="{{ value }}"
                     {% if matched_variant %}
                       data-variant-id="{{ matched_variant.id }}"
                       data-variant-price="{{ matched_variant.price | money_without_trailing_zeros }}"
                       data-variant-available="{{ matched_variant.available }}"
+                    {% endif %}
+                    {% if bone_variant %}
+                      data-variant-id-bone="{{ bone_variant.id }}"
+                      data-variant-price-bone="{{ bone_variant.price | money_without_trailing_zeros }}"
+                      data-variant-available-bone="{{ bone_variant.available }}"
+                    {% endif %}
+                    {% if briquette_variant %}
+                      data-variant-id-briquette="{{ briquette_variant.id }}"
+                      data-variant-price-briquette="{{ briquette_variant.price | money_without_trailing_zeros }}"
+                      data-variant-available-briquette="{{ briquette_variant.available }}"
                     {% endif %}
                   >
                     <span class="ym-showcase__size-radio"></span>
@@ -156,14 +276,14 @@
       <div class="ym-showcase__total">
         <span class="ym-showcase__total-label">Total</span>
         <span class="ym-showcase__total-price" data-showcase-price>
-          {%- if product != blank -%}{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}{%- else -%}$ 40.00{%- endif -%}
+          {%- if product != blank -%}{{ default_variant.price | money_without_trailing_zeros }}{%- else -%}$ 40.00{%- endif -%}
         </span>
       </div>
 
       {%- comment -%} Add to Cart (2508:125) — /cart/add with selected variant {%- endcomment -%}
       {%- if product != blank -%}
         <form action="/cart/add" method="post" class="ym-showcase__cart-form" data-showcase-cart-form>
-          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-showcase-variant-input>
+          <input type="hidden" name="id" value="{{ default_variant.id }}" data-showcase-variant-input>
           <button type="submit" class="ym-showcase__cart-btn">Add to Cart</button>
         </form>
       {%- else -%}
@@ -192,6 +312,11 @@
       "label": "Display name (overrides product title)"
     },
     {
+      "type": "text",
+      "id": "anchor_id",
+      "label": "Anchor id (for in-page jump links, e.g. \"shop\")"
+    },
+    {
       "type": "image_picker",
       "id": "hero_mockup",
       "label": "Hero mockup image"
@@ -208,8 +333,18 @@
     },
     {
       "type": "text",
+      "id": "fallback_briquette_front",
+      "label": "Fallback Briquette front asset filename (optional, falls back to bone)"
+    },
+    {
+      "type": "text",
       "id": "fallback_hero",
       "label": "Fallback hero asset filename (e.g. ym-rubplug-back-full.png)"
+    },
+    {
+      "type": "text",
+      "id": "fallback_briquette_hero",
+      "label": "Fallback Briquette hero asset filename (optional, falls back to bone)"
     },
     {
       "type": "image_picker",

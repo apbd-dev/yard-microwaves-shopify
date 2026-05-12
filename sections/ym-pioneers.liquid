@@ -1,0 +1,119 @@
+<section class="ym-section ym-paper-bg ym-pioneers" id="ym-pioneers">
+  {%- comment -%}
+    Figma-accurate 1:1 port of the Pioneers composition.
+    Each child is absolutely positioned within a 1920 × 1269 canvas, using
+    percentages derived from the Figma page coords (Web/Desktop frame 2318:1384
+    with section origin at page y≈1080). At widths ≤749px the layout falls back
+    to a natural stacked flow.
+  {%- endcomment -%}
+  <div class="ym-pioneers__canvas">
+    <div class="ym-pioneers__paper" aria-hidden="true"></div>
+
+    {%- if section.settings.photo != blank -%}
+      {{
+        section.settings.photo
+        | image_url: width: 2100
+        | image_tag:
+          loading: 'lazy',
+          sizes: '(max-width: 749px) 100vw, 55vw',
+          widths: '600, 1045, 1600, 2100',
+          class: 'ym-pioneers__photo',
+          alt: 'Grilling at Yard Microwaves'
+      }}
+    {%- else -%}
+      <img
+        src="{{ 'ym-pioneers-photo.png' | asset_url }}"
+        alt="Grilling at Yard Microwaves"
+        loading="lazy"
+        class="ym-pioneers__photo"
+      >
+    {%- endif -%}
+
+    <img
+      src="{{ 'ym-pellets-cluster.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      class="ym-pioneers__pellets ym-pioneers__pellets--top"
+    >
+    <img
+      src="{{ 'ym-pellets-scatter.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      class="ym-pioneers__pellets ym-pioneers__pellets--bottom"
+    >
+
+    <div class="ym-pioneers__content">
+      <p class="ym-pioneers__label">{{ section.settings.label | default: 'WELCOME' }}</p>
+      <h2 class="ym-pioneers__title">{{ section.settings.heading | default: 'Pellet Pioneers' }}</h2>
+      <div class="ym-pioneers__body">
+        {{ section.settings.body | default: '<p>Yard Microwaves is a BBQ apparel brand born from smoke, sweat, and a love for the craft. We make tees, hats, and gear for the backyard grillmasters who live for the fire.</p>' }}
+      </div>
+      {%- if section.settings.cta_label != blank -%}
+        <a href="{{ section.settings.cta_link }}" class="ym-pioneers__cta ym-btn-red">
+          {{ section.settings.cta_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YM - Pioneers",
+  "tag": "section",
+  "class": "ym-pioneers-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "photo",
+      "label": "Polaroid photo"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label text",
+      "default": "WELCOME"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Script heading",
+      "default": "Pellet Pioneers"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>Yard Microwaves is a BBQ apparel brand born from smoke, sweat, and a love for the craft. We make tees, hats, and gear for the backyard grillmasters who live for the fire.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "deco_1",
+      "label": "Decoration 1 (top right)"
+    },
+    {
+      "type": "image_picker",
+      "id": "deco_2",
+      "label": "Decoration 2 (bottom left)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "YM - Pioneers"
+    }
+  ]
+}
+{% endschema %}

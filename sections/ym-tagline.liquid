@@ -1,0 +1,73 @@
+<section class="ym-section ym-paper-bg ym-tagline" id="ym-tagline">
+  {%- comment -%}
+    Figma-accurate 1:1 port of the "From our smoker to Yours!" tagline
+    composition. Two Figma groups layered inside a 1920 × 957 canvas:
+    Group 50 (2318:1409) — recipe card image with heading + bullets baked in,
+    Group 56 (2357:17) — brisket photo with torn-paper edge.
+    Ingredient labels are overlaid as editable text blocks positioned to land
+    on the dotted rules drawn into the recipe card.
+  {%- endcomment -%}
+  <div class="ym-tagline__canvas">
+    {%- comment -%} Right-side brisket + torn paper (Group 56) — z:0 {%- endcomment -%}
+    <img
+      src="{{ 'ym-tagline-brisket.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      class="ym-tagline__brisket"
+    >
+
+    {%- comment -%} Left-side recipe card (Group 50) — z:1 {%- endcomment -%}
+    <img
+      src="{{ 'ym-recipe-card.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      class="ym-tagline__card"
+    >
+
+    {%- comment -%} Ingredient labels, positioned to sit on the card's dotted rules {%- endcomment -%}
+    <ul class="ym-tagline__list">
+      {%- for block in section.blocks -%}
+        <li class="ym-tagline__item" {{ block.shopify_attributes }}>{{ block.settings.text }}</li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "YM - Tagline",
+  "tag": "section",
+  "class": "ym-tagline-section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Ingredient text",
+          "default": "Relaxed fit"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "YM - Tagline",
+      "blocks": [
+        { "type": "ingredient", "settings": { "text": "RELAXED FIT" } },
+        { "type": "ingredient", "settings": { "text": "HEAVY WEIGHT MATERIAL — 100% COMBED COTTON" } },
+        { "type": "ingredient", "settings": { "text": "CREW NECK WITH RIBBING" } },
+        { "type": "ingredient", "settings": { "text": "SHOULDER TO SHOULDER TAPE TO PREVENT STRETCHING" } },
+        { "type": "ingredient", "settings": { "text": "PRESHRUNK TO MINIMIZE SHRINKAGE" } },
+        { "type": "ingredient", "settings": { "text": "DOUBLE NEEDLE HEMS" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

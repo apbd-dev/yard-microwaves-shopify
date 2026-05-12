@@ -11,7 +11,7 @@
         "heading": "Pellet Pioneers",
         "body": "<p>Step into the spotlight with Yard Microwaves' first-ever apparel drop, where humor is as dry as our rubs and grilling equipment requires more extension cord than common sense. You're pioneering this journey with us, wearing shirts that laugh in the face of traditional barbecue dogma. Here's to setting the BBQ world ablaze.</p>",
         "cta_label": "Buy Now",
-        "cta_link": "#shopify-section-ym_showcase_rubplug"
+        "cta_link": "#shop"
       }
     },
     "ym_tagline": {
@@ -75,15 +75,19 @@
         "heading": "Our Story",
         "body": "<p>Welcome to Yard Microwaves, where childhood best friends-turned-grillmasters add a satirical twist to BBQ. Yard Microwaves' jam is manufacturing flavor, belly laughs, and bringing families together, igniting unforgettable moments and smoking meats.</p>",
         "cta_label": "Buy Now",
-        "cta_link": "\/pages\/about"
+        "cta_link": "#shop"
       }
     },
     "ym_showcase_rubplug": {
       "type": "ym-product-showcase",
       "settings": {
+        "product": "rub-plug-t-shirt",
         "display_name": "Rub & Plug",
+        "anchor_id": "shop",
         "fallback_front": "ym-rubplug-front.png",
+        "fallback_briquette_front": "ym-rubplug-briquette-front.png",
         "fallback_hero": "ym-rubplug-back-full.png",
+        "fallback_briquette_hero": "ym-rubplug-briquette-back.png",
         "fallback_card_front": "ym-rubplug-bone-folded.png",
         "fallback_card_back": "ym-rubplug-briquette-folded.png"
       },
@@ -108,9 +112,12 @@
     "ym_showcase_smokesig": {
       "type": "ym-product-showcase",
       "settings": {
+        "product": "smoke-signals",
         "display_name": "Smoke Signal",
         "fallback_front": "ym-smokesig-front.png",
+        "fallback_briquette_front": "ym-smokesig-briquette-front.png",
         "fallback_hero": "ym-smokesig-back-full.png",
+        "fallback_briquette_hero": "ym-smokesig-briquette-back.png",
         "fallback_card_front": "ym-smokesig-bone-folded.png",
         "fallback_card_back": "ym-smokesig-briquette-folded.png"
       },

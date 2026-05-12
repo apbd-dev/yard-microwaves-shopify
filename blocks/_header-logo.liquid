@@ -53,13 +53,24 @@
     class="header-logo__image-container header-logo__image-container--original"
     data-testid="header-logo"
   >
-    {% render 'image',
-      image: settings.logo,
-      class: 'header-logo__image',
-      height: block_settings.custom_height,
-      text_fallback: shop.name,
-      style: logo_style
-    %}
+    {% if settings.logo != blank %}
+      {% render 'image',
+        image: settings.logo,
+        class: 'header-logo__image',
+        height: block_settings.custom_height,
+        text_fallback: shop.name,
+        style: logo_style
+      %}
+    {% else %}
+      <img
+        src="{{ 'ym-logo.svg' | asset_url }}"
+        alt="{{ shop.name | escape }}"
+        class="header-logo__image ym-brand-logo"
+        width="125"
+        height="64"
+        loading="eager"
+      >
+    {% endif %}
   </span>
 
   {% if use_inverse_logo %}
@@ -67,13 +78,24 @@
       class="header-logo__image-container header-logo__image-container--inverse"
       data-testid="header-logo-inverse"
     >
-      {% render 'image',
-        image: inverse_logo,
-        class: 'header-logo__image',
-        height: block_settings.custom_height,
-        text_fallback: shop.name,
-        style: inverse_logo_style
-      %}
+      {% if inverse_logo != blank %}
+        {% render 'image',
+          image: inverse_logo,
+          class: 'header-logo__image',
+          height: block_settings.custom_height,
+          text_fallback: shop.name,
+          style: inverse_logo_style
+        %}
+      {% else %}
+        <img
+          src="{{ 'ym-logo.svg' | asset_url }}"
+          alt="{{ shop.name | escape }}"
+          class="header-logo__image ym-brand-logo"
+          width="125"
+          height="64"
+          loading="eager"
+        >
+      {% endif %}
     </span>
   {% endif %}
 </a>

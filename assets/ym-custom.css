@@ -57,11 +57,23 @@
   --color-ym-paper: #ede4d3;       /* butcher paper tone */
 }
 
-/* ---------- Shared Section Base ---------- */
+/* ---------- Shared Section Base ----------
+   Every YM section gets the same vertical breathing room so the spacing
+   between content blocks is uniform across the page. Tweak `--ym-section-pad`
+   in one place to dial the rhythm. */
 .ym-section {
   position: relative;
   overflow: hidden;
   width: 100%;
+  --ym-section-pad: clamp(40px, 5vw, 80px);
+  padding-block: var(--ym-section-pad);
+}
+
+/* The hero is intentionally bleed-to-edge (video covers viewport edges) and
+   the footer manages its own torn-edge bleed at the top — skip the padding. */
+.ym-hero,
+.ym-footer-cta {
+  padding-block: 0;
 }
 
 .ym-section--dark {
@@ -83,6 +95,9 @@ body {
   background-repeat: no-repeat;
   background-position: center top;
   background-attachment: fixed;
+  /* Prevent horizontal scroll from sections that bleed past the viewport
+     (e.g. torn-edge images that overshoot to hide their hard PNG corners). */
+  overflow-x: hidden;
 }
 
 .ym-container {
@@ -149,6 +164,21 @@ body {
   color: #fff;
 }
 
+/* In-page jump anchors inside showcase sections — give the target some
+   breathing room so the sticky header doesn't overlap the scroll target. */
+.ym-showcase__anchor {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  scroll-margin-top: 96px;
+}
+
+/* Smooth in-page scrolling for hash links (Buy Now → #shop). */
+html { scroll-behavior: smooth; }
+
 /* ---------- Decorative Elements ---------- */
 .ym-deco {
   position: absolute;
@@ -199,6 +229,14 @@ body {
   justify-content: center;
   background-color: var(--color-ym-dark);
   overflow: visible;
+}
+
+/* On portrait/mobile viewports the 16:9 ratio crushes the hero to ~200px.
+   Switch to a portrait-friendly min-height so the video reads as a real hero. */
+@media (max-width: 749px) {
+  .ym-hero {
+    aspect-ratio: 4 / 3;
+  }
 }
 
 .ym-hero__bg {
@@ -257,7 +295,7 @@ body {
    aspect ratio via aspect-ratio. ≤749px falls back to a stacked layout.
    ============================================= */
 .ym-pioneers {
-  padding: 0;
+  padding-inline: 0;
   position: relative;
   z-index: 2; /* above hero overlay (z:1), below torn-edge (z:4) */
 }
@@ -274,12 +312,13 @@ body {
   position: absolute;
 }
 
-/* Butcher paper — Figma node 2318:1381 at page-rel (-410, -2), 1756×1309,
-   rotated -7.94°. Extends left beyond the canvas; section overflow:hidden clips. */
+/* Butcher paper — Figma node 2318:1381. Original Figma was 91.46% wide
+   spilling -21.35% off the left edge. Shrunk so the right edge doesn't
+   crowd the heading column on narrower viewports. */
 .ym-pioneers__paper {
-  left: -21.35%;       /* -410 / 1920 */
-  top: -0.16%;         /* -2 / 1269 */
-  width: 91.46%;       /* 1756 / 1920 */
+  left: -15%;
+  top: 2%;
+  width: 78%;
   aspect-ratio: 1756 / 1309;
   background: url('ym-butcher-paper-2.png') no-repeat center / 100% 100%;
   transform: rotate(-7.94deg);
@@ -288,11 +327,13 @@ body {
   z-index: 0;
 }
 
-/* Polaroid photo — Figma node 2318:1387 at (226, 131), 1045×1138 */
+/* Polaroid photo — Figma node 2318:1387. Reduced from 54.43% to 46% so
+   it sits cleanly inside the butcher paper without the rotated corner
+   slipping off the canvas. */
 .ym-pioneers__photo {
-  left: 11.77%;        /* 226 / 1920 */
-  top: 10.32%;         /* 131 / 1269 */
-  width: 54.43%;       /* 1045 / 1920 */
+  left: 12%;
+  top: 12%;
+  width: 46%;
   aspect-ratio: 1045 / 1138;
   object-fit: cover;
   transform: rotate(-2deg);
@@ -400,8 +441,9 @@ body {
    (brisket photo w/ torn paper) layered inside a 1920×957 canvas.
    ============================================= */
 .ym-tagline {
-  padding: 0;
+  padding-inline: 0;
   position: relative;
+  z-index: 0;
 }
 
 .ym-tagline__canvas {
@@ -416,12 +458,17 @@ body {
   position: absolute;
 }
 
-/* Group 56 (2357:17) — brisket + torn paper at (1219, 0), 1430×957 */
+/* Brisket photo with torn-paper border on all four sides (701×825 PNG).
+   The canvas is capped at 1920px and centered, so a plain `right: 0` stops
+   at the canvas edge on wider viewports — we bleed past the canvas by the
+   gutter width (`(100% - 100vw) / 2`) so the right torn edge always meets
+   the right edge of the viewport. */
 .ym-tagline__brisket {
-  left: 63.49%;           /* 1219 / 1920 */
+  left: auto;
+  right: calc((100% - 100vw) / 2);
   top: 0;
-  width: 74.48%;          /* 1430 / 1920 */
-  aspect-ratio: 1430 / 957;
+  width: 43%;
+  aspect-ratio: 701 / 825;
   object-fit: contain;
   z-index: 0;
   pointer-events: none;
@@ -470,23 +517,54 @@ body {
 .ym-tagline__item:nth-child(5) { top: 64.68%; } /* 619 / 957 */
 .ym-tagline__item:nth-child(6) { top: 71.06%; } /* 680 / 957 */
 
-/* Mobile fallback — canvas → natural flow */
+/* Mobile fallback — canvas → natural flow.
+   The recipe-card image has dotted-leader graphics baked in for desktop's
+   absolutely-positioned ingredient list. On mobile we hide it and render the
+   ingredients as a plain bulleted list so nothing overlaps. */
 @media (max-width: 749px) {
   .ym-tagline__canvas {
     aspect-ratio: auto;
-    padding: 48px 20px;
+    padding: 32px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
   }
   .ym-tagline__canvas > * { position: static; }
   .ym-tagline__brisket {
     width: 100%;
-    margin-bottom: 24px;
+    max-width: 360px;
+    height: auto;
+    inset: auto;
   }
-  .ym-tagline__card {
+  .ym-tagline__card { display: none; }
+  .ym-tagline__list {
+    position: static;
     width: 100%;
-    margin-bottom: 16px;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
-  .ym-tagline__list { width: 100%; }
-  .ym-tagline__item { margin-bottom: 12px; font-size: 14px; }
+  .ym-tagline__item {
+    position: static;
+    width: 100%;
+    left: auto;
+    top: auto;
+    font-size: 15px;
+    line-height: 1.3;
+    padding-left: 22px;
+    position: relative;
+  }
+  .ym-tagline__item::before {
+    content: '•';
+    position: absolute;
+    left: 4px;
+    top: 0;
+    color: var(--color-ym-red);
+    font-size: 18px;
+    line-height: 1.1;
+  }
 }
 
 /* =============================================
@@ -494,7 +572,7 @@ body {
    Canvas 1920 × 1217 (height driven by the scrapbook collage).
    ============================================= */
 .ym-story {
-  padding: 0;
+  padding-inline: 0;
   position: relative;
 }
 
@@ -582,26 +660,34 @@ body {
   z-index: 3;
 }
 
+/* Body + CTA matched to .ym-pioneers__body / __cta — same font scale,
+   same column width, and CTA recentered directly under the body. */
 .ym-story__body {
-  left: 65.63%;        /* 1260 / 1920 */
-  top: 46.84%;         /* 570 / 1217 */
-  width: 25.47%;       /* 489 / 1920 */
+  left: 64.48%;        /* matches pioneers content column */
+  top: 46.84%;
+  width: 26.88%;
   font-family: var(--font-ym-heading);
   font-weight: 500;
-  font-size: clamp(14px, 1.042vw, 20px);
-  line-height: normal;
+  font-size: clamp(16px, 1.4vw, 22px);
+  line-height: 1.45;
   color: var(--color-ym-gold);
   text-align: center;
   z-index: 3;
+  margin: 0 0 1.4em;
 }
 
 .ym-story__body p { margin: 0; }
 
 .ym-story__cta {
-  left: 70.26%;        /* 1349 / 1920 */
-  top: 57.36%;         /* 698 / 1217 */
+  /* Center the 309px Buy Now button horizontally inside the body column.
+     Body column: left 64.48%, width 26.88% → center at 77.92%. We pin the
+     anchor's left edge at that center and pull it back by half its width so
+     the button width inherited from .ym-btn-red (309px) is preserved and
+     visually matches the Pioneers CTA. */
+  left: 77.92%;
+  top: 68%;
+  transform: translateX(-50%);
   z-index: 3;
-  display: inline-flex;
 }
 
 /* Mobile fallback — stacked flow */
@@ -625,7 +711,7 @@ body {
    2354:8 (back shirt w/ Rub & Plug graphic), 2508:79 (tag card bg).
    ============================================= */
 .ym-showcase {
-  padding: 0;
+  padding-inline: 0;
   position: relative;
 }
 
@@ -641,6 +727,52 @@ body {
   position: absolute;
 }
 
+/* Decorations (#14 sparkles, #15 pellets) — purely decorative, sit underneath
+   the shirts/card so they peek through cream gaps without obscuring product. */
+.ym-showcase__sparkle,
+.ym-showcase__pellets {
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.ym-showcase__shirt--front,
+.ym-showcase__shirt--back,
+.ym-showcase__card { z-index: 1; }
+
+/* Sparkles — peach 4-point diamonds. Source PNGs are pale, so we bump
+   saturation + add a soft drop shadow so they read against the cream paper.
+   Each one blinks at a slightly different cadence so the canvas twinkles
+   rather than strobing in sync. */
+.ym-showcase__sparkle {
+  filter: saturate(1.6) brightness(1.05)
+          drop-shadow(0 1px 2px rgba(120, 60, 20, 0.18));
+  animation: ym-sparkle-blink 3.6s ease-in-out infinite;
+}
+.ym-showcase__sparkle--tl  { left:  6%; top:  5%; width:  6%;  aspect-ratio: 1; transform: rotate(-12deg); animation-delay: 0s;    animation-duration: 3.4s; }
+.ym-showcase__sparkle--tr  { left: 56%; top:  3%; width:  7%;  aspect-ratio: 1; transform: rotate(8deg);   animation-delay: 0.7s;  animation-duration: 4.1s; }
+.ym-showcase__sparkle--mid { left: 47%; top: 36%; width:  4%;  aspect-ratio: 1; transform: rotate(15deg);  animation-delay: 1.4s;  animation-duration: 2.9s; }
+.ym-showcase__sparkle--br  { left: 90%; top: 72%; width:  5%;  aspect-ratio: 1; transform: rotate(-20deg); animation-delay: 2.1s;  animation-duration: 4.6s; }
+
+@keyframes ym-sparkle-blink {
+  0%, 100% { opacity: 1; }
+  35%      { opacity: 0.45; }
+  50%      { opacity: 1; }
+  65%      { opacity: 0.55; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ym-showcase__sparkle { animation: none; }
+}
+
+/* Pellets — let each PNG drive its own ratio (natural sizes:
+   cluster 1228×604 wide, scatter 362×636 vertical, sm 346×648 vertical).
+   Width drives size; height: auto preserves intrinsic ratio. */
+.ym-showcase__pellets { height: auto; }
+.ym-showcase__pellets--right  { left: 78%; top: 76%; width: 22%; }  /* wide strip — bottom-right corner */
+.ym-showcase__pellets--bottom { left: 12%; top: 84%; width: 10%; }  /* vertical scatter — bottom-left */
+.ym-showcase__pellets--accent { left:  3%; top: 60%; width:  5%; }  /* narrow vertical — left edge accent */
+
 /* Front shirt — Figma 2597:565 at (-255, 0), 1604×1604 */
 .ym-showcase__shirt--front {
   left: -13.28%;         /* -255 / 1920 */
@@ -651,7 +783,12 @@ body {
   z-index: 1;
   pointer-events: none;
   filter: drop-shadow(4px 4px 12px rgba(0, 0, 0, 0.18));
+  transition: transform 280ms ease;
 }
+
+/* Briquette front PNGs were re-padded at build time to match each bone PNG's
+   shirt position and size, so no per-color transform is needed — both
+   colors occupy the same frame. */
 
 /* Back shirt — Figma 2354:8 at (-364, 37), 1294×1080 — overlapping on top */
 .ym-showcase__shirt--back {
@@ -710,9 +847,12 @@ body {
 /* BONE color label — Figma 2514:166 at (236, 83), 77×33.
    Bananas VF Medium, 35px, color #ffb563, uppercase, centered. */
 .ym-showcase__color-label {
-  left: 39.93%;            /* 236 / 591 */
-  top: 9.14%;              /* 83 / 908 */
-  width: 13.03%;           /* 77 / 591 */
+  /* Center the label around the midpoint of the original 77px-wide slot so
+     longer values like BRIQUETTE stay visually centered, not anchored left. */
+  left: 46.45%;            /* (236 + 77/2) / 591 */
+  top: 9.14%;
+  transform: translateX(-50%);
+  width: auto;
   font-family: var(--font-ym-heading);
   font-weight: 500;
   font-size: clamp(14px, 1.823vw, 35px);
@@ -739,26 +879,12 @@ body {
   object-fit: contain;
 }
 
-/* Bone Folded thumb (Figma 2597:567) at (285, 465), 194×194 */
-.ym-showcase__card-thumb--front {
-  left: 48.22%;            /* 285 / 591 */
-  top: 51.21%;             /* 465 / 908 */
-  width: 32.83%;           /* 194 / 591 */
-  aspect-ratio: 1;
-  object-fit: contain;
-  cursor: pointer;
-  z-index: 2;
-}
-
-/* Briquette Folded thumb (Figma 2363:55) at (308, 596), 146×146 */
+/* Color thumbs share base geometry: the inactive one sits in the small slot;
+   .is-active promotes it to the larger slot. Click swaps which is active. */
+.ym-showcase__card-thumb--front,
 .ym-showcase__card-thumb--back {
-  left: 52.12%;            /* 308 / 591 */
-  top: 65.64%;             /* 596 / 908 */
-  width: 24.70%;           /* 146 / 591 */
   aspect-ratio: 1;
   object-fit: contain;
-  cursor: pointer;
-  z-index: 2;
 }
 
 /* Size menu (Figma 2508:111) at (75, 509), 188×197 — uses Figma's sizemenu
@@ -891,14 +1017,29 @@ body {
 
 .ym-showcase__cart-btn:disabled { opacity: 0.6; cursor: progress; }
 
-/* Active state for color thumbs (#43) */
+/* Color thumbs (#43): base = small slot (Briquette spot from Figma 2363:55).
+   Click the inactive one and they swap — .is-active gets the big slot
+   (Figma 2597:567) and the rest of the showcase reacts (label, hero, variant). */
 .ym-showcase__card-thumb {
+  left: 52.12%;            /* 308 / 591 — small/secondary slot */
+  top: 65.64%;             /* 596 / 908 */
+  width: 24.70%;           /* 146 / 591 */
   cursor: pointer;
-  transition: transform 120ms ease, filter 120ms ease;
+  z-index: 2;
+  transition: left 260ms ease, top 260ms ease, width 260ms ease,
+              transform 120ms ease, filter 120ms ease;
 }
 .ym-showcase__card-thumb.is-active {
+  left: 48.22%;            /* 285 / 591 — big/primary slot */
+  top: 51.21%;             /* 465 / 908 */
+  width: 32.83%;           /* 194 / 591 */
   transform: scale(1.04);
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
+  z-index: 3;
+  /* Active thumb sits over the inactive one's bounding box; without this
+     pointer-events drop the inactive thumb requires two clicks to register
+     because the first click hits the (already-active) bigger thumb. */
+  pointer-events: none;
 }
 
 /* When wrapped in a form, the form owns the position; button fills it. */
@@ -911,23 +1052,33 @@ body {
 
 .ym-showcase__cart-btn:hover { color: #fff; }
 
-/* Mobile fallback — canvas → natural flow */
+/* Mobile fallback — canvas → natural flow.
+   The big front shirt is just a folded blank with a small chest logo; the
+   back-print shirt carries the actual product graphic so it's the hero on
+   mobile. Hide the front shirt to avoid two near-identical stacked images. */
 @media (max-width: 749px) {
   .ym-showcase__canvas {
     aspect-ratio: auto;
-    padding: 40px 20px;
+    padding: 32px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
   }
   .ym-showcase__canvas > * { position: static; }
-  .ym-showcase__shirt--front,
+  .ym-showcase__shirt--front { display: none; }
   .ym-showcase__shirt--back {
     width: 100%;
-    margin: 0 auto 16px;
+    max-width: 420px;
+    height: auto;
+    margin: 0 auto;
   }
   .ym-showcase__card {
     width: 100%;
     max-width: 360px;
     margin: 0 auto;
-    aspect-ratio: auto;
+    /* Keep the 591/908 ratio — the card's interior UI (ribbon, size list,
+       cart button) is absolutely positioned against that ratio. */
   }
 }
 
@@ -976,20 +1127,43 @@ body {
 
 .ym-footer-cta__torn-edge {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 100%;
-  margin-bottom: -1px; /* hairline overlap to kill any sub-pixel seam */
+  /* Always span exactly viewport width so the PNG's rectangular left/right
+     edges sit off-screen at every resolution (incl. ultrawide). */
+  left: calc((100% - 100vw) / 2);
+  right: calc((100% - 100vw) / 2);
+  width: 100vw;
+  /* Anchor at footer top, then lift the image up by 70% of its own height
+     so the gray bottom strip of the PNG always overlaps the cream→black
+     seam regardless of viewport width. The remaining 30% sits inside the
+     dark footer, hiding the hard top edge of the footer. */
+  top: 0;
+  transform: translateY(-36%);   /* push the torn edge further down into the dark footer */
   pointer-events: none;
   z-index: 2;
   line-height: 0;
+}
+
+/* Belt-and-braces: paint a thin dark strip just below the torn edge so any
+   transparent pixels in the PNG's lower band show the footer black instead
+   of leaking the cream from the section above. */
+.ym-footer-cta {
+  position: relative;
+}
+.ym-footer-cta::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 4px;
+  background-color: var(--color-ym-dark, #1a1a1a);
+  z-index: 1;
 }
 
 .ym-footer-cta__torn-edge img {
   display: block;
   width: 100%;
   height: auto;
-  transform: scaleY(-1);
 }
 
 .ym-footer-cta__heading {
@@ -1004,9 +1178,9 @@ body {
 }
 
 .ym-footer-cta__mascot {
-  width: 70px;
+  width: clamp(140px, 16vw, 240px);
   height: auto;
-  margin: 0 auto 24px;
+  margin: 0 auto 32px;
   display: block;
 }
 
@@ -1438,81 +1612,597 @@ html { scroll-behavior: smooth; }
 
 /* ─────────────────────────────────────────
  * Cart drawer — YM restyle (#45)
- * Targets Dawn's cart-drawer-component classes; the slide-from-right
- * positioning is inherited from the existing Dawn rules in
- * snippets/header-actions.liquid. We layer YM design on top:
- * cream paper bg, Milenia script heading, dark overlay, red CTA.
+ * Cream paper drawer matching the Figma mockup:
+ *   • Logo centered in the header + large X close
+ *   • Olive titles with dotted-leader rule between title and price
+ *   • Orange-ruled TAX / SHIPPING / TOTAL block
+ *   • Sticker-pack upsell with starburst price
+ *   • Payment icons row
+ *   • Red Milenia-script checkout bar with torn-paper top edge
+ * Reskins Dawn's cart-drawer-component classes via CSS so the underlying
+ * web-component wiring (AJAX add/change/morph) keeps working unchanged.
  * ───────────────────────────────────────── */
 .cart-drawer__dialog {
-  background-color: var(--color-ym-paper, #f3e9d4);
+  background-color: #fdf8eb !important;   /* very light cream paper — overrides Dawn's color-scheme white */
   background-image: url('ym-page-texture-sm.jpg');
   background-size: cover;
   background-position: center top;
-  color: var(--color-ym-dark, #1a1a1a);
-  border-left: 4px solid var(--color-ym-dark, #1a1a1a);
-  width: min(440px, 95vw);
+  background-blend-mode: multiply;
+  color: #5a5326;
+  border-left: none;
+  width: min(620px, 96vw) !important;
+  max-width: 96vw !important;
+}
+
+/* Dawn's .cart-drawer__content paints white over our drawer tan. Wipe it so
+   the kraft texture shows behind every line item. */
+.cart-drawer__content {
+  background-color: transparent !important;
 }
 
 .cart-drawer__dialog::backdrop {
-  background-color: rgba(20, 14, 8, 0.6);
+  background-color: rgba(20, 14, 8, 0.55);
   backdrop-filter: blur(2px);
 }
 
-.cart-drawer__header {
+/* Header — orange tag holding the YM script logo (centered in the drawer),
+   X close absolutely positioned in the top-right corner so the logo stays
+   visually centered regardless of the X width. */
+.cart-drawer__header.ym-cart-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   background-color: transparent !important;
-  border-bottom: 2px solid var(--color-ym-dark, #1a1a1a);
+  border-bottom: none;
+  display: flex !important;
+  align-items: center;
+  justify-content: center !important;
+  padding: 28px 28px 20px !important;
 }
 
-.cart-drawer__heading {
-  font-family: var(--font-ym-script);
-  font-size: clamp(32px, 4vw, 48px);
-  color: var(--color-ym-dark, #1a1a1a);
-  text-transform: none;
-  letter-spacing: 0;
+.ym-cart-header__logo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 26px;
+  transform: rotate(-2deg);
 }
 
-.cart-drawer__close-button {
-  color: var(--color-ym-dark, #1a1a1a);
+.ym-cart-header__logo-bg {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-ym-orange, #F16022);
+  border-radius: 10px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.06);
+  z-index: 0;
 }
 
-.cart-drawer__content {
+.ym-cart-header__logo-img {
+  width: clamp(120px, 30vw, 170px);
+  height: auto;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.ym-cart-header__close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: transparent;
+  border: 0;
+  color: #2c2620;
+  font-size: clamp(36px, 5vw, 48px);
+  line-height: 1;
+  font-weight: 400;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.ym-cart-header__close:hover { color: #000; }
+
+/* Body — no inline padding on container; each row handles its own so dividers
+   span the full drawer width edge-to-edge. */
+.cart-drawer__content { background-color: transparent; }
+.cart-drawer__items   { padding: 0 !important; }
+
+/* Wipe Dawn's inherited padding on the line-items wrapper so the
+   ym-cart-item bottom borders span the full drawer width. */
+.cart-drawer .cart-items__wrapper,
+.cart-drawer .cart-form,
+.cart-drawer .cart-items {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+/* YM line items list — flat layout, no table/grid trickery */
+.ym-cart-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ym-cart-item {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  column-gap: 24px;
+  align-items: start;
+  padding: 22px 28px;
+  border-bottom: 1.5px solid #8a7c2e;
+}
+.ym-cart-item:last-child { border-bottom: none; }
+
+.ym-cart-item__media {
+  position: relative;
+  width: 130px;
+}
+
+.ym-cart-item__thumb-link {
+  display: block;
+  width: 130px;
+  height: 130px;
   background-color: transparent;
+  overflow: hidden;
 }
 
-.cart-drawer__items {
-  padding-block-start: var(--padding-md, 16px);
+.ym-cart-item__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
+.ym-cart-item__remove {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-ym-paper, #ede4d3);
+  border: 1.5px solid #2c2620;
+  color: #2c2620;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+.ym-cart-item__remove:hover { background: #fff; }
+
+.ym-cart-item__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ym-cart-item__title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+}
+
+.ym-cart-item__title {
+  font-family: var(--font-ym-heading);
+  font-weight: 600;
+  font-size: clamp(22px, 2.4vw, 28px);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #8a7c2e;
+  text-decoration: none;
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
+}
+
+.ym-cart-item__leader {
+  flex: 1 1 auto;
+  border-bottom: 2px dotted #8a7c2e;
+  align-self: flex-end;
+  margin-bottom: 9px;
+  min-width: 32px;
+}
+
+.ym-cart-item__price {
+  font-family: var(--font-ym-heading);
+  font-weight: 600;
+  font-size: clamp(22px, 2.4vw, 28px);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #8a7c2e;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* Variants on the left, qty stepper on the right — one row below the title */
+.ym-cart-item__meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.ym-cart-item__variants {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-ym-heading);
+  font-weight: 400;
+  font-size: clamp(15px, 1.6vw, 18px);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8a7c2e;
+  line-height: 1.4;
+}
+.ym-cart-item__variants li { display: block; }
+.ym-cart-item__qty-wrap { flex: 0 0 auto; }
+
+.ym-cart-item__discounts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-ym-heading);
+  font-size: 12px;
+  color: var(--color-ym-orange, #F16022);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ym-cart-item__qty-wrap { margin-top: 4px; }
+
+/* Style the Dawn quantity-selector component inside our line item */
+.ym-cart-item__qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid #8a7c2e;
+  border-radius: 2px;
+  background: transparent;
+  height: 42px;
+  width: 140px;
+}
+
+.cart-drawer .ym-cart-item__qty button,
+.ym-cart-item__qty button.button {
+  background: transparent !important;
+  color: #2c2620;
+  border: 0;
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  width: 40px !important;
+  min-width: 40px;
+  height: 100%;
+  min-height: 0 !important;
+  cursor: pointer;
+  padding: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none !important;
+  --icon-stroke-width: 2;
+}
+
+.ym-cart-item__qty .svg-wrapper {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  color: #2c2620;
+}
+
+.ym-cart-item__qty svg,
+.ym-cart-item__qty svg path {
+  stroke: #2c2620 !important;
+  stroke-width: 2 !important;
+}
+
+.ym-cart-item__qty input {
+  background: transparent;
+  color: #2c2620;
+  border: 0;
+  font-family: var(--font-ym-heading);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  width: 44px;
+  height: 100%;
+  padding: 0;
+  -moz-appearance: textfield;
+}
+.ym-cart-item__qty input::-webkit-outer-spin-button,
+.ym-cart-item__qty input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.ym-cart-item__error {
+  font-size: 12px;
+  color: var(--color-ym-red, #c8311a);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ym-cart-item__error.hidden { display: none; }
+.ym-cart-item__error .svg-wrapper { width: 14px; height: 14px; }
+
+/* Empty-cart CTA */
+.ym-cart-empty-cta {
+  display: block;
+  width: fit-content;
+  margin: 24px auto 0;
+  text-decoration: none;
+}
+.ym-cart-empty-login { text-align: center; padding: 0 24px; }
+
+/* Summary container — orange rules around TAX/SHIPPING/TOTAL */
 .cart-drawer__summary {
-  background-color: rgba(243, 233, 212, 0.92) !important;
-  border-top: 2px solid var(--color-ym-dark, #1a1a1a);
-  /* Disable Dawn's mask-image fade — we want the dark border to read clean. */
+  background-color: transparent !important;   /* let the drawer's tan paper show through */
+  border-top: none !important;
   mask-image: none !important;
+  padding: 0 !important;
+  --cart-drawer-padding: 0;
+  --cart-drawer-padding-desktop: 0;
 }
 
-.cart-drawer__summary .button,
-.cart-drawer__summary button[type='submit'],
-.cart-drawer__summary a.button {
-  background-color: var(--color-ym-red, #c8311a) !important;
+/* Dawn declares .cart__summary-totals { width: 100% } but a stray rule was
+   shrinking ours to fit-content. Force full-bleed width on the totals block
+   so the orange rules and dotted leader stretch edge-to-edge. */
+.ym-cart-totals {
+  width: 100% !important;
+  box-sizing: border-box;
+  display: block;
+}
+
+.ym-cart-totals {
+  border-top: 2px solid var(--color-ym-orange, #F16022);
+  padding: 18px 28px 0;
+  margin-bottom: 0;
+}
+
+.ym-cart-totals__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #8a7c2e;
+  letter-spacing: 0.02em;
+  padding: 8px 0;
+  font-size: clamp(26px, 3vw, 34px);
+}
+
+.ym-cart-totals__total-wrap {
+  border-top: 2px solid var(--color-ym-orange, #F16022);
+  margin: 16px -28px 0;        /* break out so the top rule spans full width */
+  padding: 18px 28px 0;
+}
+
+.ym-cart-totals__total-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #8a7c2e;
+  letter-spacing: 0.02em;
+}
+
+.ym-cart-totals__label--total,
+.ym-cart-totals__value--total {
+  font-size: clamp(30px, 3.6vw, 40px);
+  flex: 0 0 auto;
+}
+
+.ym-cart-totals__leader {
+  flex: 1 1 auto;
+  border-bottom: 2px dotted #8a7c2e;
+  align-self: flex-end;
+  margin-bottom: 12px;
+  min-width: 32px;
+}
+
+/* Sticker pack upsell card */
+.ym-cart-sticker {
+  display: grid;
+  grid-template-columns: minmax(110px, 26%) 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+  background-color: #fff;
+  background-image: url('ym-cart-sticker-bg.png');
+  background-size: cover;
+  background-position: center;
+  border: 1.5px solid rgba(140, 122, 60, 0.55);
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin: 18px 28px 18px;
+}
+
+.ym-cart-sticker__media { display: flex; align-items: center; }
+.ym-cart-sticker__img {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  display: block;
+}
+
+.ym-cart-sticker__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ym-cart-sticker__title {
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #2c2620;
+  font-size: clamp(20px, 2.4vw, 28px);
+  letter-spacing: 0.02em;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.ym-cart-sticker__price-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ym-cart-sticker__compare {
+  font-family: var(--font-ym-heading);
+  color: #8a7c2e;
+  font-size: clamp(18px, 2vw, 22px);
+  text-decoration: line-through;
+  text-decoration-color: #2c2620;
+  text-decoration-thickness: 2px;
+  font-weight: 700;
+}
+
+.ym-cart-sticker__starburst {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 124px;
+  height: 124px;
+  background-image: url('ym-cart-starburst.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-color: transparent;
+  clip-path: none;
+  color: #fff;
+  flex: 0 0 auto;
+  justify-self: center;
+  align-self: center;
+}
+
+.ym-cart-sticker__starburst-text {
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  font-size: clamp(28px, 3.4vw, 38px);
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.ym-cart-sticker__stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid #8a7c2e;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
+  height: 34px;
+}
+
+.ym-cart-sticker__btn {
+  background: transparent;
+  color: #2c2620;
+  font-family: var(--font-ym-heading);
+  font-size: 18px;
+  font-weight: 700;
+  border: 0;
+  width: 28px;
+  height: 100%;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ym-cart-sticker__btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+.ym-cart-sticker__count {
+  font-family: var(--font-ym-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: #2c2620;
+  min-width: 22px;
+  text-align: center;
+}
+
+/* Payment methods row — white capsules around each enabled gateway icon */
+.ym-cart-payments {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 0 28px;
+}
+
+.ym-cart-payments__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 6px 10px;
+  height: 32px;
+  min-width: 48px;
+}
+
+.ym-cart-payments__icon {
+  display: block;
+  height: 18px;
+  width: auto;
+}
+
+/* Checkout bar — full-bleed red bar with Milenia script */
+.ym-cart-checkout-wrap.cart__ctas {
+  position: relative;
+  margin: 16px 0 0;
+  padding: 0;
+  background-color: #d83e1c;
+  overflow: hidden;
+  width: 100% !important;
+  display: block;
+  grid-template-columns: 1fr;
+}
+
+.ym-cart-checkout {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background: #d83e1c !important;
   color: #fff !important;
-  border: none;
-  font-family: var(--font-ym-script);
-  font-size: clamp(20px, 2vw, 28px);
-  text-transform: none;
-  letter-spacing: 0;
-  border-radius: 4px;
-  padding: 14px 24px;
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-ym-script) !important;
+  font-size: clamp(32px, 4vw, 48px) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 400;
+  padding: clamp(22px, 3vw, 32px) 0 !important;
+  cursor: pointer;
+  box-shadow: none !important;
+  height: auto !important;
+  min-height: 0 !important;
 }
 
-.cart-drawer__summary .button:hover {
-  filter: brightness(1.05);
-}
+.ym-cart-checkout:hover { filter: brightness(1.07); }
+.ym-cart-checkout:disabled { opacity: 0.6; cursor: not-allowed; }
 
-/* Empty state */
+/* Empty state — keep the script heading */
 .cart-drawer--empty .cart-drawer__heading--empty {
   font-family: var(--font-ym-script);
   font-size: clamp(28px, 3vw, 40px);
-  color: var(--color-ym-dark, #1a1a1a);
+  color: #2c2620;
+  display: block;
+  text-align: center;
+  padding: 32px 24px 0;
 }
 
 /* ─────────────────────────────────────────
@@ -1524,84 +2214,108 @@ html { scroll-behavior: smooth; }
 .ym-cart-smoker {
   position: relative;
   display: inline-flex;
+  overflow: visible;
+}
+
+/* The cart icon is rendered inside Dawn's <button class="header-actions__action">
+   which sets overflow:hidden — that clips our smoke puffs that drift above the
+   icon's bounding box. Scope an override to only the button that wraps the smoker. */
+.header-actions__action:has(.ym-cart-smoker) {
+  overflow: visible;
 }
 
 .ym-cart-smoker__icon {
   display: inline-flex;
   width: 100%;
   height: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
-.ym-cart-smoker__icon svg {
-  width: 100%;
-  height: 100%;
+/* Dawn pins .header-actions__action svg to var(--icon-size-md) (~22px) inside
+   our 44px button. Bump it to ~75% of the wrapper — bigger than the default
+   but not so big that it crowds the header. */
+.ym-cart-smoker__icon svg,
+.header-actions__action .ym-cart-smoker__icon svg {
+  width: 75%;
+  height: 75%;
 }
 
+/* Orange smoke overlay (assets/ym-icon-smoke.png) — extracted from the
+   reference composite so it sits on top of the white smoker SVG. Sized
+   to ~60% of the icon and anchored above the chimney (top-left), so the
+   cloud reads as smoke billowing out of the smoker rather than covering it. */
 .ym-cart-smoker__smoke {
+  /* Smoke comes out of the chimney top. Smoker SVG occupies the centered 75%
+     of the 44px wrapper; the chimney mouth sits at ≈(19%, 13%) of the wrapper.
+     The cloud's visual center of mass is at (47.5%, 45.6%) of its PNG box and
+     it fills the box edge-to-edge. We size the cloud at 60% width and pin its
+     bottom-center directly over the chimney opening, with a few pixels of
+     overlap so the smoke reads as emerging from the pipe. */
   position: absolute;
-  /* Chimney top sits at viewBox (~3, 0.5) inside a 36×39 box → ~8% from left, top of icon */
-  left: 8%;
-  top: -45%;
-  width: 16%;
-  height: 60%;
+  left: -14%;
+  top: -42%;
+  width: 60%;
+  height: auto;
+  aspect-ratio: 83 / 78;
   pointer-events: none;
-  display: block;
   opacity: 0;
-  transition: opacity 200ms ease;
+  transform: scale(0.85) translateY(4px);
+  transform-origin: 48% 95%;
+  transition: opacity 220ms ease, transform 220ms ease;
 }
 
-.ym-cart-smoker__puff {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--color-ym-orange, #F16022);
-  transform: translate(-50%, 0) scale(0.6);
-  opacity: 0;
-}
-
-/* Activate smoke only when cart has items */
-.header-actions__cart-icon--has-cart .ym-cart-smoker__smoke {
+/* Show the smoke and animate it rising up out of the chimney. transform-origin
+   is set to the cloud's chimney-attachment point, so scaling grows the cloud
+   upward/outward from there while the translateY drift sends it upward. */
+.ym-cart-smoker.is-active .ym-cart-smoker__smoke {
   opacity: 1;
+  animation: ym-smoke-rise 3.4s ease-in-out infinite;
 }
 
-.header-actions__cart-icon--has-cart .ym-cart-smoker__puff {
-  animation: ym-smoker-puff 2.4s ease-out infinite;
-}
-
-.header-actions__cart-icon--has-cart .ym-cart-smoker__puff:nth-child(2) {
-  animation-delay: 0.8s;
-  width: 5px;
-  height: 5px;
-  background-color: rgba(241, 96, 34, 0.85);
-}
-
-.header-actions__cart-icon--has-cart .ym-cart-smoker__puff:nth-child(3) {
-  animation-delay: 1.6s;
-  width: 4px;
-  height: 4px;
-  background-color: rgba(241, 96, 34, 0.7);
-}
-
-@keyframes ym-smoker-puff {
-  0%   { transform: translate(-50%, 0) scale(0.6); opacity: 0; }
-  20%  { opacity: 0.95; }
-  100% { transform: translate(-50%, -180%) scale(1.6); opacity: 0; }
+@keyframes ym-smoke-rise {
+  0%, 100% { transform: scale(0.94) translateY(2px); }
+  50%      { transform: scale(1.08) translateY(-3px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .header-actions__cart-icon--has-cart .ym-cart-smoker__puff {
+  .ym-cart-smoker.is-active .ym-cart-smoker__smoke {
     animation: none;
-    opacity: 0.85;
-    transform: translate(-50%, -60%) scale(1);
   }
+}
+
+/* Cart item count bubble — orange pill at the bottom-right of the smoker.
+   Hidden when the cart is empty (the smoker.is-active gate). */
+.ym-cart-smoker__count {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background-color: var(--color-ym-orange, #F16022);
+  color: #fff;
+  font-family: var(--font-paragraph--family, system-ui, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 200ms ease, transform 200ms ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.ym-cart-smoker.is-active .ym-cart-smoker__count {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* Dawn paints a donut mask over the cart svg where the bubble sits — that
    was tuned for the boxy cart icon. Disable for the smoker so the rendering
    isn't clipped. */
-.header-actions__cart-icon.ym-cart-smoker.header-actions__cart-icon--has-cart svg {
+.header-actions__cart-icon.ym-cart-smoker svg {
   mask: none;
 }
