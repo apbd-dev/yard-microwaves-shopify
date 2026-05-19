@@ -144,21 +144,21 @@
           "type": "social_link",
           "settings": {
             "platform": "Instagram",
-            "url": "#"
+            "url": "https://instagram.com/yardmicrowaves"
           }
         },
         "social_facebook": {
           "type": "social_link",
           "settings": {
             "platform": "Facebook",
-            "url": "#"
+            "url": "https://facebook.com/yardmicrowaves"
           }
         },
         "social_tiktok": {
           "type": "social_link",
           "settings": {
             "platform": "TikTok",
-            "url": "#"
+            "url": "https://tiktok.com/@yardmicrowaves"
           }
         }
       },
