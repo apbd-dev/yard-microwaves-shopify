@@ -1169,40 +1169,74 @@ html { scroll-behavior: smooth; }
 .ym-footer-cta__heading {
   font-family: var(--font-ym-heading);
   font-weight: 700;
-  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
   text-transform: uppercase;
-  color: var(--color-ym-red);
+  color: var(--color-ym-orange);
   line-height: 1.1;
   letter-spacing: 0.05em;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
-.ym-footer-cta__mascot {
-  width: clamp(140px, 16vw, 240px);
+/* Hot links sausage chain (#48). Single chain PNG sits as the visual, with
+   three absolutely-positioned <a> tags overlaying each sausage. Sausage
+   centers in the source 2000×760 PNG land roughly at 22%, 50%, and 78%
+   horizontally; tap targets are sized as a percentage of the chain so they
+   scale with the image at every viewport. */
+.ym-footer-cta__hot-links {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  line-height: 0;
+}
+
+.ym-footer-cta__hot-links-chain {
+  display: block;
+  width: 100%;
   height: auto;
-  margin: 0 auto 32px;
-  display: block;
+  /* Black-on-transparent line art; tint slightly to read on dark footer. */
+  filter: invert(1);
 }
 
-.ym-footer-cta__socials {
+.ym-footer-cta__hot-link {
+  position: absolute;
+  /* Measured from the source PNG: vertical ink median is at 45.7%,
+     so the sausage bodies sit slightly above the image's geometric midline. */
+  top: 46%;
+  width: 26%;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
   align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  /* Guarantee a 44×44 tap target on small screens even if the visual
+     icon shrinks below that. */
+  min-height: 44px;
 }
 
-.ym-footer-cta__social-link {
-  display: block;
-  transition: opacity 0.2s ease;
+.ym-footer-cta__hot-link:hover,
+.ym-footer-cta__hot-link:focus-visible {
+  transform: translate(-50%, -50%) scale(1.06);
+  opacity: 0.9;
 }
 
-.ym-footer-cta__social-link:hover {
-  opacity: 0.7;
-}
+/* Horizontal centers of each sausage body in the source 1723×267 PNG,
+   measured from outline-curve positions: midpoints land at 17.9%, 49.2%, 81.1%. */
+.ym-footer-cta__hot-link--instagram { left: 17.9%; }
+.ym-footer-cta__hot-link--facebook  { left: 49.2%; }
+.ym-footer-cta__hot-link--tiktok    { left: 81.1%; }
 
-.ym-footer-cta__social-link img {
-  height: 28px;
+.ym-footer-cta__hot-link img {
+  /* Size by height only so all three wordmarks have matching letter
+     height regardless of source aspect ratio (TIKTOK's PNG is more
+     compact than INSTAGRAM/FACEBOOK, so width-based sizing would
+     blow it up vertically). max-width keeps it inside its sausage. */
+  height: 45%;
   width: auto;
+  max-width: 80%;
+  object-fit: contain;
+  /* Recolor cream wordmarks → YM orange (#F16022) without re-rendering
+     the source PNGs. Filter chain derived for that target color. */
+  filter: brightness(0) saturate(100%) invert(45%) sepia(74%) saturate(2466%) hue-rotate(354deg) brightness(96%) contrast(91%);
 }
 
 /* =============================================

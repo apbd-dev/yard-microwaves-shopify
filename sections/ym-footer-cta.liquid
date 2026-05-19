@@ -5,41 +5,41 @@
   </div>
   <div class="ym-container">
     <h2 class="ym-footer-cta__heading">
-      {{ section.settings.heading | default: 'WANT MORE YARD MICROWAVES?' }}
+      {{ section.settings.heading | default: 'HOT LINKS' }}
     </h2>
 
-    {%- if section.settings.show_mascot -%}
+    {%- comment -%} Horizontal sausage chain (#48). Single chain PNG + three absolutely-positioned links, one per sausage, each carrying its platform icon. {%- endcomment -%}
+    <div class="ym-footer-cta__hot-links">
       <img
-        src="{{ 'ym-mascot.png' | asset_url }}"
-        alt="Yard Microwaves mascot"
+        class="ym-footer-cta__hot-links-chain"
+        src="{{ 'ym-hot-links-chain.png' | asset_url }}"
+        alt=""
+        role="presentation"
         loading="lazy"
-        width="80"
-        height="72"
-        class="ym-footer-cta__mascot"
+        width="1723"
+        height="267"
       >
-    {%- endif -%}
-
-    <div class="ym-footer-cta__socials">
       {%- for block in section.blocks -%}
         {%- if block.type == 'social_link' -%}
+          {%- assign platform_slug = block.settings.platform | downcase -%}
           <a
             href="{{ block.settings.url }}"
-            class="ym-footer-cta__social-link"
+            class="ym-footer-cta__hot-link ym-footer-cta__hot-link--{{ platform_slug }}"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="{{ block.settings.platform }}"
             {{ block.shopify_attributes }}
           >
             {%- if block.settings.icon != blank -%}
-              {{ block.settings.icon | image_url: width: 48 | image_tag: loading: 'lazy' }}
+              {{ block.settings.icon | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
             {%- else -%}
               {%- case block.settings.platform -%}
                 {%- when 'Instagram' -%}
-                  <img src="{{ 'ym-icon-instagram.png' | asset_url }}" alt="Instagram" loading="lazy" width="285" height="49">
+                  <img src="{{ 'ym-icon-instagram.png' | asset_url }}" alt="" loading="lazy" width="285" height="49">
                 {%- when 'Facebook' -%}
-                  <img src="{{ 'ym-icon-facebook.png' | asset_url }}" alt="Facebook" loading="lazy" width="256" height="49">
+                  <img src="{{ 'ym-icon-facebook.png' | asset_url }}" alt="" loading="lazy" width="256" height="49">
                 {%- when 'TikTok' -%}
-                  <img src="{{ 'ym-icon-tiktok.png' | asset_url }}" alt="TikTok" loading="lazy" width="175" height="49">
+                  <img src="{{ 'ym-icon-tiktok.png' | asset_url }}" alt="" loading="lazy" width="175" height="49">
               {%- endcase -%}
             {%- endif -%}
           </a>
@@ -59,13 +59,7 @@
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "WANT MORE YARD MICROWAVES?"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_mascot",
-      "label": "Show mascot logo",
-      "default": true
+      "default": "HOT LINKS"
     }
   ],
   "blocks": [

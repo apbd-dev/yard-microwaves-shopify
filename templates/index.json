@@ -136,8 +136,7 @@
     "ym_footer_cta": {
       "type": "ym-footer-cta",
       "settings": {
-        "heading": "WANT MORE YARD MICROWAVES?",
-        "show_mascot": true
+        "heading": "HOT LINKS"
       },
       "blocks": {
         "social_instagram": {
