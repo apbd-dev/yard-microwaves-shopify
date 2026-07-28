@@ -28,10 +28,10 @@ Both push an explicit theme ID (never `--live`), so a missing secret fails loudl
 | --- | --- |
 | `SHOPIFY_CLI_THEME_TOKEN` | Theme Access app password (`shptka_…`) — create via the [Theme Access](https://shopify.dev/docs/storefronts/themes/tools/theme-access) app in admin |
 | `SHOPIFY_STORE_URL` | `yard-microwaves.myshopify.com` |
-| `SHOPIFY_STAGING_THEME_ID` | ID of the unpublished staging theme (currently `186784907542`, the "Yard Microwaves" theme) |
+| `SHOPIFY_STAGING_THEME_ID` | ID of the unpublished staging theme (`188645933334`, "Yard Microwaves Staging") |
 | `SHOPIFY_LIVE_THEME_ID` | ID of the published theme — **unset until launch cutover**, so releases cannot deploy anywhere by accident |
 
-**One-time launch cutover** (currently live is the stock "Savor" theme, not this repo): publish the staging theme in admin (it becomes live) → set `SHOPIFY_LIVE_THEME_ID` to its ID (`186784907542`) → duplicate it in admin as the new staging theme → point `SHOPIFY_STAGING_THEME_ID` at the duplicate's ID. From then on: merge → staging, release → live.
+**One-time launch cutover** (currently live is the stock "Savor" theme, not this repo): publish the **"Yard Microwaves"** theme (`186784907542`) in admin — it becomes live → set `SHOPIFY_LIVE_THEME_ID=186784907542`. The separate "Yard Microwaves Staging" theme (`188645933334`) already exists and stays the staging target. From then on: merge → staging, release → live.
 
 Pull requests run Theme Check (`.github/workflows/theme-check.yml`), which must pass before merging to `main`.
 
