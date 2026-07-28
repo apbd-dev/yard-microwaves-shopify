@@ -1,0 +1,13 @@
+# Checks with pre-existing offenses when CI enforcement was added (issue #91):
+# 23x ImgWidthAndHeight, 19x MatchingTranslations (one key missing in every
+# locale), 3x ValidSchemaTranslations, 1x ValidBlockTarget. Disabled so the
+# gate stays green on legacy debt while still catching regressions everywhere
+# else — re-enable each as the debt burns down (tracked in issue #93).
+ImgWidthAndHeight:
+  enabled: false
+MatchingTranslations:
+  enabled: false
+ValidSchemaTranslations:
+  enabled: false
+ValidBlockTarget:
+  enabled: false

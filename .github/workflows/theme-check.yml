@@ -13,8 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Theme Check
-        uses: shopify/theme-check-action@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          theme_root: "."
-          version: latest
+          node-version: '22'
+
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli
+
+      # shopify/theme-check-action@v2 crashes on the Node 24 runners GitHub
+      # forces since June 2026, so we run the check via the CLI directly.
+      - name: Run Theme Check
+        run: shopify theme check --fail-level error
