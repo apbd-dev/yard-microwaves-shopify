@@ -1,0 +1,52 @@
+name: Deploy to live theme
+
+on:
+  release:
+    types: [published]
+  # Manual fallback — same guarded path as a release.
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy theme to live
+    runs-on: ubuntu-latest
+    concurrency:
+      group: shopify-deploy-live
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check required secrets
+        env:
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+          SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE_URL }}
+          SHOPIFY_LIVE_THEME_ID: ${{ secrets.SHOPIFY_LIVE_THEME_ID }}
+        run: |
+          missing=""
+          [ -z "$SHOPIFY_CLI_THEME_TOKEN" ] && missing="$missing SHOPIFY_CLI_THEME_TOKEN"
+          [ -z "$SHOPIFY_STORE_URL" ] && missing="$missing SHOPIFY_STORE_URL"
+          [ -z "$SHOPIFY_LIVE_THEME_ID" ] && missing="$missing SHOPIFY_LIVE_THEME_ID"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repo Actions secret(s):$missing — SHOPIFY_LIVE_THEME_ID is set at launch cutover, see README.md § Deployment"
+            exit 1
+          fi
+
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli
+
+      - name: Deploy theme to live
+        env:
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE_URL }}
+          SHOPIFY_FLAG_PATH: .
+        # An explicit theme ID (never `--live`) so this lane only ever writes
+        # to the theme we designated as live at cutover. The repo is the single
+        # source of truth: settings/templates JSON ship from git too, so don't
+        # edit the live theme in the Shopify customizer.
+        run: shopify theme push --theme "${{ secrets.SHOPIFY_LIVE_THEME_ID }}" --allow-live
