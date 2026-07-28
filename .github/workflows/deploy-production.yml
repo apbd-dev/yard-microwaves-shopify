@@ -21,17 +21,29 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Check required secrets
+        env:
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+          SHOPIFY_STORE_URL: ${{ secrets.SHOPIFY_STORE_URL }}
+          SHOPIFY_THEME_ID: ${{ secrets.SHOPIFY_THEME_ID }}
+        run: |
+          missing=""
+          [ -z "$SHOPIFY_CLI_THEME_TOKEN" ] && missing="$missing SHOPIFY_CLI_THEME_TOKEN"
+          [ -z "$SHOPIFY_STORE_URL" ] && missing="$missing SHOPIFY_STORE_URL"
+          [ -z "$SHOPIFY_THEME_ID" ] && missing="$missing SHOPIFY_THEME_ID"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repo Actions secret(s):$missing — see README.md § Deployment"
+            exit 1
+          fi
+
       - name: Install Shopify CLI
-        run: npm install -g @shopify/cli @shopify/theme
+        run: npm install -g @shopify/cli
 
       - name: Deploy theme
         env:
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE_URL }}
           SHOPIFY_FLAG_PATH: .
-        run: |
-          if [ -n "${{ secrets.SHOPIFY_THEME_ID }}" ]; then
-            shopify theme push --theme "${{ secrets.SHOPIFY_THEME_ID }}"
-          else
-            shopify theme push --live
-          fi
+        # An explicit theme ID is required on purpose: no --live fallback, so a
+        # missing/unset SHOPIFY_THEME_ID can never overwrite the published theme.
+        run: shopify theme push --theme "${{ secrets.SHOPIFY_THEME_ID }}"
