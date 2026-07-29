@@ -1,6 +1,19 @@
 {
   "type": "footer",
   "name": "Footer",
-  "sections": {},
-  "order": []
+  "sections": {
+    "footer_section": {
+      "type": "footer",
+      "blocks": {
+        "footer_utilities": {
+          "type": "footer-utilities",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": ["footer_utilities"],
+      "settings": {}
+    }
+  },
+  "order": ["footer_section"]
 }
