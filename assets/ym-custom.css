@@ -1193,15 +1193,13 @@ html { scroll-behavior: smooth; }
   display: block;
   width: 100%;
   height: auto;
-  /* Black-on-transparent line art; tint slightly to read on dark footer. */
-  filter: invert(1);
 }
 
 .ym-footer-cta__hot-link {
   position: absolute;
-  /* Measured from the source PNG: vertical ink median is at 45.7%,
-     so the sausage bodies sit slightly above the image's geometric midline. */
-  top: 46%;
+  /* Measured from the source PNG: vertical ink median is at 51%,
+     so the sausage bodies sit on the image's midline. */
+  top: 51%;
   width: 26%;
   display: flex;
   align-items: center;
@@ -1219,11 +1217,11 @@ html { scroll-behavior: smooth; }
   opacity: 0.9;
 }
 
-/* Horizontal centers of each sausage body in the source 1723×267 PNG,
-   measured from outline-curve positions: midpoints land at 17.9%, 49.2%, 81.1%. */
-.ym-footer-cta__hot-link--instagram { left: 17.9%; }
-.ym-footer-cta__hot-link--facebook  { left: 49.2%; }
-.ym-footer-cta__hot-link--tiktok    { left: 81.1%; }
+/* Horizontal centers of each sausage body in the source 1192×89 PNG,
+   measured as alpha-weighted centroids: midpoints land at 17.7%, 50.0%, 82.2%. */
+.ym-footer-cta__hot-link--instagram { left: 17.7%; }
+.ym-footer-cta__hot-link--facebook  { left: 50%; }
+.ym-footer-cta__hot-link--tiktok    { left: 82.2%; }
 
 .ym-footer-cta__hot-link img {
   /* Size by height only so all three wordmarks have matching letter
@@ -1234,9 +1232,8 @@ html { scroll-behavior: smooth; }
   width: auto;
   max-width: 80%;
   object-fit: contain;
-  /* Recolor cream wordmarks → YM orange (#F16022) without re-rendering
-     the source PNGs. Filter chain derived for that target color. */
-  filter: brightness(0) saturate(100%) invert(45%) sepia(74%) saturate(2466%) hue-rotate(354deg) brightness(96%) contrast(91%);
+  /* Wordmarks stay their native cream — the chain art is now full-color
+     orange sausages, so an orange recolor would disappear into the body. */
 }
 
 /* =============================================
