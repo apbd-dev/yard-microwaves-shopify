@@ -1201,6 +1201,9 @@ html { scroll-behavior: smooth; }
      so the sausage bodies sit on the image's midline. */
   top: 51%;
   width: 26%;
+  /* Definite height (tracks the chain image) so the wordmark's
+     percentage height sizing below can resolve. */
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1228,9 +1231,9 @@ html { scroll-behavior: smooth; }
      height regardless of source aspect ratio (TIKTOK's PNG is more
      compact than INSTAGRAM/FACEBOOK, so width-based sizing would
      blow it up vertically). max-width keeps it inside its sausage. */
-  height: 45%;
+  height: 30%;
   width: auto;
-  max-width: 80%;
+  max-width: 70%;
   object-fit: contain;
   /* Wordmarks stay their native cream — the chain art is now full-color
      orange sausages, so an orange recolor would disappear into the body. */
