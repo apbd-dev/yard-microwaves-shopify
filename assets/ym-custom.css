@@ -352,14 +352,14 @@ html { scroll-behavior: smooth; }
 .ym-pioneers__pellets--top {
   left: 84.64%;        /* 1625 / 1920 */
   top: 6.54%;          /* 83 / 1269 */
-  width: 31.98%;       /* 614 / 1920 */
+  width: 23.99%;       /* 614 / 1920, scaled ×0.75 */
 }
 
 /* Bottom pellet scatter — Figma node 2371:143 at (1238, 764), 181×318 */
 .ym-pioneers__pellets--bottom {
   left: 64.48%;        /* 1238 / 1920 */
   top: 60.20%;         /* 764 / 1269 */
-  width: 9.43%;        /* 181 / 1920 */
+  width: 7.07%;        /* 181 / 1920, scaled ×0.75 */
 }
 
 /* Text column — Figma Group 49 (2318:1376) at (1249, 408), 516×271 */
@@ -611,21 +611,21 @@ html { scroll-behavior: smooth; }
 .ym-story__pellets--tr {
   left: 52.19%;        /* 1002 / 1920 */
   top: 9.61%;          /* 117 / 1217 */
-  width: 9.01%;        /* 173 / 1920 */
+  width: 6.76%;        /* 173 / 1920, scaled ×0.75 */
 }
 
 /* Figma 2360:37 — bottom-left strip at (105, 575), 201×436 */
 .ym-story__pellets--bl {
   left: 5.47%;         /* 105 / 1920 */
   top: 47.25%;         /* 575 / 1217 */
-  width: 10.47%;       /* 201 / 1920 */
+  width: 7.85%;        /* 201 / 1920, scaled ×0.75 */
 }
 
 /* Figma 2360:26 — right-side strip at (993, 584), 171×436 */
 .ym-story__pellets--r {
   left: 51.72%;        /* 993 / 1920 */
   top: 47.99%;         /* 584 / 1217 */
-  width: 8.91%;        /* 171 / 1920 */
+  width: 6.68%;        /* 171 / 1920, scaled ×0.75 */
 }
 
 /* Right-column text — gold, centered, Figma font sizing */
@@ -769,9 +769,9 @@ html { scroll-behavior: smooth; }
    cluster 1228×604 wide, scatter 362×636 vertical, sm 346×648 vertical).
    Width drives size; height: auto preserves intrinsic ratio. */
 .ym-showcase__pellets { height: auto; }
-.ym-showcase__pellets--right  { left: 78%; top: 76%; width: 22%; }  /* wide strip — bottom-right corner */
-.ym-showcase__pellets--bottom { left: 12%; top: 84%; width: 10%; }  /* vertical scatter — bottom-left */
-.ym-showcase__pellets--accent { left:  3%; top: 60%; width:  5%; }  /* narrow vertical — left edge accent */
+.ym-showcase__pellets--right  { left: 83.5%; top: 76%; width: 16.5%; }  /* wide strip — bottom-right corner (left bumped so it stays corner-pinned) */
+.ym-showcase__pellets--bottom { left: 12%; top: 84%; width: 7.5%; }  /* vertical scatter — bottom-left */
+.ym-showcase__pellets--accent { left:  3%; top: 60%; width:  3.75%; }  /* narrow vertical — left edge accent */
 
 /* Front shirt — Figma 2597:565 at (-255, 0), 1604×1604 */
 .ym-showcase__shirt--front {
