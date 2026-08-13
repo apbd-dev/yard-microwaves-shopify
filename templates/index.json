@@ -31,7 +31,7 @@
         "ingredient_2": {
           "type": "ingredient",
           "settings": {
-            "text": "Heavy weight material — 100% combed cotton"
+            "text": "Heavy weight material \u2014 100% combed cotton"
           }
         },
         "ingredient_3": {
@@ -101,7 +101,10 @@
           "settings": {}
         }
       },
-      "block_order": ["rp_thumb_1", "rp_thumb_2"]
+      "block_order": [
+        "rp_thumb_1",
+        "rp_thumb_2"
+      ]
     },
     "ym_quality_banner": {
       "type": "ym-quality-banner",
@@ -131,37 +134,10 @@
           "settings": {}
         }
       },
-      "block_order": ["ss_thumb_1", "ss_thumb_2"]
-    },
-    "ym_footer_cta": {
-      "type": "ym-footer-cta",
-      "settings": {
-        "heading": "HOT LINKS"
-      },
-      "blocks": {
-        "social_instagram": {
-          "type": "social_link",
-          "settings": {
-            "platform": "Instagram",
-            "url": "https://instagram.com/yardmicrowaves"
-          }
-        },
-        "social_facebook": {
-          "type": "social_link",
-          "settings": {
-            "platform": "Facebook",
-            "url": "https://facebook.com/yardmicrowaves"
-          }
-        },
-        "social_tiktok": {
-          "type": "social_link",
-          "settings": {
-            "platform": "TikTok",
-            "url": "https://tiktok.com/@yardmicrowaves"
-          }
-        }
-      },
-      "block_order": ["social_instagram", "social_facebook", "social_tiktok"]
+      "block_order": [
+        "ss_thumb_1",
+        "ss_thumb_2"
+      ]
     }
   },
   "order": [
@@ -171,7 +147,6 @@
     "ym_story",
     "ym_showcase_rubplug",
     "ym_quality_banner",
-    "ym_showcase_smokesig",
-    "ym_footer_cta"
+    "ym_showcase_smokesig"
   ]
 }

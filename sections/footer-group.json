@@ -2,142 +2,57 @@
   "type": "footer",
   "name": "Footer",
   "sections": {
+    "ym_footer_cta": {
+      "type": "ym-footer-cta",
+      "settings": {
+        "heading": "HOT LINKS"
+      },
+      "blocks": {
+        "social_instagram": {
+          "type": "social_link",
+          "settings": {
+            "platform": "Instagram",
+            "url": "https://instagram.com/yardmicrowaves"
+          }
+        },
+        "social_facebook": {
+          "type": "social_link",
+          "settings": {
+            "platform": "Facebook",
+            "url": "https://facebook.com/yardmicrowaves"
+          }
+        },
+        "social_tiktok": {
+          "type": "social_link",
+          "settings": {
+            "platform": "TikTok",
+            "url": "https://tiktok.com/@yardmicrowaves"
+          }
+        }
+      },
+      "block_order": [
+        "social_instagram",
+        "social_facebook",
+        "social_tiktok"
+      ]
+    },
     "footer_section": {
       "type": "footer",
       "blocks": {
-        "columns": {
-          "type": "group",
-          "settings": {
-            "content_direction": "row",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "space-between",
-            "vertical_alignment": "flex-start",
-            "gap": 48,
-            "width": "fill",
-            "width_mobile": "fill",
-            "inherit_color_scheme": true
-          },
-          "blocks": {
-            "brand": {
-              "type": "group",
-              "settings": {
-                "content_direction": "column",
-                "horizontal_alignment_flex_direction_column": "flex-start",
-                "gap": 12,
-                "width": "custom",
-                "custom_width": 32,
-                "width_mobile": "fill",
-                "inherit_color_scheme": true
-              },
-              "blocks": {
-                "brand_heading": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<h3>Yard Microwaves</h3>",
-                    "type_preset": "h3",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "left"
-                  }
-                },
-                "brand_tagline": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>We do not make grills. We never have. Please stop asking.</p>",
-                    "type_preset": "paragraph",
-                    "width": "100%",
-                    "max_width": "narrow",
-                    "alignment": "left"
-                  }
-                }
-              },
-              "block_order": ["brand_heading", "brand_tagline"]
-            },
-            "shop_menu": {
-              "type": "menu",
-              "settings": {
-                "menu": "main-menu",
-                "heading": "Shop",
-                "heading_preset": "h6",
-                "link_preset": "paragraph",
-                "menu_spacing": 12,
-                "inherit_color_scheme": true
-              }
-            },
-            "signup": {
-              "type": "group",
-              "settings": {
-                "content_direction": "column",
-                "horizontal_alignment_flex_direction_column": "flex-start",
-                "gap": 16,
-                "width": "custom",
-                "custom_width": 36,
-                "width_mobile": "fill",
-                "inherit_color_scheme": true
-              },
-              "blocks": {
-                "signup_form": {
-                  "type": "email-signup",
-                  "settings": {
-                    "heading": "Get plugged in",
-                    "heading_preset": "h6",
-                    "width": "fill",
-                    "inherit_color_scheme": true,
-                    "border_style": "underline",
-                    "border_width": 1,
-                    "border_radius": 0,
-                    "display_type": "text",
-                    "label": "Plug in",
-                    "style_class": "button",
-                    "integrated_button": false
-                  }
-                },
-                "signup_tagline": {
-                  "type": "text",
-                  "settings": {
-                    "text": "<p>Drops, deals, and hot links — straight to your inbox. Extension cords not included.</p>",
-                    "type_preset": "paragraph",
-                    "width": "100%",
-                    "max_width": "narrow",
-                    "alignment": "left"
-                  }
-                }
-              },
-              "block_order": ["signup_form", "signup_tagline"]
-            }
-          },
-          "block_order": ["brand", "shop_menu", "signup"]
-        },
-        "jumbo": {
-          "type": "jumbo-text",
-          "settings": {
-            "text": "Yard Microwaves",
-            "font": "heading",
-            "alignment": "left",
-            "line_height": "0.8",
-            "letter_spacing": "-0.03em",
-            "case": "uppercase",
-            "text_effect": "reveal",
-            "animation_repeat": false
-          }
-        },
         "footer_utilities": {
           "type": "footer-utilities",
           "settings": {},
           "blocks": {}
         }
       },
-      "block_order": ["columns", "jumbo", "footer_utilities"],
-      "settings": {
-        "content_direction": "column",
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "gap": 48,
-        "section_width": "page-width",
-        "color_scheme": "scheme-5",
-        "padding-block-start": 64,
-        "padding-block-end": 20
-      }
+      "block_order": [
+        "footer_utilities"
+      ],
+      "settings": {}
     }
   },
-  "order": ["footer_section"]
+  "order": [
+    "ym_footer_cta",
+    "footer_section"
+  ]
 }
