@@ -1,0 +1,370 @@
+{
+ "paper-bg": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/b2df05d4-4dd6-427a-924d-058e08fe965b.jpeg",
+  "id": "361398925",
+  "hash": "c65530d42794",
+  "w": 600,
+  "h": 900,
+  "file": "paper-bg.jpg"
+ },
+ "badge-logo": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/a57c07cd-635b-4fd2-8ce3-ed26ee5fb348.png",
+  "id": "361398926",
+  "hash": "06633ad2a5f5",
+  "w": 200,
+  "h": 109,
+  "file": "badge-logo.png"
+ },
+ "logo-white": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/2b80f130-74c4-497a-8b1d-4b231c08cbc6.png",
+  "id": "361398927",
+  "hash": "fa12432ba805",
+  "w": 176,
+  "h": 91,
+  "file": "logo-white.png"
+ },
+ "nav-shop": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/708200f5-cbcc-4f06-ae5b-dd549d51a163.png",
+  "id": "361398928",
+  "hash": "2a65bd646f92",
+  "w": 82,
+  "h": 53,
+  "file": "nav-shop.png"
+ },
+ "nav-story": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/4a96e60e-ef46-4969-8bdd-17e40f1cff41.png",
+  "id": "361398929",
+  "hash": "44458e5a5d16",
+  "w": 98,
+  "h": 53,
+  "file": "nav-story.png"
+ },
+ "h-welcome-new": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/b2e2dd7d-fcbc-4ecd-87ff-85e5d0119415.png",
+  "id": "361398931",
+  "hash": "4a734c6e2e43",
+  "w": 393,
+  "h": 64,
+  "file": "h-welcome-new.png"
+ },
+ "h-welcome-exist": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/f391bf9c-a57c-4f04-bdea-3b6a3e335705.png",
+  "id": "361398933",
+  "hash": "52d6b0435a70",
+  "w": 356,
+  "h": 64,
+  "file": "h-welcome-exist.png"
+ },
+ "h-follow": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/dddbb356-bdac-4430-9fb7-be6a2e3887bf.png",
+  "id": "361398934",
+  "hash": "d2226ac73f04",
+  "w": 295,
+  "h": 64,
+  "file": "h-follow.png"
+ },
+ "h-review-req": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/5af200ee-445a-4112-9b59-396fc90df89a.png",
+  "id": "361398935",
+  "hash": "f8dcf3aa4b5d",
+  "w": 361,
+  "h": 64,
+  "file": "h-review-req.png"
+ },
+ "h-review-rem": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/0e0eac80-96be-40db-b923-51861842a7d9.png",
+  "id": "361398937",
+  "hash": "10c682acd9ac",
+  "w": 463,
+  "h": 64,
+  "file": "h-review-rem.png"
+ },
+ "h-shipping": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/c3080bae-16a1-4499-a3f6-194c7ce29984.png",
+  "id": "361398939",
+  "hash": "6d5f221189df",
+  "w": 274,
+  "h": 64,
+  "file": "h-shipping.png"
+ },
+ "h-order": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/39a19e0f-96da-4b0a-a488-5621e906b17e.png",
+  "id": "361398940",
+  "hash": "8b3c0ce40205",
+  "w": 440,
+  "h": 64,
+  "file": "h-order.png"
+ },
+ "h-cart-1": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/bf712c0b-ffea-4f16-9208-df8800760251.png",
+  "id": "361398941",
+  "hash": "c121e91cd793",
+  "w": 502,
+  "h": 116,
+  "file": "h-cart-1.png"
+ },
+ "h-cart-2": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/1e060008-aaae-41b6-8a76-ef923b420264.png",
+  "id": "361398942",
+  "hash": "c7293eacdf0b",
+  "w": 502,
+  "h": 116,
+  "file": "h-cart-2.png"
+ },
+ "h-browse": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/e27b5aed-b91a-44a6-91b6-9cea86282d73.png",
+  "id": "361398943",
+  "hash": "941e40544ed1",
+  "w": 502,
+  "h": 116,
+  "file": "h-browse.png"
+ },
+ "b-shop-now": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/3266e152-ca5c-489a-83fe-b21f0ea7e6a5.png",
+  "id": "361398944",
+  "hash": "48d6e1484191",
+  "w": 100,
+  "h": 34,
+  "file": "b-shop-now.png"
+ },
+ "b-back-to-cart": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/784efdd0-d298-4256-b994-cc95fc8e0862.png",
+  "id": "361398945",
+  "hash": "1da3209f41b8",
+  "w": 147,
+  "h": 34,
+  "file": "b-back-to-cart.png"
+ },
+ "b-track-package": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/b563f9bc-78f2-4f3c-9555-3315bf3943cf.png",
+  "id": "361398946",
+  "hash": "a36e7cea0b0d",
+  "w": 190,
+  "h": 34,
+  "file": "b-track-package.png"
+ },
+ "b-track-order": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/944843fa-019b-4ade-ac5e-d343d7fe2ea3.png",
+  "id": "361398947",
+  "hash": "3f37ec19d88b",
+  "w": 172,
+  "h": 34,
+  "file": "b-track-order.png"
+ },
+ "b-follow-ig": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/5a35fa24-be43-4c3e-887e-bf0544624ab5.png",
+  "id": "361398948",
+  "hash": "0f083c69a0a3",
+  "w": 226,
+  "h": 34,
+  "file": "b-follow-ig.png"
+ },
+ "b-leave-review": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/8344f027-2097-4bb8-abff-3f1df9239302.png",
+  "id": "361398949",
+  "hash": "d1368e56d5ef",
+  "w": 139,
+  "h": 34,
+  "file": "b-leave-review.png"
+ },
+ "b-our-story": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/b00e618a-4a0b-472d-93a9-7361344bde28.png",
+  "id": "361398950",
+  "hash": "bd97965a86b4",
+  "w": 94,
+  "h": 34,
+  "file": "b-our-story.png"
+ },
+ "pill-shop-now": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/b1789fa0-7ace-4884-9fdb-3c09b2c9dc5d.png",
+  "id": "361398952",
+  "hash": "cec7e9704c76",
+  "w": 176,
+  "h": 56,
+  "file": "pill-shop-now.png"
+ },
+ "pill-back-to-cart": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/3c2a27a3-4d84-42a9-aa2b-2c23e1f8cb63.png",
+  "id": "361398953",
+  "hash": "4f50500f17b6",
+  "w": 223,
+  "h": 56,
+  "file": "pill-back-to-cart.png"
+ },
+ "pill-track-package": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/755b41cd-9c9e-4d69-ba32-bd28c987e60f.png",
+  "id": "361398954",
+  "hash": "5d4dc7f03f66",
+  "w": 266,
+  "h": 56,
+  "file": "pill-track-package.png"
+ },
+ "pill-track-order": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/440ad0ec-e629-43a4-83f2-7d0b21c26ba2.png",
+  "id": "361398955",
+  "hash": "c902bdb8d8ac",
+  "w": 248,
+  "h": 56,
+  "file": "pill-track-order.png"
+ },
+ "pill-follow-ig": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/8a98957d-69ec-42b9-a77c-4db3b324e12b.png",
+  "id": "361398956",
+  "hash": "afe41f3b6b59",
+  "w": 302,
+  "h": 56,
+  "file": "pill-follow-ig.png"
+ },
+ "pill-leave-review": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/8441aa50-56eb-4fc0-b28a-6b72d3cd732a.png",
+  "id": "361398957",
+  "hash": "3b6e76e7c223",
+  "w": 215,
+  "h": 56,
+  "file": "pill-leave-review.png"
+ },
+ "pill-our-story": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/1339aef1-e65b-4090-a196-191d274c642d.png",
+  "id": "361398958",
+  "hash": "9c5bceb00ec1",
+  "w": 170,
+  "h": 56,
+  "file": "pill-our-story.png"
+ },
+ "hero-smoker": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/fcc95f50-439f-4802-83a7-8202b15c4a92.png",
+  "id": "361398959",
+  "hash": "5c4c445dab46",
+  "w": 600,
+  "h": 330,
+  "file": "hero-smoker.png"
+ },
+ "showcase": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/a76fe9e7-a6cd-4e18-841d-676d63448593.png",
+  "id": "361398960",
+  "hash": "ec4893276eee",
+  "w": 600,
+  "h": 580,
+  "file": "showcase.png"
+ },
+ "quality-band": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/e280f4fb-48a5-436d-8375-cae41bbfbf2c.png",
+  "id": "361398961",
+  "hash": "15d87d5b9f9d",
+  "w": 600,
+  "h": 92,
+  "file": "quality-band.png"
+ },
+ "freeship": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/f0150b16-06ee-4d47-8948-92c0d059a22b.png",
+  "id": "361398962",
+  "hash": "6882f35fe99f",
+  "w": 170,
+  "h": 170,
+  "file": "freeship.png"
+ },
+ "recipe-card": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/1d24df3b-6613-44af-8a1b-bbeb590b8752.png",
+  "id": "361398963",
+  "hash": "56db40cd788e",
+  "w": 600,
+  "h": 249,
+  "file": "recipe-card.png"
+ },
+ "tagline-brisket": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/0a4987b8-e08a-4b5a-86f5-249796e5c19f.png",
+  "id": "361398966",
+  "hash": "1ba36555904a",
+  "w": 260,
+  "h": 306,
+  "file": "tagline-brisket.png"
+ },
+ "torn-to-dark": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/61070ad3-2f50-46a1-b481-6aa879454f77.png",
+  "id": "361398973",
+  "hash": "0772f143d18a",
+  "w": 600,
+  "h": 100,
+  "file": "torn-to-dark.png"
+ },
+ "hotlinks-heading": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/26c71521-5534-4872-8ce3-1db67aeca4da.png",
+  "id": "361398975",
+  "hash": "6895d9a614c9",
+  "w": 179,
+  "h": 42,
+  "file": "hotlinks-heading.png"
+ },
+ "hotlink-instagram": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/b200683a-1a35-4fbe-94fa-36ee454279c4.png",
+  "id": "361398976",
+  "hash": "9a7b2a1f6274",
+  "w": 196,
+  "h": 100,
+  "file": "hotlink-instagram.png"
+ },
+ "hotlink-facebook": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/f2d7c54b-cfaf-497d-8485-1a2d2cf41569.png",
+  "id": "361398978",
+  "hash": "8e22a941d1e2",
+  "w": 196,
+  "h": 100,
+  "file": "hotlink-facebook.png"
+ },
+ "hotlink-tiktok": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/f5cd9682-1213-4535-a912-879f98bd5528.png",
+  "id": "361398979",
+  "hash": "cb5959bf4e47",
+  "w": 196,
+  "h": 100,
+  "file": "hotlink-tiktok.png"
+ },
+ "mascot": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/9f769c21-26df-4b48-8996-fa7946bf0ae4.png",
+  "id": "361398980",
+  "hash": "d74f63a55049",
+  "w": 250,
+  "h": 180,
+  "file": "mascot.png"
+ },
+ "story-collage": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/416df2cc-c6fb-4e3c-996c-97c21c21ca14.png",
+  "id": "361398983",
+  "hash": "762bac1c527f",
+  "w": 320,
+  "h": 400,
+  "file": "story-collage.png"
+ },
+ "pioneers-photo": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/b1d1d813-87ca-4af0-a1e3-332a377276d1.png",
+  "id": "361398984",
+  "hash": "d07acc4c2a20",
+  "w": 300,
+  "h": 327,
+  "file": "pioneers-photo.png"
+ },
+ "pellets": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/2d35bf27-f1c9-4754-8b29-4a6b7b262c4d.png",
+  "id": "361398985",
+  "hash": "1d5901402ce8",
+  "w": 110,
+  "h": 54,
+  "file": "pellets.png"
+ },
+ "icon-smoke": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/90c8930d-5e8d-4974-ad03-7e96d1572157.png",
+  "id": "361398986",
+  "hash": "a1af098b8bd2",
+  "w": 42,
+  "h": 39,
+  "file": "icon-smoke.png"
+ },
+ "star": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/38ab703a-927c-4093-8435-ef5bd34d3362.png",
+  "id": "361398988",
+  "hash": "f57ee83a0d2e",
+  "w": 40,
+  "h": 40,
+  "file": "star.png"
+ }
+}
