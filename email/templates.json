@@ -2,61 +2,61 @@
  "welcome-1-new": {
   "id": "QR3AJm",
   "name": "YM Theme - Welcome #1 - New Subscriber (20% Off)",
-  "hash": "d93a53c6efa1"
+  "hash": "454949b17aa9"
  },
  "welcome-1-existing": {
   "id": "UrTmKj",
   "name": "YM Theme - Welcome #1 - Existing Customer",
-  "hash": "962109535b0f"
+  "hash": "b74898962b5f"
  },
  "welcome-2-follow": {
   "id": "TNSj8G",
   "name": "YM Theme - Welcome #2 - Follow Us",
-  "hash": "5602a709b82b"
+  "hash": "6e18a724dc98"
  },
  "review-request": {
   "id": "RprnZA",
   "name": "YM Theme - Review Request",
-  "hash": "99d301ba31a2"
+  "hash": "40869992f2f2"
  },
  "review-reminder": {
   "id": "XW7SqT",
   "name": "YM Theme - Review Reminder",
-  "hash": "ba18734c1106"
+  "hash": "217ab3ca222f"
  },
  "shipping-confirmation": {
   "id": "Xj6PNg",
   "name": "YM Theme - Shipping Confirmation",
-  "hash": "846d2f29ce90"
+  "hash": "1d22193eac18"
  },
  "order-confirmation": {
   "id": "T7e2aF",
   "name": "YM Theme - Order Confirmation",
-  "hash": "faf243541b0f"
+  "hash": "0ce3521b37a3"
  },
  "abandoned-cart-1": {
   "id": "RRbUVr",
   "name": "YM Theme - Abandoned Cart #1",
-  "hash": "6b405d32651f"
+  "hash": "bfcb7e66d183"
  },
  "abandoned-cart-2": {
   "id": "XetzsS",
   "name": "YM Theme - Abandoned Cart #2",
-  "hash": "f81384e0ef18"
+  "hash": "b16df460d7a6"
  },
  "abandoned-cart-3": {
   "id": "RLyEA3",
   "name": "YM Theme - Abandoned Cart #3 (15% Off)",
-  "hash": "e631a473fb21"
+  "hash": "b0a0d5466930"
  },
  "browse-abandonment-1": {
   "id": "R9xBXq",
   "name": "YM Theme - Browse Abandonment #1",
-  "hash": "4795b9ca0cf1"
+  "hash": "9466b574777d"
  },
  "browse-abandonment-2": {
   "id": "SVXvtT",
   "name": "YM Theme - Browse Abandonment #2",
-  "hash": "d2fdd0eac874"
+  "hash": "f94627625733"
  }
 }

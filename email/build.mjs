@@ -62,8 +62,10 @@ const small = (html) => block(html, `font-family:${COND};font-size:14px;line-hei
 /** Coupon callout — dashed olive ticket, Permanent-Marker-ish via condensed caps. */
 const coupon = (html) => block(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:6px auto 14px;"><tr><td align="center" style="border:2px dashed ${OLIVE};border-radius:8px;padding:12px 22px;font-family:${COND};font-size:16px;line-height:1.4;letter-spacing:.8px;text-transform:uppercase;color:${OLIVE};">${html}</td></tr></table>`, 'text-align:center;padding:0;');
 
-/** Editable body region (Klaviyo hybrid template). */
-const region = (blocks) => `<tr><td align="left" class="ym-pad" data-klaviyo-region="true" data-klaviyo-region-width-pixels="600" style="padding:10px 44px 4px;">${blocks.join('\n')}</td></tr>`;
+/** Body copy. Plain klaviyo-block divs, deliberately NOT inside a
+ *  data-klaviyo-region: Klaviyo rewrites region contents and strips the inline
+ *  typography (verified: 12 styled blocks → 4 after render). */
+const region = (blocks) => `<tr><td align="left" class="ym-pad" style="padding:10px 44px 4px;">${blocks.join('\n')}</td></tr>`;
 
 const showcase = () => row(picture('showcase', { w: 600, alt: 'Rub & Plug and Smoke Signal tees — relaxed fit, crew neck, heavy weight', href: SITE }), '6px 0 0');
 const quality = () => row(picture('quality-band', { w: 600, alt: 'Quality beyond compare. Preshrunk for perfection. Just like your brisket, our shirts exceed expectations. Guaranteed.' }), '4px 0 10px');
@@ -95,7 +97,7 @@ const shipItems = () => row(`{% if event.extra.line_items %}${lineItems({ priceE
 const totals = () => row(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="right" style="font-family:${COND};font-size:16px;line-height:1.7;color:${INK};">
 <tr><td style="padding-right:18px;color:${OLIVE};text-transform:uppercase;letter-spacing:.5px;">Subtotal</td><td align="right">{{ event.extra.subtotal_price }}</td></tr>
 <tr><td style="padding-right:18px;color:${OLIVE};text-transform:uppercase;letter-spacing:.5px;">Shipping</td><td align="right">{{ event.extra.shipping_lines.0.price }}</td></tr>
-<tr><td style="padding-right:18px;color:${OLIVE};text-transform:uppercase;letter-spacing:.5px;font-weight:bold;">Total</td><td align="right" style="font-weight:bold;">{{ event|lookup:'$value' }}</td></tr>
+<tr><td style="padding-right:18px;color:${OLIVE};text-transform:uppercase;letter-spacing:.5px;font-weight:bold;">Total</td><td align="right" style="font-weight:bold;">{{ event.extra.total_price|default:event.extra.subtotal_price }}</td></tr>
 </table>`, '0 44px 12px');
 
 const addressBlock = (label, p) => `<div style="font-family:${COND};font-size:14px;line-height:1.5;color:${INK};"><div style="color:${OLIVE};text-transform:uppercase;letter-spacing:.6px;font-size:13px;padding-bottom:3px;">${label}</div>
@@ -117,13 +119,13 @@ const stars = () => row(`<div style="font-family:${COND};font-size:17px;line-hei
   `<td style="padding:0 4px;"><a href="{{ event.review_link }}?rating=${n}" target="_blank" style="display:block;">${picture('star', { w: 36, alt: `Rate it ${n} star${n > 1 ? 's' : ''}` })}</a></td>`).join('')}</tr></table>`, '4px 40px 16px');
 
 /** 3-up "trending" grid from Klaviyo's Shopify product feed. */
-const feedGrid = (title) => row(`<div style="font-family:${COND};font-size:15px;line-height:1.4;letter-spacing:.8px;text-transform:uppercase;color:${OLIVE};padding:0 0 12px;text-align:center;">${title}</div>
+const feedGrid = (title) => row(`{% if feeds.SHOP_POPULAR_ALL_CATEGORIES|index:0 %}<div style="font-family:${COND};font-size:15px;line-height:1.4;letter-spacing:.8px;text-transform:uppercase;color:${OLIVE};padding:0 0 12px;text-align:center;">${title}</div>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>${[0, 1, 2].map((i) => `
 <td width="33%" valign="top" align="center" style="padding:0 6px;">{% if feeds.SHOP_POPULAR_ALL_CATEGORIES|index:${i} %}{% with item=feeds.SHOP_POPULAR_ALL_CATEGORIES|index:${i} %}
 <a href="{{ item.url }}" target="_blank" style="display:block;text-decoration:none;"><img src="{{ item.image_full_url }}" width="160" alt="{{ item.title|safe }}" style="display:block;width:160px;max-width:100%;height:auto;border:0;border-radius:6px;margin:0 auto 8px;"/>
 <div style="font-family:${COND};font-size:14px;line-height:1.3;color:${INK};font-weight:bold;">{{ item.title|safe }}</div>
 <div style="font-family:${COND};font-size:14px;line-height:1.5;color:${OLIVE};">{{ item.price|default:'' }}</div></a>
-{% endwith %}{% endif %}</td>`).join('')}</tr></table>`, '8px 30px 14px');
+{% endwith %}{% endif %}</td>`).join('')}</tr></table>{% endif %}`, '8px 30px 14px');
 
 /** Dark HOT LINKS footer, torn paper edge on top — the theme's ym-footer-cta. */
 function footer() {
@@ -134,7 +136,7 @@ ${picture('hotlinks-heading', { alt: 'Hot links', style: 'margin:0 auto 2px;' })
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:588px;"><tr>${hl('instagram', IG, 'Instagram')}${hl('facebook', FB, 'Facebook')}${hl('tiktok', TT, 'TikTok')}</tr></table>
 <div style="padding:18px 0 12px;">${picture('logo-white', { w: 132, alt: 'Yard Microwaves', href: SITE, style: 'margin:0 auto;' })}</div>
 <div style="font-family:${COND};font-size:14px;line-height:1.5;letter-spacing:1px;text-transform:uppercase;color:${CREAM};padding-bottom:12px;">Smoking meats. Chugging pilsners.<br/>Bringing families together.</div>
-<div style="font-family:${BODY};font-size:12px;line-height:1.75;color:#CBBFA2;">
+<div class="ym-foot" style="font-family:${BODY};font-size:12px;line-height:1.75;color:#CBBFA2;">
 <a href="${IG}" target="_blank" style="color:${PEACH};text-decoration:none;font-weight:bold;">@yardmicrowaves</a>&nbsp;&bull;&nbsp;<a href="${SITE}" target="_blank" style="color:${PEACH};text-decoration:none;font-weight:bold;">yardmicrowaves.com</a><br/>
 Yard Microwaves &middot; 24002 Via Fabricante #225, Mission Viejo, CA 92691<br/>
 You're getting this because you signed up at the Yard.<br/>
@@ -166,6 +168,7 @@ ul { margin:0 0 10px; padding-left:22px; }
 li { margin:0 0 4px; }
 h3, h4 { font-family:${COND}; color:${OLIVE}; text-transform:uppercase; letter-spacing:.6px; font-size:17px; line-height:1.3; margin:4px 0 8px; }
 table { border-collapse:collapse; }
+.ym-foot a { color:${PEACH}; }
 @media only screen and (max-width:620px) {
   .ym-container { width:100% !important; }
   .ym-pad { padding-left:16px !important; padding-right:16px !important; }
