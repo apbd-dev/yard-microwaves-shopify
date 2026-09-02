@@ -9,6 +9,10 @@
  */
 {
   "current": {
+    "posthog_project_token": "phc_mBws4fawcTkQ9panbP5LjWR5HYKBLHM8BL69DQyaJCP4",
+    "posthog_api_host": "https://us.i.posthog.com",
+    "posthog_session_replay": true,
+    "posthog_respect_consent": true,
     "type_body_font": "geist_n4",
     "type_subheading_font": "geist_n5",
     "type_heading_font": "geist_n6",
