@@ -2337,5 +2337,45 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Analytics",
+    "settings": [
+      {
+        "type": "header",
+        "content": "PostHog"
+      },
+      {
+        "type": "paragraph",
+        "content": "Storefront analytics. Paste the project token from PostHog > Settings > Project. Leave blank to load no analytics at all. Checkout and purchase events need the custom pixel as well - see docs/posthog.md."
+      },
+      {
+        "type": "text",
+        "id": "posthog_project_token",
+        "label": "Project token",
+        "info": "Starts with phc_. This is a public key, safe in page source. Never paste a personal key (phx_) here."
+      },
+      {
+        "type": "text",
+        "id": "posthog_api_host",
+        "label": "API host",
+        "default": "https://us.i.posthog.com",
+        "info": "https://us.i.posthog.com for US Cloud, https://eu.i.posthog.com for EU. Must match the region of the project the token belongs to."
+      },
+      {
+        "type": "checkbox",
+        "id": "posthog_session_replay",
+        "label": "Record session replays",
+        "default": true,
+        "info": "Replays every storefront session with all typed input masked."
+      },
+      {
+        "type": "checkbox",
+        "id": "posthog_respect_consent",
+        "label": "Respect customer privacy consent",
+        "default": true,
+        "info": "Holds analytics until the visitor accepts, on stores running a cookie banner. With no banner configured, analytics run normally."
+      }
+    ]
   }
 ]

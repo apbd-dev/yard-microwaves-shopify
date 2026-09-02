@@ -1,0 +1,168 @@
+{%- comment -%}
+  PostHog — storefront half.
+
+  This snippet covers everything Shopify renders from the theme: home, collection,
+  product, cart, blog, pages, account. It does NOT cover checkout or the thank-you
+  page — those are Shopify-hosted and no theme code runs there. That half lives in
+  the custom pixel (docs/posthog-custom-pixel.js), pasted into
+  Settings -> Customer events in the Shopify admin.
+
+  Division of labour, so nothing is counted twice:
+    - here:  $pageview, autocapture, session replay, web vitals, identity
+    - pixel: commerce events (product_viewed, add-to-cart, checkout_*, purchase)
+             and checkout-only pageviews
+
+  Identity stitching: posthog-js keeps its distinct_id in its own cookie, which
+  the pixel sandbox cannot parse reliably. So we mirror the id into a flat
+  first-party cookie (`ym_ph_id`) that the pixel reads back via
+  `browser.cookie.get()` — that call executes in the top frame, so it sees this
+  cookie on the checkout domain. Without it, checkout events land on a different
+  person and the conversion funnel silently reads 0%.
+
+  Configured under Theme settings -> Analytics. Blank token = this file emits
+  nothing at all.
+{%- endcomment -%}
+
+{%- liquid
+  assign ph_token = settings.posthog_project_token | strip
+  assign ph_host = settings.posthog_api_host | strip
+  if ph_host == blank
+    assign ph_host = 'https://us.i.posthog.com'
+  endif
+  assign ph_prefix = ph_token | slice: 0, 4
+
+  comment
+    Both toggles default to on. Note these cannot use the `default` filter:
+    Liquid treats `false` as empty, so `false | default: true` returns TRUE and
+    the checkbox could never be switched off. Compare against false explicitly.
+  endcomment
+  assign ph_replay = true
+  if settings.posthog_session_replay == false
+    assign ph_replay = false
+  endif
+
+  assign ph_consent = true
+  if settings.posthog_respect_consent == false
+    assign ph_consent = false
+  endif
+-%}
+
+{%- comment -%}
+  Guards, in order: a token is set; it actually looks like a PostHog project
+  token (these are public `phc_…` keys — a mis-pasted personal `phx_…` key would
+  be a real secret leak, so refuse it); and we are not in the theme editor,
+  whose preview reloads would otherwise pollute the funnel with fake sessions.
+{%- endcomment -%}
+{%- if ph_token != blank and ph_prefix == 'phc_' and request.design_mode == false -%}
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+
+    (function () {
+      var STITCH_COOKIE = 'ym_ph_id';
+      var RESPECT_CONSENT = {{ ph_consent | json }};
+
+      {%- comment -%}
+        Mirror posthog's ids into a flat cookie the checkout pixel can read.
+        Rewritten whenever the session rolls over (30 min idle / 24h max) so a
+        long browse that ends in a purchase still stitches to one session.
+      {%- endcomment -%}
+      function writeStitchCookie(ph) {
+        try {
+          var value = ph.get_distinct_id() + '|' + ph.get_session_id();
+          document.cookie =
+            STITCH_COOKIE +
+            '=' +
+            encodeURIComponent(value) +
+            '; path=/; max-age=31536000; SameSite=Lax' +
+            (location.protocol === 'https:' ? '; Secure' : '');
+        } catch (e) {}
+      }
+
+      {%- comment -%}
+        Shopify's consent API. When the store runs a cookie banner, capturing is
+        held until the visitor allows analytics. When no banner is configured the
+        API reports nothing to gate on and we capture — otherwise enabling this
+        setting on a store without a banner would silently record zero events.
+      {%- endcomment -%}
+      function applyConsent() {
+        try {
+          var cp = window.Shopify && window.Shopify.customerPrivacy;
+          if (!cp || typeof cp.analyticsProcessingAllowed !== 'function') {
+            window.posthog.opt_in_capturing();
+            return;
+          }
+          if (cp.analyticsProcessingAllowed()) {
+            window.posthog.opt_in_capturing();
+          } else {
+            window.posthog.opt_out_capturing();
+          }
+        } catch (e) {
+          window.posthog.opt_in_capturing();
+        }
+      }
+
+      function startConsentGate() {
+        document.addEventListener('visitorConsentCollected', applyConsent);
+        if (window.Shopify && typeof window.Shopify.loadFeatures === 'function') {
+          window.Shopify.loadFeatures(
+            [{ name: 'consent-tracking-api', version: '0.1' }],
+            applyConsent
+          );
+        } else {
+          applyConsent();
+        }
+      }
+
+      window.posthog.init({{ ph_token | json }}, {
+        api_host: {{ ph_host | json }},
+        defaults: '2026-01-30',
+        {%- comment -%}
+          Anonymous shoppers are the overwhelming majority of storefront traffic
+          and a person profile per drive-by visitor is pure cost. Profiles are
+          created on identify (login) and on purchase, via the pixel.
+        {%- endcomment -%}
+        person_profiles: 'identified_only',
+        capture_pageleave: true,
+        capture_exceptions: true,
+        {%- comment -%}
+          Masked replay: the storefront carries account login and contact forms.
+          Nothing typed is recorded — only where people clicked and scrolled.
+        {%- endcomment -%}
+        disable_session_recording: {{ ph_replay | json }} === false,
+        session_recording: { maskAllInputs: true },
+        capture_performance: { web_vitals: true },
+        capture_dead_clicks: true,
+        opt_out_capturing_by_default: RESPECT_CONSENT,
+        loaded: function (ph) {
+          {%- comment -%}
+            Every event carries the page type, so "which templates convert" is a
+            breakdown rather than a URL-regex exercise.
+          {%- endcomment -%}
+          ph.register({
+            shop_domain: {{ shop.permanent_domain | json }},
+            template: {{ template.name | json }},
+            brand: 'yard-microwaves'
+          });
+
+          {%- if customer -%}
+            ph.identify({{ customer.id | json }}, {
+              email: {{ customer.email | json }},
+              name: {{ customer.name | json }},
+              orders_count: {{ customer.orders_count | json }},
+              total_spent: {{ customer.total_spent | divided_by: 100.0 | json }}
+            });
+          {%- endif -%}
+
+          writeStitchCookie(ph);
+          ph.onSessionId(function () {
+            writeStitchCookie(ph);
+          });
+        }
+      });
+
+      if (RESPECT_CONSENT) {
+        startConsentGate();
+      }
+    })();
+  </script>
+{%- endif -%}
