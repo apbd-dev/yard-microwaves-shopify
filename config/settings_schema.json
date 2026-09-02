@@ -2347,13 +2347,13 @@
       },
       {
         "type": "paragraph",
-        "content": "Storefront analytics. Paste the project token from PostHog > Settings > Project. Leave blank to load no analytics at all. Checkout and purchase events need the custom pixel as well - see docs/posthog.md."
+        "content": "Storefront analytics, PostHog project 545620 (shared Deep Seas). These values ship from config/settings_data.json in the repo - a deploy overwrites anything changed here, so edit them in git. Leave the token blank to load no analytics at all. Checkout and purchase events need the custom pixel as well - see docs/posthog.md."
       },
       {
         "type": "text",
         "id": "posthog_project_token",
         "label": "Project token",
-        "info": "Starts with phc_. This is a public key, safe in page source. Never paste a personal key (phx_) here."
+        "info": "Starts with phc_. Public key - it ships in page source by design. Never paste a personal key (phx_) here."
       },
       {
         "type": "text",

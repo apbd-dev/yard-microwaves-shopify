@@ -4,8 +4,13 @@ Storefront + checkout analytics for Yard Microwaves. The point of this is the
 drop-survivability numbers: **visitors → product views → add-to-cart →
 checkout → purchase**, per drop, in one funnel.
 
-Standing decision: **PostHog Cloud, not self-hosted** (2026-06-05). Use the
-Deep Seas org's owned-brand project, not the APBD client project.
+Standing decision: **PostHog Cloud, not self-hosted** (2026-06-05).
+
+**Project: [545620](https://us.posthog.com/project/545620)** on US Cloud — the
+*shared* Deep Seas project, the same one `deep-seas/payload` reports into. YM
+events are not in a project of their own, so every event this theme sends
+carries `brand: "yard-microwaves"` and `shop_domain`. **Filter on `brand` or
+you are looking at deepseas.dev's traffic mixed in with the store's.**
 
 ---
 
@@ -32,36 +37,48 @@ They are split so nothing double-counts:
 
 ## Install
 
-### 1. Theme settings
+### 1. Theme settings — already done, ships from git
 
-**Online Store → Themes → Customize → Theme settings → Analytics**
+The token, host and both toggles are committed in
+`config/settings_data.json` and deploy with the theme. Nothing to paste.
+
+> **Do not set these in the Shopify theme editor.** `deploy-live.yml` runs
+> `shopify theme push`, which ships `config/settings_data.json` from the repo
+> and overwrites the live theme's settings. A token entered in the customizer
+> survives until the next release and then silently disappears — taking all
+> analytics with it, with no error anywhere. The repo is the source of truth.
+> To change any of it, edit `config/settings_data.json` and deploy.
 
 | Setting | Value |
 |---|---|
-| Project token | `phc_…` from PostHog → Settings → Project |
+| Project token | `phc_mBws4f…` (project 545620) |
 | API host | `https://us.i.posthog.com` (US Cloud) |
 | Record session replays | on |
 | Respect customer privacy consent | on |
 
-The token is a **public** key — it ships in page source by design, and that is
-fine. A personal key (`phx_…`) is a real secret; the snippet refuses anything
-that doesn't start with `phc_` rather than printing it into the page.
+The token is a **public** key — it ships in page source by design, which is why
+it is committed rather than treated as a secret. A personal key (`phx_…`) *is* a
+real secret; the snippet refuses anything not starting with `phc_` rather than
+printing it into the page.
 
 Leave the token blank and the theme loads no analytics at all.
 
-### 2. The custom pixel
+### 2. The custom pixel — the one manual step
 
 **Settings → Customer events → Add custom pixel**, name it `PostHog`.
 
 1. Paste the whole of [`posthog-custom-pixel.js`](./posthog-custom-pixel.js).
-2. Edit `POSTHOG_TOKEN` at the top to the **same** token as the theme setting.
-   Different tokens = storefront and checkout in two projects, and no funnel
-   will ever join up.
-3. Set **Permission** to `Analytics`.
-4. **Save**, then **Connect**.
+   The token is already filled in and matches the theme — don't edit it.
+2. Set **Permission** to `Analytics`.
+3. **Save**, then **Connect**.
+
+This is the only step that cannot be automated: Shopify custom pixels are
+admin-UI only (`webPixelCreate` is for app extensions, not custom pixels), so
+no CLI, API or connector can install it.
 
 The pixel is not loaded by the theme and there is no deploy step — it lives in
-the repo for review history. **After editing the file, re-paste it.**
+the repo for review history. **After editing the file, re-paste it**, or the
+admin copy and the repo copy drift apart.
 
 ---
 
@@ -105,7 +122,9 @@ a repeat buyer on a second device resolves to one person.
 Give it a few minutes, then watch **Activity** in PostHog.
 
 1. **Storefront** — load the homepage. Expect `$pageview` with `template`,
-   `shop_domain`, `brand: yard-microwaves`.
+   `shop_domain`, `brand: yard-microwaves`. Filter the Activity feed on
+   `brand = yard-microwaves` first — 545620 is shared, so the raw feed also
+   carries deepseas.dev traffic.
 2. **Product** — open a product. Expect `product_viewed` with `sku` and `price`.
 3. **Add to cart** — expect `product_added_to_cart`.
 4. **Checkout** — expect `checkout_started`, then the `*_submitted` steps.

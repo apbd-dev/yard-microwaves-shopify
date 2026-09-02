@@ -27,10 +27,14 @@
  */
 
 // ---------------------------------------------------------------------------
-// CONFIG — must match Theme settings -> Analytics exactly, or storefront and
-// checkout events land in two different projects and no funnel will join up.
+// CONFIG — PostHog project 545620 (shared Deep Seas, US Cloud). Must stay in
+// step with config/settings_data.json, or storefront and checkout events land
+// in two different projects and no funnel will ever join up.
+//
+// A phc_ token is public by design — it ships in every page's HTML — so it is
+// committed rather than treated as a secret.
 // ---------------------------------------------------------------------------
-var POSTHOG_TOKEN = 'phc_REPLACE_ME';
+var POSTHOG_TOKEN = 'phc_mBws4fawcTkQ9panbP5LjWR5HYKBLHM8BL69DQyaJCP4';
 var POSTHOG_HOST = 'https://us.i.posthog.com';
 
 var STITCH_COOKIE = 'ym_ph_id';
