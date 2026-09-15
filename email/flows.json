@@ -1,0 +1,159 @@
+{
+ "_comment": "slug → the Klaviyo flow action + message that sends it (klaviyo.mjs wire). old_template = the Figma-export 'YM - …' template the message pointed at before 2026-09-15, kept so the swap can be reverted by hand.",
+ "welcome-1-new": {
+  "flow": "R6rGqF",
+  "flow_name": "Welcome Series - Customer v. Non-Customer",
+  "message": "SfQxix",
+  "old_template": "RadtHy",
+  "action": "82610732",
+  "assigned": {
+   "id": "U5tMFm",
+   "of": "SJNc9e",
+   "hash": "232b65b4d890",
+   "at": "2026-09-15"
+  }
+ },
+ "welcome-1-existing": {
+  "flow": "R6rGqF",
+  "flow_name": "Welcome Series - Customer v. Non-Customer",
+  "message": "SSRzVa",
+  "old_template": "UUjKri",
+  "action": "82610731",
+  "assigned": {
+   "id": "RzpBcR",
+   "of": "Y3sAjh",
+   "hash": "c421ab5cf56c",
+   "at": "2026-09-15"
+  }
+ },
+ "welcome-2-follow": {
+  "flow": "R6rGqF",
+  "flow_name": "Welcome Series - Customer v. Non-Customer",
+  "message": "SNejzL",
+  "old_template": "UErYp8",
+  "action": "82610734",
+  "assigned": {
+   "id": "Xv53Zx",
+   "of": "WMqv63",
+   "hash": "8787b722298e",
+   "at": "2026-09-15"
+  }
+ },
+ "review-request": {
+  "flow": "SNGPCE",
+  "flow_name": "Review request (email + SMS) - Klaviyo Reviews",
+  "message": "WpyADC",
+  "old_template": "V8cwiX",
+  "action": "82610548",
+  "assigned": {
+   "id": "WMqK3w",
+   "of": "XWPjXT",
+   "hash": "8cdb28054497",
+   "at": "2026-09-15"
+  }
+ },
+ "review-reminder": {
+  "flow": "SNGPCE",
+  "flow_name": "Review request (email + SMS) - Klaviyo Reviews",
+  "message": "V9wvqn",
+  "old_template": "W3HAaD",
+  "action": "82610550",
+  "assigned": {
+   "id": "RjvQaF",
+   "of": "XjNhmg",
+   "hash": "5ad49c236a7d",
+   "at": "2026-09-15"
+  }
+ },
+ "shipping-confirmation": {
+  "flow": "R9pGEY",
+  "flow_name": "Full Shipping Confirmation - Standard",
+  "message": "UJftFW",
+  "old_template": "REAfQg",
+  "action": "82610277",
+  "assigned": {
+   "id": "Uhkyz2",
+   "of": "Yvd8f8",
+   "hash": "5b502b5ececc",
+   "at": "2026-09-15"
+  }
+ },
+ "order-confirmation": {
+  "flow": "VWK4Pz",
+  "flow_name": "Order Confirmation - Standard",
+  "message": "Txi8Gt",
+  "old_template": "WkdBpG",
+  "action": "82610123",
+  "assigned": {
+   "id": "ReSzPh",
+   "of": "RRTnur",
+   "hash": "2d00f2f04e8b",
+   "at": "2026-09-15"
+  }
+ },
+ "abandoned-cart-1": {
+  "flow": "U62Fdc",
+  "flow_name": "Abandoned Cart Reminder - Standard (Email & SMS)",
+  "message": "TsZCAz",
+  "old_template": "UZyfP4",
+  "action": "82606460",
+  "assigned": {
+   "id": "VZ9bJ7",
+   "of": "T3idnh",
+   "hash": "7d95264df128",
+   "at": "2026-09-15"
+  }
+ },
+ "abandoned-cart-2": {
+  "flow": "U62Fdc",
+  "flow_name": "Abandoned Cart Reminder - Standard (Email & SMS)",
+  "message": "WSASUK",
+  "old_template": "RaNHKU",
+  "action": "82606464",
+  "assigned": {
+   "id": "Tv4ZfB",
+   "of": "SqhaKE",
+   "hash": "4a5fdcdc5f75",
+   "at": "2026-09-15"
+  }
+ },
+ "abandoned-cart-3": {
+  "flow": "U62Fdc",
+  "flow_name": "Abandoned Cart Reminder - Standard (Email & SMS)",
+  "message": "X4G9CP",
+  "old_template": "VFbyCy",
+  "action": "82607142",
+  "assigned": {
+   "id": "U3sMwQ",
+   "of": "VZ8VLC",
+   "hash": "e7b2f77e65bd",
+   "at": "2026-09-15"
+  }
+ },
+ "browse-abandonment-1": {
+  "flow": "UudsVq",
+  "flow_name": "Browse Abandonment - Standard",
+  "message": "WgDkrT",
+  "old_template": "Sy6jxr",
+  "action": "82605598",
+  "assigned": {
+   "id": "UzQzN5",
+   "of": "SWEX2T",
+   "hash": "28601464cac2",
+   "at": "2026-09-15"
+  }
+ },
+ "browse-abandonment-2": {
+  "flow": "UudsVq",
+  "flow_name": "Browse Abandonment - Standard",
+  "message": "T6W77n",
+  "old_template": "XFud2G",
+  "action": "82606227",
+  "assigned": {
+   "id": "VKfqFV",
+   "of": "SjDUqg",
+   "hash": "ab13e89e6a31",
+   "at": "2026-09-15"
+  }
+ }
+}

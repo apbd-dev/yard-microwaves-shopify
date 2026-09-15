@@ -6,6 +6,8 @@
  *   node klaviyo.mjs upload   # build/assets/* → Klaviyo image library → assets.json
  *   node klaviyo.mjs push     # build/templates/*.html → create/update templates → templates.json
  *   node klaviyo.mjs render   # render each pushed template with sample data → build/rendered/*.html
+ *   node klaviyo.mjs wire     # point each flow message (flows.json) at its pushed template
+ *                             # + set subject/preview text from copy.mjs; --dry-run to diff only
  *
  * Images are sent as base64 data URIs straight from disk (no third-party
  * host). Klaviyo has no image delete endpoint, so uploads are de-duplicated by
@@ -22,17 +24,20 @@ if (!KEY) { console.error('KLAVIYO_YM_API_KEY is not set'); process.exit(2); }
 const API = 'https://a.klaviyo.com/api';
 const REV = '2025-07-15';
 const PREFIX = 'YM Theme - ';          // template names; the older Figma-based set is "YM - …"
+// editor_type CODE: the repo is the source of truth and Klaviyo must not rewrite
+// the HTML (drag-and-drop needs a data-klaviyo-region and rewrites its contents).
 const ASSETS_JSON = resolve(HERE, 'assets.json');
 const TEMPLATES_JSON = resolve(HERE, 'templates.json');
+const FLOWS_JSON = resolve(HERE, 'flows.json');
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-async function api(method, path, body, attempt = 0) {
+async function api(method, path, body, attempt = 0, rev = REV) {
   const res = await fetch(`${API}${path}`, {
     method,
-    headers: { Authorization: `Klaviyo-API-Key ${KEY}`, revision: REV, 'content-type': 'application/vnd.api+json', accept: 'application/vnd.api+json' },
+    headers: { Authorization: `Klaviyo-API-Key ${KEY}`, revision: rev, 'content-type': 'application/vnd.api+json', accept: 'application/vnd.api+json' },
     body: body ? JSON.stringify(body) : undefined,
   });
-  if (res.status === 429 && attempt < 5) { await sleep(1500 * (attempt + 1)); return api(method, path, body, attempt + 1); }
+  if (res.status === 429 && attempt < 5) { await sleep(1500 * (attempt + 1)); return api(method, path, body, attempt + 1, rev); }
   const text = await res.text();
   let json; try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
   if (!res.ok) throw new Error(`${method} ${path} → ${res.status}: ${JSON.stringify(json.errors || json).slice(0, 600)}`);
@@ -74,8 +79,8 @@ async function push() {
   for (const [slug, meta] of Object.entries(index)) {
     const html = readFileSync(resolve(dir, `${slug}.html`), 'utf8');
     const name = PREFIX + meta.name;
-    const attributes = { name, editor_type: 'USER_DRAGGABLE', html, text: meta.text || '' };
-    const hash = sha(Buffer.from(html + name));
+    const attributes = { name, editor_type: 'CODE', html, text: meta.text || '' };
+    const hash = sha(Buffer.from(html + name + (meta.text || '')));
     if (state[slug]?.id) {
       if (state[slug].hash === hash) { console.log(`  = ${slug} unchanged (${state[slug].id})`); continue; }
       await api('PATCH', `/templates/${state[slug].id}/`, { data: { type: 'template', id: state[slug].id, attributes: { name, html, text: meta.text || '' } } });
@@ -133,6 +138,53 @@ async function render() {
   }
 }
 
+// ------------------------------------------------------------------ wire ----
+// A flow message = (template, subject, preview text, sender). Flow actions
+// are read-modify-write at API revision 2025-10-15 (the only revision that
+// exposes the action definition); the whole definition, links included, goes
+// back or Klaviyo rejects the PATCH. Only touches actions listed in
+// flows.json and never changes an action's status (draft stays draft).
+const FLOW_REV = '2025-10-15';
+async function wire() {
+  const dry = process.argv.includes('--dry-run');
+  const index = loadJson(resolve(HERE, 'build', 'templates', 'index.json'));
+  const state = loadJson(TEMPLATES_JSON);
+  const flows = loadJson(FLOWS_JSON);
+  let changed = 0, pending = 0;
+  for (const [slug, f] of Object.entries(flows)) {
+    if (slug.startsWith('_')) continue;
+    const tpl = state[slug]?.id, meta = index[slug];
+    if (!tpl || !meta || !f.action) { console.log(`  ! ${slug}: not pushed/built or no action id — skipping`); continue; }
+    const cur = await api('GET', `/flow-actions/${f.action}/`, undefined, 0, FLOW_REV);
+    const def = cur.data.attributes.definition;
+    const m = def?.data?.message;
+    if (!m || def.type !== 'send-email') { console.log(`  ! ${slug}: action ${f.action} is not a send-email action`); continue; }
+    // Assigning a template to a flow message makes Klaviyo CLONE it into a
+    // flow-owned copy with a new id, so the action never points at our
+    // library template directly. flows.json remembers which clone came from
+    // which push (template id + content hash); a re-push changes the hash and
+    // triggers a fresh assignment.
+    const a = f.assigned || {};
+    const templateCurrent = a.of === tpl && a.hash === state[slug].hash && m.template_id === a.id;
+    const want = { subject_line: meta.subject, preview_text: meta.preheader };
+    const diffs = Object.entries(want).filter(([k, v]) => m[k] !== v).map(([k, v]) => `${k} "${m[k] ?? ''}" → "${v}"`);
+    if (!templateCurrent) diffs.unshift(`template ${m.template_id} → ${tpl} (${state[slug].hash})`);
+    if (!diffs.length) { console.log(`  = ${slug} (${f.flow_name}) up to date`); continue; }
+    console.log(`  ${dry ? '?' : '~'} ${slug} (${f.flow_name} · action ${f.action})\n      ${diffs.join('\n      ')}`);
+    pending++;
+    if (dry) continue;
+    Object.assign(m, want);
+    if (!templateCurrent) m.template_id = tpl;
+    await api('PATCH', `/flow-actions/${f.action}/`, { data: { type: 'flow-action', id: f.action, attributes: { definition: def } } }, 0, FLOW_REV);
+    const after = await api('GET', `/flow-actions/${f.action}/`, undefined, 0, FLOW_REV);
+    f.assigned = { id: after.data.attributes.definition.data.message.template_id, of: tpl, hash: state[slug].hash, at: new Date().toISOString().slice(0, 10) };
+    changed++;
+    await sleep(600);
+  }
+  if (!dry) writeFileSync(FLOWS_JSON, JSON.stringify(flows, null, 1));
+  console.log(`wire: ${dry ? `${pending} message${pending === 1 ? '' : 's'} would change` : `${changed} message${changed === 1 ? '' : 's'} updated`}`);
+}
+
 const cmd = process.argv[2];
-({ upload, push, render }[cmd] || (() => { console.error('usage: klaviyo.mjs upload|push|render'); process.exit(2); }))()
+({ upload, push, render, wire }[cmd] || (() => { console.error('usage: klaviyo.mjs upload|push|render|wire [--dry-run]'); process.exit(2); }))()
   .catch((e) => { console.error(e.message || e); process.exit(1); });

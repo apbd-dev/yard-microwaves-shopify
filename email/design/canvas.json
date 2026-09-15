@@ -6,7 +6,8 @@
       "y": 0,
       "w": 1292,
       "h": 1560,
-      "title": "Design System · shared reference"
+      "title": "Design System \u00b7 shared reference",
+      "page": "page-1"
     },
     {
       "file": "Main.dc.html",
@@ -14,7 +15,8 @@
       "y": 1720,
       "w": 750,
       "h": 1650,
-      "title": "Cart 1 · +4h · Heads Up"
+      "title": "Cart 1 \u00b7 +4h \u00b7 Heads Up",
+      "page": "page-1"
     },
     {
       "file": "Cart2.dc.html",
@@ -22,7 +24,8 @@
       "y": 1720,
       "w": 750,
       "h": 2140,
-      "title": "Cart 2 · +24h · Rested & Ready"
+      "title": "Cart 2 \u00b7 +24h \u00b7 Rested & Ready",
+      "page": "page-1"
     },
     {
       "file": "Cart3.dc.html",
@@ -30,7 +33,116 @@
       "y": 1720,
       "w": 750,
       "h": 1620,
-      "title": "Cart 3 · +44h · Sauce 15%"
+      "title": "Cart 3 \u00b7 +44h \u00b7 Sauce 15%",
+      "page": "page-1"
+    },
+    {
+      "file": "PreviewWelcome1New.dc.html",
+      "x": 400,
+      "y": 0,
+      "w": 640,
+      "h": 2124,
+      "title": "Welcome #1 \u00b7 new subscriber \u00b7 10% off \u00b7 take B",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewWelcome1Existing.dc.html",
+      "x": 1120,
+      "y": 0,
+      "w": 640,
+      "h": 1832,
+      "title": "Welcome #1 \u00b7 existing customer \u00b7 take C",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewWelcome2Follow.dc.html",
+      "x": 1840,
+      "y": 0,
+      "w": 640,
+      "h": 1506,
+      "title": "Welcome #2 \u00b7 follow us \u00b7 take B",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewCart1.dc.html",
+      "x": 400,
+      "y": 2284,
+      "w": 640,
+      "h": 1578,
+      "title": "Cart 1 \u00b7 +4h \u00b7 Heads Up",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewCart2.dc.html",
+      "x": 1120,
+      "y": 2284,
+      "w": 640,
+      "h": 1930,
+      "title": "Cart 2 \u00b7 +24h \u00b7 Rested & Ready",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewCart3.dc.html",
+      "x": 1840,
+      "y": 2284,
+      "w": 640,
+      "h": 1606,
+      "title": "Cart 3 \u00b7 +44h \u00b7 Sauce 15%",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewBrowse1.dc.html",
+      "x": 400,
+      "y": 4374,
+      "w": 640,
+      "h": 1276,
+      "title": "Browse 1 \u00b7 +1h \u00b7 take B",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewBrowse2.dc.html",
+      "x": 1120,
+      "y": 4374,
+      "w": 640,
+      "h": 1840,
+      "title": "Browse 2 \u00b7 +2h \u00b7 take A",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewReviewRequest.dc.html",
+      "x": 400,
+      "y": 6374,
+      "w": 640,
+      "h": 1333,
+      "title": "Review request \u00b7 take B",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewReviewReminder.dc.html",
+      "x": 1120,
+      "y": 6374,
+      "w": 640,
+      "h": 1333,
+      "title": "Review reminder \u00b7 +7d \u00b7 take B",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewOrder.dc.html",
+      "x": 400,
+      "y": 7867,
+      "w": 640,
+      "h": 1683,
+      "title": "Order confirmation \u00b7 take B",
+      "page": "page-2"
+    },
+    {
+      "file": "PreviewShipping.dc.html",
+      "x": 1120,
+      "y": 7867,
+      "w": 640,
+      "h": 1477,
+      "title": "Shipping confirmation \u00b7 take C",
+      "page": "page-2"
     }
   ],
   "annotations": [
@@ -39,24 +151,86 @@
       "x": 1400,
       "y": 60,
       "w": 320,
-      "text": "Design emails here in the website's real fonts + tokens.\nApproved artboards get baked into Klaviyo as image-first emails — only the order ticket stays dynamic.\n[COUPON] = placeholder, needs a real code.\n\nOne row per Klaviyo flow. The note at the left of each row names the flow and how it sends."
+      "text": "Design emails here in the website's real fonts + tokens.\nApproved artboards get baked into Klaviyo as image-first emails \u2014 only the order ticket stays dynamic.\n[COUPON] = placeholder, needs a real code.\n\nOne row per Klaviyo flow. The note at the left of each row names the flow and how it sends.",
+      "page": "page-1"
     },
     {
       "id": "flow-abandoned-cart",
       "x": 0,
       "y": 1740,
       "w": 320,
-      "text": "ABANDONED CART REMINDER\nStandard (Email & SMS) · flow U62Fdc\n\nStatus: DRAFT — not sending yet.\nTrigger: checkout started.\nSends at +4h → +24h → +44h.\n\nSMS-consented profiles get the SMS instead of email 1, then rejoin for 2 and 3.\n\nTO WIRE UP: the flow's three messages still point at the old \"YM - …\" templates, not the \"YM Theme - Abandoned Cart #1–3\" ones these artboards bake into. Repoint them in the flow editor.\n\nEmail 3's send filter uses a hardcoded date (before 2026-06-04) — worth a second look."
+      "text": "ABANDONED CART REMINDER\nStandard (Email & SMS) \u00b7 flow U62Fdc\n\nStatus: DRAFT \u2014 not sending yet.\nTrigger: checkout started.\nSends at +4h \u2192 +24h \u2192 +44h.\n\nSMS-consented profiles get the SMS instead of email 1, then rejoin for 2 and 3.\n\nWired 2026-09-15: the three messages now point at the \"YM Theme - Abandoned Cart #1\u20133\" templates (see the Previews page).\n\nEmail 3's send filter uses a hardcoded date (before 2026-06-04) \u2014 worth a second look.",
+      "page": "page-1"
     },
     {
       "id": "flows-not-yet-designed",
       "x": 0,
       "y": 2560,
       "w": 320,
-      "text": "NO ARTBOARDS YET\nThese flows exist in Klaviyo and already build from the shared components, but have not been designed here:\n\n· Welcome Series — 3 emails\n· Browse Abandonment — 2 emails\n· Review Request + Reminder\n· Order Confirmation\n· Shipping Confirmation\n\nEach becomes its own row when designed. Only \"Review request\" is live; every other flow is a draft."
+      "text": "THE OTHER NINE EMAILS\nBuilt from the shared components with Rich's picked copy (2026-09-10 review deck) and pushed to Klaviyo 2026-09-15 \u2014 every flow is wired, all still DRAFT.\n\nSee the Previews page (pages menu) for the Klaviyo-rendered result of all 12.\n\nAn email becomes its own artboard row here when it needs design changes beyond copy.",
+      "page": "page-1"
+    },
+    {
+      "id": "previews-how",
+      "x": 400,
+      "y": -260,
+      "w": 1200,
+      "page": "page-2",
+      "text": "PREVIEWS \u00b7 rendered by Klaviyo 2026-09-15 with sample data (Rich, order #1042, two tees). One row per flow; the note at the left names the flow, its status and timing. All 12 templates live in Klaviyo as \"YM Theme - \u2026\" (editor type: code \u2014 the repo is the source of truth). Every flow is still DRAFT: nothing sends until Rich turns a flow on in Klaviyo."
+    },
+    {
+      "id": "preview-welcome",
+      "x": 0,
+      "y": 20,
+      "w": 320,
+      "page": "page-2",
+      "text": "WELCOME SERIES\nKlaviyo flow R6rGqF \u00b7 DRAFT\nTrigger: joins the Newsletter list.\n#1 sends at once (new subscriber vs existing customer split) \u2192 #2 three days later at 11:00.\n\nWired 2026-09-15 to the YM Theme templates below. Welcome #1 new: 10% (Rich's note on the copy deck), code still [COUPON]."
+    },
+    {
+      "id": "preview-cart",
+      "x": 0,
+      "y": 2304,
+      "w": 320,
+      "page": "page-2",
+      "text": "ABANDONED CART\nKlaviyo flow U62Fdc \u00b7 DRAFT\nTrigger: checkout started. +4h \u2192 +24h \u2192 +44h. SMS-consented profiles get the SMS instead of email 1.\n\nCopy approved on the Design page (Cart 1\u20133 artboards). Subject + preview lines are Rich's own. Cart 3 code still [COUPON]."
+    },
+    {
+      "id": "preview-browse",
+      "x": 0,
+      "y": 4394,
+      "w": 320,
+      "page": "page-2",
+      "text": "BROWSE ABANDONMENT\nKlaviyo flow UudsVq \u00b7 DRAFT\nTrigger: viewed a product, no add-to-cart. +1h \u2192 +1h.\n\nRich's note on browse #2 read \"nioon\" \u2014 unclear, ask."
+    },
+    {
+      "id": "preview-review",
+      "x": 0,
+      "y": 6394,
+      "w": 320,
+      "page": "page-2",
+      "text": "REVIEW REQUEST\nKlaviyo flow SNGPCE (email + SMS) \u00b7 DRAFT \u2014 wired.\nThe older flow RWfGX9 \"Review request\" is LIVE on Klaviyo's default templates and was NOT touched: switch it off (or repoint it) when SNGPCE goes live, or both will send.\n\nRequest a few days after delivery \u2192 reminder 7 days later."
+    },
+    {
+      "id": "preview-transactional",
+      "x": 0,
+      "y": 7887,
+      "w": 320,
+      "page": "page-2",
+      "text": "TRANSACTIONAL\nOrder Confirmation VWK4Pz \u00b7 DRAFT\nShipping Confirmation R9pGEY \u00b7 DRAFT\nBoth wired. Order ticket, totals, addresses and tracking are dynamic blocks; the previews use sample data."
     }
   ],
   "launch": {
-    "view": "canvas"
-  }
+    "view": "canvas",
+    "page": "page-2"
+  },
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Design"
+    },
+    {
+      "id": "page-2",
+      "name": "Previews"
+    }
+  ]
 }

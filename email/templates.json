@@ -1,62 +1,62 @@
 {
  "welcome-1-new": {
-  "id": "QR3AJm",
-  "name": "YM Theme - Welcome #1 - New Subscriber (20% Off)",
-  "hash": "af8420972f9c"
+  "id": "SJNc9e",
+  "name": "YM Theme - Welcome #1 - New Subscriber (10% Off)",
+  "hash": "232b65b4d890"
  },
  "welcome-1-existing": {
-  "id": "UrTmKj",
+  "id": "Y3sAjh",
   "name": "YM Theme - Welcome #1 - Existing Customer",
-  "hash": "1a9ac5c30bdb"
+  "hash": "c421ab5cf56c"
  },
  "welcome-2-follow": {
-  "id": "TNSj8G",
+  "id": "WMqv63",
   "name": "YM Theme - Welcome #2 - Follow Us",
-  "hash": "8823aa73c0a3"
+  "hash": "8787b722298e"
  },
  "review-request": {
-  "id": "RprnZA",
+  "id": "XWPjXT",
   "name": "YM Theme - Review Request",
-  "hash": "7ac2143c01a8"
+  "hash": "8cdb28054497"
  },
  "review-reminder": {
-  "id": "XW7SqT",
+  "id": "XjNhmg",
   "name": "YM Theme - Review Reminder",
-  "hash": "1e1204638af2"
+  "hash": "5ad49c236a7d"
  },
  "shipping-confirmation": {
-  "id": "Xj6PNg",
+  "id": "Yvd8f8",
   "name": "YM Theme - Shipping Confirmation",
-  "hash": "466272156e99"
+  "hash": "5b502b5ececc"
  },
  "order-confirmation": {
-  "id": "T7e2aF",
+  "id": "RRTnur",
   "name": "YM Theme - Order Confirmation",
-  "hash": "8575d38b83c9"
+  "hash": "2d00f2f04e8b"
  },
  "abandoned-cart-1": {
-  "id": "RRbUVr",
+  "id": "T3idnh",
   "name": "YM Theme - Abandoned Cart #1",
-  "hash": "b37b9906a09e"
+  "hash": "7d95264df128"
  },
  "abandoned-cart-2": {
-  "id": "XetzsS",
+  "id": "SqhaKE",
   "name": "YM Theme - Abandoned Cart #2",
-  "hash": "872394002734"
+  "hash": "4a5fdcdc5f75"
  },
  "abandoned-cart-3": {
-  "id": "RLyEA3",
+  "id": "VZ8VLC",
   "name": "YM Theme - Abandoned Cart #3 (15% Off)",
-  "hash": "8d088ae5e4a7"
+  "hash": "e7b2f77e65bd"
  },
  "browse-abandonment-1": {
-  "id": "R9xBXq",
+  "id": "SWEX2T",
   "name": "YM Theme - Browse Abandonment #1",
-  "hash": "2b713978cc5f"
+  "hash": "28601464cac2"
  },
  "browse-abandonment-2": {
-  "id": "SVXvtT",
+  "id": "SjDUqg",
   "name": "YM Theme - Browse Abandonment #2",
-  "hash": "e856f9f8bd4a"
+  "hash": "ab13e89e6a31"
  }
 }

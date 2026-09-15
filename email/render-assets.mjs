@@ -13,6 +13,7 @@ import { chromium } from 'playwright';
 import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { HEADLINES, BUTTONS } from './copy.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const THEME_ASSETS = resolve(HERE, '..', 'assets');
@@ -78,31 +79,8 @@ async function typeShot(name, inner, css, { maxW = 560, jpg = false } = {}) {
   return shot(name, `<div style="display:inline-block;width:${w}px">${inner}</div>`, css, { w, jpg });
 }
 
-const HEADLINES = {
-  'welcome-new':    'Welcome to the family!',
-  'welcome-exist':  "Awesome! You're in!",
-  'follow':         'Follow the smoke',
-  'review-req':     'What did you think?',
-  'review-rem':     "We'd love to hear from you",
-  'shipping':       "It's on the way!",
-  'order':          'Thank you for your order!',
-  'cart-1':         "Don't let your items slip away!",
-  'cart-2':         'Finish your order before it sells out',
-  'cart-heads':     'Heads up, Pitmaster!',
-  'cart-rested':    "It's rested. It's ready.",
-  'cart-sauce':     'A little sauce on the house',
-  'browse':         'Well, what are you waiting for?',
-};
-const BUTTONS = {
-  'shop-now': 'Shop Now',
-  'back-to-cart': 'Back to my cart',
-  'track-package': 'Track Your Package',
-  'track-order': 'Track Your Order!',
-  'follow-ig': 'Follow @yardmicrowaves',
-  'leave-review': 'Leave a review',
-  'our-story': 'Our Story',
-  'claim-15': 'Claim 15% off',
-};
+// Headline + button text lives in copy.mjs (the approved copy, one source).
+
 
 async function main() {
   browser = await chromium.launch();

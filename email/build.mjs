@@ -15,6 +15,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { COPY } from './copy.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const A = JSON.parse(readFileSync(resolve(HERE, 'assets.json'), 'utf8'));
@@ -245,199 +246,133 @@ ${footer()}
 }
 
 // ------------------------------------------------------------- templates ----
-const FIRST = `{{ first_name|title|default:'there' }}`;
-const INSIDER_LIST = `<ul><li>Exciting product announcements</li><li>Exclusive deals and promotions</li><li>Content and recommendations we'll customize just for you!</li></ul>`;
+// Copy comes from copy.mjs (Rich's picks). Each template = the shared chrome
+// (header / footer from page()) + headline PNG + live-text lede/body +
+// dynamic block + CTA pill + one or two brand bands.
+const copyRows = (slug, { coupon: withCoupon = false } = {}) => {
+  const c = COPY[slug];
+  const blocks = [lede(c.lede)];
+  if (c.body) blocks.push(para(c.body));
+  if (withCoupon && c.coupon) blocks.push(coupon(`&#11088; ${c.coupon} &#11088;`));
+  return [headline(slug, c.headline.replace(/<[^>]+>/g, '')), region(blocks)];
+};
+const ctaFor = (slug, href) => cta(COPY[slug].cta.key, href, COPY[slug].cta.label);
+const REVIEW_PRODUCT = { imgExpr: '{{ event.structured_product.image_url }}', titleExpr: '{{ event.product.title }}', subExpr: '{{ event.structured_product.variant_name }}', href: '{{ event.review_link }}' };
+const BROWSE_PRODUCT = { imgExpr: '{{ event.ImageURL }}', titleExpr: '{{ event.Name }}', subExpr: '{{ event.Price|striptags }}', href: '{{ event.URL }}' };
 
 const TEMPLATES = {
-  'welcome-1-new': {
-    name: 'Welcome #1 - New Subscriber (20% Off)',
-    rows: [
-      hero(),
-      headline('welcome-new', 'Welcome to the Yard Microwaves family!'),
-      region([
-        lede(`Hey ${FIRST}, we're glad you're here!`),
-        para(`<p>So, what can you expect now that you're an insider?</p>${INSIDER_LIST}<p style="margin:0;">We save the very best for those that want to stay in the know.</p>`),
-        coupon(`&#11088; Use code <strong>INSERT-COUPON</strong> for 20% off your first purchase! &#11088;`),
-      ]),
-      cta('shop-now', '{{ organization.url }}', 'Shop Now'),
-      showcase(),
-      feedGrid('Trending items hand-picked just for you'),
-      quality(),
-    ],
-  },
-  'welcome-1-existing': {
-    name: 'Welcome #1 - Existing Customer',
-    rows: [
-      hero(),
-      headline('welcome-exist', "Awesome! You're in!"),
-      region([
-        lede(`Hi, ${FIRST}!`),
-        para(`<p>What can you expect from {{ organization.name }} now that you're a real insider?</p><ul><li><strong>Exciting product announcements</strong></li><li><strong>Exclusive deals and promotions</strong></li><li><strong>Content and recommendations we'll customize just for you!</strong></li></ul><p style="margin:0;">Needless to say, we save the very best for those that want to stay in the know. And we're glad you're here!</p>`),
-      ]),
-      signoff(),
-      cta('shop-now', '{{ organization.url }}', 'Shop Now'),
-      showcase(),
-      quality(),
-    ],
-  },
-  'welcome-2-follow': {
-    name: 'Welcome #2 - Follow Us',
-    rows: [
-      headline('follow', 'Follow the smoke'),
-      region([
-        lede(`Hey ${FIRST},`),
-        para(`<p style="margin:0;">Email is where we make it official. Instagram is where we misbehave &mdash; new designs, drop previews, and an unreasonable amount of brisket footage.</p>`),
-      ]),
-      cta('follow-ig', IG, 'Follow @yardmicrowaves'),
-      row(picture('story-collage', { w: 320, alt: 'Backyard pit shots from the Yard', href: IG, style: 'margin:0 auto;' }), '4px 40px 10px'),
-      row(picture('pellets', { w: 90, alt: '', style: 'margin:0 auto;' }), '0 0 8px'),
-      quality(),
-    ],
-  },
-  'review-request': {
-    name: 'Review Request',
-    rows: [
-      headline('review-req', 'What did you think?'),
-      region([
-        lede(`Hi {{ first_name|default:"there" }},`),
-        para(`<p style="margin:0;">Thank you for shopping with us. We'd love to hear what you think of your latest purchase.</p>`),
-      ]),
-      productCard({ imgExpr: '{{ event.structured_product.image_url }}', titleExpr: '{{ event.product.title }}', subExpr: '{{ event.structured_product.variant_name }}', href: '{{ event.review_link }}' }),
-      stars(),
-      cta('leave-review', '{{ event.review_link }}', 'Leave a review'),
-      region([small(`<p style="margin:0;text-align:center;">We appreciate your feedback.<br/>{{ organization.name }}</p>`)]),
-      signoff(),
-    ],
-  },
-  'review-reminder': {
-    name: 'Review Reminder',
-    rows: [
-      headline('review-rem', "We'd love to hear from you"),
-      region([lede(`Tell us what you think about your latest purchase.`)]),
-      productCard({ imgExpr: '{{ event.structured_product.image_url }}', titleExpr: '{{ event.product.title }}', subExpr: '{{ event.structured_product.variant_name }}', href: '{{ event.review_link }}' }),
-      stars(),
-      cta('leave-review', '{{ event.review_link }}', 'Leave a review'),
-      region([small(`<p style="margin:0;text-align:center;">We appreciate your feedback.<br/>{{ organization.name }}</p>`)]),
-      signoff(),
-    ],
-  },
-  'shipping-confirmation': {
-    name: 'Shipping Confirmation',
-    rows: [
-      headline('shipping', "It's on the way!"),
-      region([
-        lede(`Hi {{ event.extra.customer.default_address.first_name|default:'there' }},`),
-        para(`<p style="margin:0;">We've got some good news! All of the items from order <strong>{{ event.extra.order_number }}</strong> have now been shipped:</p>`),
-      ]),
-      shipItems(),
-      region([
-        para(`<p>They are being shipped {% if event.extra.fulfillments.0.tracking_company %}via {{ event.extra.fulfillments.0.tracking_company }} {% endif %}to the following address:</p><p>{{ event.extra.shipping_address.first_name }} {{ event.extra.shipping_address.last_name }}<br/>{{ event.extra.shipping_address.address1 }}<br/>{{ event.extra.shipping_address.city }}, {{ event.extra.shipping_address.province_code }} {{ event.extra.shipping_address.zip }}</p><p style="margin:0;">The tracking number for these items is <strong>{{ event.extra.fulfillments.0.tracking_number }}</strong>. Use the link below to see the status of your shipment.</p>`),
-      ]),
-      cta('track-package', '{{ event.extra.fulfillments.0.tracking_url }}', 'Track Your Package'),
-      region([
-        small(`<p>Please allow some time for the status of the shipment to correctly display at the above address.</p><p style="margin:0;">You will receive a confirmation email when more items from your order have been shipped.</p>`),
-        para(`<p style="margin:0;">Thanks again for ordering from {{ event.extra.fulfillments.0.line_items.0.vendor|default:'Yard Microwaves' }}!</p>`),
-      ]),
-      signoff(),
-      recipe(),
-    ],
-  },
-  'order-confirmation': {
-    name: 'Order Confirmation',
-    rows: [
-      headline('order', 'Thank you for your order!'),
-      region([
-        lede(`Order <strong>{{ event.extra.order_number }}</strong> is in.`),
-        para(`<p style="margin:0;">This email is to confirm your order. We'll send another note the moment it ships.</p>`),
-      ]),
-      region([block(`<h4 style="margin:0;">Order details</h4>`)]),
-      orderItems(),
-      totals(),
-      addresses(),
-      cta('track-order', `{{ event.extra.order_status_url|default:organization.url }}`, 'Track Your Order!'),
-      signoff(),
-      recipe(),
-    ],
-  },
-  'abandoned-cart-1': {
-    name: 'Abandoned Cart #1',
-    rows: [
-      headline('cart-heads', 'Heads up, Pitmaster!'),
-      region([
-        lede(`You left the lid up! Your cart's losing heat &mdash; and flavor.`),
-        para(`<p style="margin:0;">We saved everything right where you left it. Come back and close that lid before the smoke escapes.</p>`),
-      ]),
-      cartTicket({ note: true }),
-      cta('back-to-cart', '{{ event.extra.checkout_url }}', 'Back to my cart'),
-      freeship(),
-      quality(),
-    ],
-  },
-  'abandoned-cart-2': {
-    name: 'Abandoned Cart #2',
-    rows: [
-      headline('cart-rested', "It's rested. It's ready."),
-      region([
-        lede(`True barbecue wisdom: low and slow wins &mdash; but not this slow.`),
-        para(`<p style="margin:0;">Your cart has had plenty of time to rest. Time to carve into it and claim your reward.</p>`),
-      ]),
-      cartTicket(),
-      cta('back-to-cart', '{{ event.extra.checkout_url }}', 'Back to my cart'),
-      showcase(),
-      quality(),
-    ],
-  },
-  'abandoned-cart-3': {
-    name: 'Abandoned Cart #3 (15% Off)',
-    rows: [
-      headline('cart-sauce', 'A little sauce on the house'),
-      region([
-        lede(`Sauce boss status: confirmed.`),
-        coupon(`Use code <strong style="color:${RED_DK};">INSERT-COUPON</strong> for 15% off your cart &mdash; good for the next 48 hours, then it drips away.`),
-      ]),
-      cartTicket(),
-      cta('claim-15', '{{ event.extra.checkout_url }}', 'Claim 15% off'),
-      freeship(),
-      quality(),
-    ],
-  },
-  'browse-abandonment-1': {
-    name: 'Browse Abandonment #1',
-    rows: [
-      headline('browse', 'Well, what are you waiting for?'),
-      region([
-        lede(`Hey ${FIRST},`),
-        para(`<p style="margin:0;">This item is going fast, so grab it while you still can!</p>`),
-      ]),
-      productCard({ imgExpr: '{{ event.ImageURL }}', titleExpr: '{{ event.Name }}', subExpr: '{{ event.Price|striptags }}', href: '{{ event.URL }}' }),
-      cta('shop-now', '{{ organization.url }}', 'Shop Now'),
-      feedGrid('You might also like'),
-      quality(),
-    ],
-  },
-  'browse-abandonment-2': {
-    name: 'Browse Abandonment #2',
-    rows: [
-      headline('browse', 'Well, what are you waiting for?'),
-      region([
-        lede(`Hey ${FIRST},`),
-        para(`<p style="margin:0;">This item is going fast, so grab it while you still can!</p>`),
-      ]),
-      productCard({ imgExpr: '{{ event.ImageURL }}', titleExpr: '{{ event.Name }}', subExpr: '{{ event.Price|striptags }}', href: '{{ event.URL }}' }),
-      cta('shop-now', '{{ organization.url }}', 'Shop Now'),
-      showcase(),
-      quality(),
-    ],
-  },
+  'welcome-1-new': [
+    hero(),
+    ...copyRows('welcome-1-new', { coupon: true }),
+    ctaFor('welcome-1-new', '{{ organization.url }}'),
+    showcase(),
+    feedGrid('Trending items hand-picked just for you'),
+    quality(),
+  ],
+  'welcome-1-existing': [
+    hero(),
+    ...copyRows('welcome-1-existing'),
+    ctaFor('welcome-1-existing', '{{ organization.url }}'),
+    showcase(),
+    quality(),
+  ],
+  'welcome-2-follow': [
+    ...copyRows('welcome-2-follow'),
+    ctaFor('welcome-2-follow', IG),
+    row(picture('story-collage', { w: 320, alt: 'Backyard pit shots from the Yard', href: IG, style: 'margin:0 auto;' }), '4px 40px 10px'),
+    row(picture('pellets', { w: 90, alt: '', style: 'margin:0 auto;' }), '0 0 8px'),
+    quality(),
+  ],
+  'review-request': [
+    ...copyRows('review-request'),
+    productCard(REVIEW_PRODUCT),
+    stars(),
+    ctaFor('review-request', '{{ event.review_link }}'),
+    signoff(),
+  ],
+  'review-reminder': [
+    ...copyRows('review-reminder'),
+    productCard(REVIEW_PRODUCT),
+    stars(),
+    ctaFor('review-reminder', '{{ event.review_link }}'),
+    signoff(),
+  ],
+  'shipping-confirmation': [
+    ...copyRows('shipping-confirmation'),
+    shipItems(),
+    region([
+      small(`<p style="margin:0;text-align:center;">Shipping {% if event.extra.fulfillments.0.tracking_company %}via {{ event.extra.fulfillments.0.tracking_company }} {% endif %}to {{ event.extra.shipping_address.first_name }} {{ event.extra.shipping_address.last_name }}, {{ event.extra.shipping_address.address1 }}, {{ event.extra.shipping_address.city }}, {{ event.extra.shipping_address.province_code }} {{ event.extra.shipping_address.zip }}.<br/>Tracking number <strong>{{ event.extra.fulfillments.0.tracking_number }}</strong>. Give it a day to start moving.</p>`),
+    ]),
+    ctaFor('shipping-confirmation', '{{ event.extra.fulfillments.0.tracking_url }}'),
+    signoff(),
+    recipe(),
+  ],
+  'order-confirmation': [
+    ...copyRows('order-confirmation'),
+    orderItems(),
+    totals(),
+    addresses(),
+    ctaFor('order-confirmation', `{{ event.extra.order_status_url|default:organization.url }}`),
+    signoff(),
+    recipe(),
+  ],
+  'abandoned-cart-1': [
+    ...copyRows('abandoned-cart-1'),
+    cartTicket({ note: true }),
+    ctaFor('abandoned-cart-1', '{{ event.extra.checkout_url }}'),
+    freeship(),
+    quality(),
+  ],
+  'abandoned-cart-2': [
+    ...copyRows('abandoned-cart-2'),
+    cartTicket(),
+    ctaFor('abandoned-cart-2', '{{ event.extra.checkout_url }}'),
+    showcase(),
+    quality(),
+  ],
+  'abandoned-cart-3': [
+    ...copyRows('abandoned-cart-3', { coupon: true }),
+    cartTicket(),
+    ctaFor('abandoned-cart-3', '{{ event.extra.checkout_url }}'),
+    freeship(),
+    quality(),
+  ],
+  'browse-abandonment-1': [
+    ...copyRows('browse-abandonment-1'),
+    productCard(BROWSE_PRODUCT),
+    ctaFor('browse-abandonment-1', '{{ event.URL }}'),
+    feedGrid('You might also like'),
+    quality(),
+  ],
+  'browse-abandonment-2': [
+    ...copyRows('browse-abandonment-2'),
+    productCard(BROWSE_PRODUCT),
+    ctaFor('browse-abandonment-2', '{{ event.URL }}'),
+    showcase(),
+    quality(),
+  ],
 };
 
 // ------------------------------------------------------------------ build ----
-const strip = (h) => h.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;|&mdash;|&bull;|&middot;|&#11088;/g, ' ').replace(/\s+/g, ' ').trim();
+const strip = (h) => h.replace(/<[^>]+>/g, ' ').replace(/&nbsp;|&bull;|&middot;|&#11088;/g, ' ').replace(/&mdash;/g, '—').replace(/&ldquo;|&rdquo;/g, '"').replace(/\s+/g, ' ').trim();
+/** Plain-text alternative, built from the copy rather than the HTML: slicing
+ *  stripped HTML can cut a {% if %} / {% for %} in half, which makes Klaviyo
+ *  refuse to render the whole template. */
+const textVersion = (slug) => {
+  const c = COPY[slug];
+  return [
+    'Yard Microwaves', '', c.headline, '',
+    [c.lede, c.body, c.coupon].filter(Boolean).map(strip).join(' '), '',
+    `${c.cta.label}: {{ organization.url }}`, '',
+    "Yard Microwaves · 24002 Via Fabricante #225, Mission Viejo, CA 92691", "{% unsubscribe 'Unsubscribe' %}",
+  ].join('\n');
+};
 const index = {};
-for (const [slug, t] of Object.entries(TEMPLATES)) {
-  const html = page(t.rows);
+for (const [slug, rows] of Object.entries(TEMPLATES)) {
+  const c = COPY[slug];
+  const html = page(rows);
   writeFileSync(resolve(OUT, `${slug}.html`), html);
-  index[slug] = { name: t.name, text: `Yard Microwaves\n\n${strip(html).slice(0, 1200)}\n\n{% unsubscribe 'Unsubscribe' %}` };
+  index[slug] = { name: c.name, subject: c.subject, preheader: c.preheader, text: textVersion(slug) };
   console.log(`  ${slug.padEnd(24)} ${(html.length / 1024).toFixed(1)}KB`);
 }
 writeFileSync(resolve(OUT, 'index.json'), JSON.stringify(index, null, 1));
