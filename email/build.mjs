@@ -53,14 +53,14 @@ function button(k, href, alt) {
 <a href="${href}" target="_blank" style="text-decoration:none;color:#ffffff;font-family:${BODY};font-size:18px;font-weight:bold;">
 <img src="${a.url}" width="${a.w}" alt="${alt}" style="display:block;width:${a.w}px;max-width:${a.w}px;height:auto;border:0;"/></a></td></tr></table>`;
 }
-const cta = (k, href, alt) => row(button(k, href, alt), '4px 40px 18px');
+const cta = (k, href, alt) => row(button(k, href, alt), '2px 40px 12px');
 
 const block = (html, style = '') => `<div class="klaviyo-block klaviyo-text-block" style="${style}">${html}</div>`;
-const lede = (html) => block(html, `font-family:${COND};font-size:16px;line-height:1.45;letter-spacing:.6px;text-transform:uppercase;color:${OLIVE};text-align:center;padding:2px 0 14px;`);
-const para = (html) => block(html, `font-family:${COND};font-size:17px;line-height:1.55;color:${INK};padding:0 0 12px;`);
+const lede = (html) => block(html, `font-family:${COND};font-size:17px;line-height:1.45;letter-spacing:.8px;text-transform:uppercase;color:${OLIVE};text-align:center;padding:2px 0 12px;font-weight:bold;`);
+const para = (html) => block(html, `font-family:${COND};font-size:18px;line-height:1.6;color:${INK};padding:0 0 12px;text-align:center;`);
 const small = (html) => block(html, `font-family:${COND};font-size:14px;line-height:1.5;color:${INK};padding:0 0 10px;`);
-/** Coupon callout — dashed olive ticket, Permanent-Marker-ish via condensed caps. */
-const coupon = (html) => block(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:6px auto 14px;"><tr><td align="center" style="border:2px dashed ${OLIVE};border-radius:8px;padding:12px 22px;font-family:${COND};font-size:16px;line-height:1.4;letter-spacing:.8px;text-transform:uppercase;color:${OLIVE};">${html}</td></tr></table>`, 'text-align:center;padding:0;');
+/** Coupon callout — peach meat-counter ticket: filled, dark-red dashed edge. */
+const coupon = (html) => block(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:6px auto 14px;"><tr><td align="center" bgcolor="${PEACH}" style="background-color:${PEACH};border:2px dashed ${RED_DK};border-radius:10px;padding:16px 28px;font-family:${COND};font-size:18px;line-height:1.45;letter-spacing:.8px;text-transform:uppercase;color:${INK};font-weight:bold;">${html}</td></tr></table>`, 'text-align:center;padding:0;');
 
 /** Body copy. Plain klaviyo-block divs, deliberately NOT inside a
  *  data-klaviyo-region: Klaviyo rewrites region contents and strips the inline
@@ -69,8 +69,9 @@ const region = (blocks) => `<tr><td align="left" class="ym-pad" style="padding:1
 
 const showcase = () => row(picture('showcase', { w: 600, alt: 'Rub & Plug and Smoke Signal tees — relaxed fit, crew neck, heavy weight', href: SITE }), '6px 0 0');
 const quality = () => row(picture('quality-band', { w: 600, alt: 'Quality beyond compare. Preshrunk for perfection. Just like your brisket, our shirts exceed expectations. Guaranteed.' }), '4px 0 10px');
-const freeship = () => row(picture('freeship', { w: 150, alt: 'Free shipping on $50+', style: 'margin:0 auto;' }), '0 0 10px');
+const freeship = () => row(picture('freeship', { w: 150, alt: 'Free shipping on $50+', style: 'margin:0 auto;' }), '0 0 6px');
 const recipe = () => row(picture('recipe-card', { w: 600, alt: 'From our smoker to yours — secret ingredients in our shirts: relaxed fit, heavy weight 100% combed cotton, crew neck with ribbing, shoulder-to-shoulder tape, preshrunk, double needle hems' }), '6px 0 4px');
+const storyBand = () => row(picture('story-band', { w: 600, alt: 'Welcome to Yard Microwaves, where childhood friends turned grillmasters add a satirical twist to BBQ, igniting unforgettable moments and mouthwatering flavors. Our Story', href: `${SITE}/pages/our-story` }), '10px 0 4px');
 const signoff = (text = 'The Yard Microwaves Team') => row(`<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center"><tr>
 <td valign="middle" style="padding-right:14px;">${picture('mascot', { w: 110, alt: '' })}</td>
 <td valign="middle" style="font-family:${COND};font-size:15px;line-height:1.4;letter-spacing:.6px;text-transform:uppercase;color:${OLIVE};">Sincerely,<br/><strong>${text}</strong></td></tr></table>`, '4px 40px 14px');
@@ -91,6 +92,30 @@ function lineItems({ priceExpr, imageExpr, titleExpr, subExpr = '' }) {
 }
 const IMG_EXPR = `{% if item.product.variant.images.0.src %}{{ item.product.variant.images.0.src }}{% else %}{{ item.product.images.0.src|missing_product_image }}{% endif %}`;
 const cartItems = () => row(`{% if event.extra.line_items %}${lineItems({ priceExpr: `{% currency_format item.line_price|floatformat:2 %}`, imageExpr: IMG_EXPR, titleExpr: '{{ item.product.title }}', subExpr: '{{ item.variant_title }}' })}{% endif %}`, '6px 44px 12px');
+
+/** Cart as a butcher-counter order ticket: cream card, dashed edge, Marker
+ *  header, 120px product shots, dark-red prices. The receipt look becomes a
+ *  deliberate design object instead of a bare table. */
+const cartTicket = ({ note = false } = {}) => row(`
+${note ? `<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td align="right" style="padding:0 26px 0 0;line-height:0;">${picture('note-still-warm', { alt: 'Still warm', style: 'display:inline-block;' })}</td></tr></table>` : ''}
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" width="520" style="width:520px;max-width:100%;">
+<tr><td bgcolor="${CREAM}" style="background-color:${CREAM};border:2px dashed ${OLIVE};border-radius:12px;padding:20px 24px 12px;">
+<div style="text-align:center;padding-bottom:6px;">${picture('ticket-header', { alt: 'Your order ticket', style: 'margin:0 auto;display:inline-block;' })}</div>
+{% if event.extra.line_items %}
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+{% for item in event.extra.line_items %}
+<tr>
+<td width="120" valign="top" style="padding:12px 16px 12px 0;{% if not forloop.first %}border-top:1px dashed ${OLIVE};{% endif %}">
+<a href="{{ organization.url|trim_slash }}/products/{{ item.product.handle }}" target="_blank" style="display:block;"><img src="${IMG_EXPR}" width="120" alt="" style="display:block;width:120px;height:auto;border:0;border-radius:8px;"/></a></td>
+<td valign="middle" style="padding:12px 0;font-family:${COND};{% if not forloop.first %}border-top:1px dashed ${OLIVE};{% endif %}">
+<a href="{{ organization.url|trim_slash }}/products/{{ item.product.handle }}" target="_blank" style="color:${INK};text-decoration:none;font-weight:bold;font-size:20px;line-height:1.25;">{{ item.product.title }}</a><br/>
+<span style="color:${OLIVE};font-size:15px;letter-spacing:.5px;text-transform:uppercase;">{{ item.variant_title }} &middot; Qty {{ item.quantity|floatformat:0 }}</span></td>
+<td width="86" align="right" valign="middle" style="padding:12px 0;font-family:${COND};font-size:20px;font-weight:bold;color:${RED_DK};white-space:nowrap;{% if not forloop.first %}border-top:1px dashed ${OLIVE};{% endif %}">{% currency_format item.line_price|floatformat:2 %}</td>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+</td></tr></table>`, '4px 40px 8px');
 const orderItems = () => row(`{% if event.extra.line_items %}${lineItems({ priceExpr: `{% currency_format item.price|floatformat:2 %}`, imageExpr: IMG_EXPR, titleExpr: '{{ item.product.title }}', subExpr: '{{ item.variant_title }}' })}{% endif %}`, '6px 44px 4px');
 const shipItems = () => row(`{% if event.extra.line_items %}${lineItems({ priceExpr: `{% currency_format item.price|floatformat:2 %}`, imageExpr: IMG_EXPR, titleExpr: '{{ item.name }}' })}{% endif %}`, '6px 44px 12px');
 
@@ -127,28 +152,56 @@ const feedGrid = (title) => row(`{% if feeds.SHOP_POPULAR_ALL_CATEGORIES|index:0
 <div style="font-family:${COND};font-size:14px;line-height:1.5;color:${OLIVE};">{{ item.price|default:'' }}</div></a>
 {% endwith %}{% endif %}</td>`).join('')}</tr></table>{% endif %}`, '8px 30px 14px');
 
-/** Dark HOT LINKS footer, torn paper edge on top — the theme's ym-footer-cta. */
+const SOCIALS = [
+  ['instagram', 'Instagram', 'https://instagram.com/yardmicrowaves'],
+  ['facebook', 'Facebook', 'https://facebook.com/yardmicrowaves'],
+  ['tiktok', 'TikTok', 'https://tiktok.com/@yardmicrowaves'],
+];
+
+/** Footer: one full-bleed band. The paper tears away at the top to reveal the
+ *  story photo, with the Our Story copy and pill sitting on it, then the small
+ *  HOT LINKS chain (mirrors sections/ym-footer-cta.liquid) and the fine print
+ *  (address + unsubscribe). The copy is LIVE TEXT, not a baked image — it
+ *  ships in every email, so this keeps weight down and the text-to-image ratio
+ *  sane. bgcolor is the fallback for clients that drop td background images.
+ *
+ *  Height budget: Outlook ignores background-size and TILES the 600x470 band,
+ *  which would repeat the bright torn edge mid-footer. Keep this td's content
+ *  under 470px — that is why the chain runs at 112px per link rather than its
+ *  native 196px. Re-measure if anything is added here. */
+const FOOTER_BAND_MIN_H = 470;
 function footer() {
-  const hl = (k, href, alt) => `<td align="center" width="33%" style="padding:0;"><a href="${href}" target="_blank" style="display:block;">${picture(`hotlink-${k}`, { w: 196, alt, style: 'margin:0 auto;' })}</a></td>`;
-  return `<tr><td style="padding:0;line-height:0;font-size:0;" bgcolor="${PAPER}">${picture('torn-to-dark', { w: 600, alt: '' })}</td></tr>
-<tr><td align="center" bgcolor="${DARK}" style="background-color:${DARK};padding:10px 20px 32px;">
-${picture('hotlinks-heading', { alt: 'Hot links', style: 'margin:0 auto 2px;' })}
-<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:588px;"><tr>${hl('instagram', IG, 'Instagram')}${hl('facebook', FB, 'Facebook')}${hl('tiktok', TT, 'TikTok')}</tr></table>
-<div style="padding:18px 0 12px;">${picture('logo-white', { w: 132, alt: 'Yard Microwaves', href: SITE, style: 'margin:0 auto;' })}</div>
-<div style="font-family:${COND};font-size:14px;line-height:1.5;letter-spacing:1px;text-transform:uppercase;color:${CREAM};padding-bottom:12px;">Smoking meats. Chugging pilsners.<br/>Bringing families together.</div>
-<div class="ym-foot" style="font-family:${BODY};font-size:12px;line-height:1.75;color:#CBBFA2;">
-<a href="${IG}" target="_blank" style="color:${PEACH};text-decoration:none;font-weight:bold;">@yardmicrowaves</a>&nbsp;&bull;&nbsp;<a href="${SITE}" target="_blank" style="color:${PEACH};text-decoration:none;font-weight:bold;">yardmicrowaves.com</a><br/>
+  const a = img('footer-band');
+  // Guard the Outlook tiling trap: an older, shorter footer-band still has a
+  // valid CDN url, so the build would silently ship a band that tiles and
+  // repeats the bright torn edge mid-footer. Re-render + re-upload instead.
+  if (a.h < FOOTER_BAND_MIN_H) {
+    throw new Error(`footer-band is ${a.h}px tall, needs >= ${FOOTER_BAND_MIN_H}px — run: npm run assets && npm run upload`);
+  }
+  const band = a.url;
+  const link = ([name, alt, href]) => `<td align="center" style="padding:0;line-height:0;font-size:0;">${picture(`hotlink-${name}`, { w: 112, alt, href })}</td>`;
+  return `<tr><td align="center" background="${band}" bgcolor="#141414" class="ym-pad" style="background-color:#141414;background-image:url('${band}');background-size:cover;background-position:center top;padding:54px 30px 24px;">
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto;"><tr><td align="center" width="440" style="width:440px;max-width:440px;font-family:${COND};font-size:15px;line-height:1.5;letter-spacing:.8px;text-transform:uppercase;color:#ffffff;font-weight:bold;text-shadow:0 1px 8px rgba(0,0,0,.85);">Welcome to Yard Microwaves, where childhood friends turned grillmasters add a satirical twist to BBQ, igniting unforgettable moments and mouthwatering flavors.</td></tr></table>
+${button('our-story', `${SITE}/pages/our-story`, 'Our Story')}
+${picture('hotlinks-heading', { w: 112, alt: 'Hot Links', style: 'margin:14px auto 8px;' })}
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 10px;"><tr>
+${SOCIALS.map(link).join('\n')}
+</tr></table>
+<div class="ym-foot" style="font-family:${COND};font-size:12px;line-height:1.8;color:#CBBFA2;">
 Yard Microwaves &middot; 24002 Via Fabricante #225, Mission Viejo, CA 92691<br/>
-You're getting this because you signed up at the Yard.<br/>
-<span style="color:${PEACH};">{% unsubscribe 'Unsubscribe' %}</span>
+You're getting this because you signed up at the Yard. &middot; <span style="color:${PEACH};">{% unsubscribe 'Unsubscribe' %}</span>
 </div></td></tr>`;
 }
 
+/** The Shop · badge · Our Story. Nav wordmarks stay inline so the td's align
+ *  attribute still positions them in Outlook. */
 function header() {
-  return `<tr><td class="ym-pad" style="padding:22px 20px 6px;"><table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr>
-<td align="center" width="33%" class="ym-nav">${picture('nav-shop', { alt: 'The Shop', href: SITE, style: 'margin:0 auto;' })}</td>
-<td align="center" width="34%" class="ym-logo">${picture('badge-logo', { w: 176, alt: 'Yard Microwaves', href: SITE, style: 'margin:0 auto;' })}</td>
-<td align="center" width="33%" class="ym-nav">${picture('nav-story', { alt: 'Our Story', href: `${SITE}/pages/our-story`, style: 'margin:0 auto;' })}</td>
+  const nav = (k, href, alt) => `<a href="${href}" target="_blank" style="text-decoration:none;">${picture(k, { alt, style: 'display:inline-block;' })}</a>`;
+  return `<tr><td align="center" class="ym-pad" style="padding:20px 20px 6px;">
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr>
+<td align="left" valign="middle" class="ym-nav" style="width:25%;">${nav('nav-shop', `${SITE}/collections/all`, 'The Shop')}</td>
+<td align="center" valign="middle" class="ym-logo" style="width:50%;">${picture('badge-logo', { w: 176, alt: 'Yard Microwaves', href: SITE, style: 'margin:0 auto;' })}</td>
+<td align="right" valign="middle" class="ym-nav" style="width:25%;">${nav('nav-story', `${SITE}/pages/our-story`, 'Our Story')}</td>
 </tr></table></td></tr>`;
 }
 
@@ -309,39 +362,42 @@ const TEMPLATES = {
   'abandoned-cart-1': {
     name: 'Abandoned Cart #1',
     rows: [
-      headline('cart-1', "Don't let your items slip away!"),
-      region([lede(`Your cart is saved, but these items won't last forever &mdash; come back and complete your order today!`)]),
-      cartItems(),
+      headline('cart-heads', 'Heads up, Pitmaster!'),
+      region([
+        lede(`You left the lid up! Your cart's losing heat &mdash; and flavor.`),
+        para(`<p style="margin:0;">We saved everything right where you left it. Come back and close that lid before the smoke escapes.</p>`),
+      ]),
+      cartTicket({ note: true }),
       cta('back-to-cart', '{{ event.extra.checkout_url }}', 'Back to my cart'),
       freeship(),
-      feedGrid('Most loved at the Yard'),
       quality(),
     ],
   },
   'abandoned-cart-2': {
     name: 'Abandoned Cart #2',
     rows: [
-      headline('cart-2', 'Finish your order before your items sell out'),
-      region([lede(`We saved all of the great items you've added to your cart, so when you're ready to buy, simply complete your purchase.`)]),
-      cartItems(),
+      headline('cart-rested', "It's rested. It's ready."),
+      region([
+        lede(`True barbecue wisdom: low and slow wins &mdash; but not this slow.`),
+        para(`<p style="margin:0;">Your cart has had plenty of time to rest. Time to carve into it and claim your reward.</p>`),
+      ]),
+      cartTicket(),
       cta('back-to-cart', '{{ event.extra.checkout_url }}', 'Back to my cart'),
-      freeship(),
-      feedGrid('Top best sellers'),
+      showcase(),
       quality(),
     ],
   },
   'abandoned-cart-3': {
     name: 'Abandoned Cart #3 (15% Off)',
     rows: [
-      headline('cart-2', 'Finish your order before your items sell out'),
+      headline('cart-sauce', 'A little sauce on the house'),
       region([
-        lede(`We saved all of the great items you've added to your cart, so when you're ready to buy, simply complete your purchase.`),
-        coupon(`Use code <strong>INSERT-COUPON</strong> for 15% off &mdash; good for the next 48 hours.`),
+        lede(`Sauce boss status: confirmed.`),
+        coupon(`Use code <strong style="color:${RED_DK};">INSERT-COUPON</strong> for 15% off your cart &mdash; good for the next 48 hours, then it drips away.`),
       ]),
-      cartItems(),
-      cta('back-to-cart', '{{ event.extra.checkout_url }}', 'Back to my cart'),
+      cartTicket(),
+      cta('claim-15', '{{ event.extra.checkout_url }}', 'Claim 15% off'),
       freeship(),
-      feedGrid('Top best sellers'),
       quality(),
     ],
   },

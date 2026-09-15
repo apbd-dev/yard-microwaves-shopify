@@ -4,12 +4,13 @@
   "type": "module",
   "description": "Klaviyo email templates for Yard Microwaves, built from the theme's own assets and fonts.",
   "scripts": {
-    "assets": "node render-assets.mjs",
+    "assets": "node render-assets.mjs && node build-footer-gif.mjs",
     "upload": "node klaviyo.mjs upload",
     "build": "node build.mjs",
     "preview": "node preview.mjs",
     "push": "node klaviyo.mjs push",
-    "all": "npm run assets && npm run upload && npm run build && npm run preview && npm run push"
+    "all": "npm run assets && npm run upload && npm run build && npm run preview && npm run push",
+    "assets:still": "node render-assets.mjs"
   },
   "devDependencies": {
     "playwright": "1.61.1"

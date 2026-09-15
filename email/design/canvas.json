@@ -1,0 +1,62 @@
+{
+  "artboards": [
+    {
+      "file": "System.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1292,
+      "h": 1560,
+      "title": "Design System · shared reference"
+    },
+    {
+      "file": "Main.dc.html",
+      "x": 400,
+      "y": 1720,
+      "w": 750,
+      "h": 1650,
+      "title": "Cart 1 · +4h · Heads Up"
+    },
+    {
+      "file": "Cart2.dc.html",
+      "x": 1250,
+      "y": 1720,
+      "w": 750,
+      "h": 2140,
+      "title": "Cart 2 · +24h · Rested & Ready"
+    },
+    {
+      "file": "Cart3.dc.html",
+      "x": 2100,
+      "y": 1720,
+      "w": 750,
+      "h": 1620,
+      "title": "Cart 3 · +44h · Sauce 15%"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "how-this-works",
+      "x": 1400,
+      "y": 60,
+      "w": 320,
+      "text": "Design emails here in the website's real fonts + tokens.\nApproved artboards get baked into Klaviyo as image-first emails — only the order ticket stays dynamic.\n[COUPON] = placeholder, needs a real code.\n\nOne row per Klaviyo flow. The note at the left of each row names the flow and how it sends."
+    },
+    {
+      "id": "flow-abandoned-cart",
+      "x": 0,
+      "y": 1740,
+      "w": 320,
+      "text": "ABANDONED CART REMINDER\nStandard (Email & SMS) · flow U62Fdc\n\nStatus: DRAFT — not sending yet.\nTrigger: checkout started.\nSends at +4h → +24h → +44h.\n\nSMS-consented profiles get the SMS instead of email 1, then rejoin for 2 and 3.\n\nTO WIRE UP: the flow's three messages still point at the old \"YM - …\" templates, not the \"YM Theme - Abandoned Cart #1–3\" ones these artboards bake into. Repoint them in the flow editor.\n\nEmail 3's send filter uses a hardcoded date (before 2026-06-04) — worth a second look."
+    },
+    {
+      "id": "flows-not-yet-designed",
+      "x": 0,
+      "y": 2560,
+      "w": 320,
+      "text": "NO ARTBOARDS YET\nThese flows exist in Klaviyo and already build from the shared components, but have not been designed here:\n\n· Welcome Series — 3 emails\n· Browse Abandonment — 2 emails\n· Review Request + Reminder\n· Order Confirmation\n· Shipping Confirmation\n\nEach becomes its own row when designed. Only \"Review request\" is live; every other flow is a draft."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

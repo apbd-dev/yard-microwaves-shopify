@@ -51,7 +51,10 @@ async function upload() {
     const buf = readFileSync(resolve(dir, meta.file));
     const hash = sha(buf);
     if (assets[key]?.hash === hash && assets[key]?.url) { skipped++; continue; }
-    const mime = extname(meta.file) === '.jpg' ? 'image/jpeg' : 'image/png';
+    // Map by extension — an animated .gif uploaded as image/png loses its
+    // animation, which is exactly what the footer band relies on.
+    const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.png': 'image/png' };
+    const mime = MIME[extname(meta.file).toLowerCase()] ?? 'image/png';
     const body = { data: { type: 'image', attributes: { name: `ym-email-${key}-${hash}`, import_from_url: `data:${mime};base64,${buf.toString('base64')}`, hidden: false } } };
     const r = await api('POST', '/images/', body);
     assets[key] = { url: r.data.attributes.image_url, id: r.data.id, hash, w: meta.w, h: meta.h, file: meta.file };
@@ -91,6 +94,9 @@ async function push() {
 
 // ---------------------------------------------------------------- render ----
 // Sample context so dynamic blocks (cart items, order, review product) show up.
+/** Sample product image = the uploaded email asset (loads in previews AND in
+ *  Klaviyo's editor preview). Falls back to a blank if not uploaded yet. */
+const SAMPLE_IMG = (key) => { try { return loadJson(ASSETS_JSON)[key]?.url || ''; } catch { return ''; } };
 const SAMPLE = {
   first_name: 'Rich',
   organization: { name: 'Yard Microwaves', url: 'https://yardmicrowaves.com' },
@@ -105,13 +111,13 @@ const SAMPLE = {
       shipping_address: { name: 'Rich Ornelas', address1: '24002 Via Fabricante #225', city: 'Mission Viejo', province: 'CA', province_code: 'CA', zip: '92691', country: 'United States', first_name: 'Rich', last_name: 'Ornelas' },
       fulfillments: [{ tracking_company: 'USPS', tracking_number: '9400 1000 0000 0000 0000 00', tracking_url: 'https://tools.usps.com', line_items: [{ vendor: 'Yard Microwaves' }] }],
       line_items: [
-        { name: 'Rub & Plug Tee - Bone / L', title: 'Rub & Plug Tee', quantity: 1, price: '29.00', line_price: '29.00', product: { title: 'Rub & Plug Tee', handle: 'rub-plug-t-shirt', images: [{ src: 'https://yardmicrowaves.com/cdn/shop/files/rubplug-front.png' }], variant: { title: 'Bone / L', images: [] } }, variant_title: 'Bone / L' },
-        { name: 'Smoke Signal Tee - Briquette / M', title: 'Smoke Signal Tee', quantity: 1, price: '29.00', line_price: '29.00', product: { title: 'Smoke Signal Tee', handle: 'smoke-signals', images: [{ src: 'https://yardmicrowaves.com/cdn/shop/files/smokesig-front.png' }], variant: { title: 'Briquette / M', images: [] } }, variant_title: 'Briquette / M' },
+        { name: 'Rub & Plug Tee - Bone / L', title: 'Rub & Plug Tee', quantity: 1, price: '29.00', line_price: '29.00', product: { title: 'Rub & Plug Tee', handle: 'rub-plug-t-shirt', images: [{ src: SAMPLE_IMG('sample-rubplug') }], variant: { title: 'Bone / L', images: [] } }, variant_title: 'Bone / L' },
+        { name: 'Smoke Signal Tee - Briquette / M', title: 'Smoke Signal Tee', quantity: 1, price: '29.00', line_price: '29.00', product: { title: 'Smoke Signal Tee', handle: 'smoke-signals', images: [{ src: SAMPLE_IMG('sample-smokesig') }], variant: { title: 'Briquette / M', images: [] } }, variant_title: 'Briquette / M' },
       ],
     },
-    ImageURL: 'https://yardmicrowaves.com/cdn/shop/files/rubplug-front.png', Name: 'Rub & Plug Tee', Price: '$29.00', URL: 'https://yardmicrowaves.com/products/rub-plug-t-shirt',
+    ImageURL: SAMPLE_IMG('sample-rubplug'), Name: 'Rub & Plug Tee', Price: '$29.00', URL: 'https://yardmicrowaves.com/products/rub-plug-t-shirt',
     product: { title: 'Rub & Plug Tee' },
-    structured_product: { title: 'Rub & Plug Tee', image_url: 'https://yardmicrowaves.com/cdn/shop/files/rubplug-front.png', variant_name: 'Bone / L' },
+    structured_product: { title: 'Rub & Plug Tee', image_url: SAMPLE_IMG('sample-rubplug'), variant_name: 'Bone / L' },
     review_link: 'https://yardmicrowaves.com/reviews/new',
   },
 };

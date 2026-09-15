@@ -88,6 +88,9 @@ const HEADLINES = {
   'order':          'Thank you for your order!',
   'cart-1':         "Don't let your items slip away!",
   'cart-2':         'Finish your order before it sells out',
+  'cart-heads':     'Heads up, Pitmaster!',
+  'cart-rested':    "It's rested. It's ready.",
+  'cart-sauce':     'A little sauce on the house',
   'browse':         'Well, what are you waiting for?',
 };
 const BUTTONS = {
@@ -98,6 +101,7 @@ const BUTTONS = {
   'follow-ig': 'Follow @yardmicrowaves',
   'leave-review': 'Leave a review',
   'our-story': 'Our Story',
+  'claim-15': 'Claim 15% off',
 };
 
 async function main() {
@@ -106,8 +110,8 @@ async function main() {
 
   console.log('rendering theme assets → build/assets');
 
-  // --- page texture (theme body background) ---------------------------------
-  await shot('paper-bg', `<div style="width:600px;height:900px;background:${C.paper} url('${asset('ym-page-texture.jpg')}') center top / cover no-repeat"></div>`,
+  // --- page texture: the crinkled butcher paper from the Figma comp ---------
+  await shot('paper-bg', `<div style="width:600px;height:900px;background:${C.paper} url('${asset('ym-paper-crinkle.jpg')}') center top / cover no-repeat"></div>`,
     '', { w: 600, h: 900, jpg: true, quality: 70 });
 
   // --- logos ----------------------------------------------------------------
@@ -123,9 +127,10 @@ async function main() {
   await typeShot('nav-story', `<div class="n"><div class="sm">Our</div><div class="bg">Story</div></div>`, navCss);
 
   // --- headlines (Milenia script, olive, like .ym-pioneers__title) ----------
+  // 62px display scale — matches the landing page / Pellet Pioneers comp.
   for (const [k, text] of Object.entries(HEADLINES)) {
     await typeShot(`h-${k}`, `<div class="t">${text}</div>`,
-      `.t{font-family:Milenia;font-size:48px;line-height:1.08;color:${C.olive};text-align:center;padding:6px 10px}`, { maxW: 500 });
+      `.t{font-family:Milenia;font-size:62px;line-height:1.06;color:${C.olive};text-align:center;padding:8px 10px}`, { maxW: 540 });
   }
 
   // --- button labels (Milenia white; pill is HTML so alt text degrades) -----
@@ -161,7 +166,10 @@ async function main() {
     <div class="mk" style="left:132px;top:486px">Heavy<br>weight</div>
     <svg class="ar" style="left:196px;top:470px;transform:scaleX(-1) rotate(40deg)" width="40" height="30" viewBox="0 0 40 30"><path d="M38 4 C28 2, 12 8, 4 24" fill="none" stroke="${C.olive}" stroke-width="2.5" stroke-linecap="round"/><path d="M2 16 L4 25 L13 23" fill="none" stroke="${C.olive}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   `, `.mk{position:absolute;font-family:Marker;font-size:16px;line-height:1.05;text-transform:uppercase;color:${C.olive};text-align:center;text-shadow:0 0 6px ${C.paper},0 0 10px ${C.paper}}.ar{position:absolute;filter:drop-shadow(0 0 3px ${C.paper})}`,
-  { w: 600, h: 580 });
+  // JPG on paper: this is a photographic composite that sits directly on the
+  // paper background, and as a PNG it was 600KB — over half the image budget
+  // of every email that uses it.
+  { w: 600, h: 580, jpg: true, quality: 84, bg: C.paper });
 
   // --- quality banner band (sparkles + Bananas uppercase olive) --------------
   await shot('quality-band', `
@@ -186,11 +194,57 @@ async function main() {
   { w: 600 });
   await shot('tagline-brisket', `<img src="${asset('ym-tagline-brisket.png')}" style="display:block;width:260px;height:auto">`, '', { w: 260 });
 
+  // --- order-ticket header: Marker caps + smoke icon, tops the cart card -----
+  await typeShot('ticket-header', `
+    <div style="display:flex;align-items:center;gap:10px;padding:2px 4px">
+      <img src="${asset('ym-icon-smoke.png')}" style="height:26px;width:auto">
+      <div style="font-family:Marker;font-size:24px;line-height:1;letter-spacing:.04em;text-transform:uppercase;color:${C.olive};white-space:nowrap">Your order ticket</div>
+      <img src="${asset('ym-icon-smoke.png')}" style="height:26px;width:auto;transform:scaleX(-1)">
+    </div>`, '');
+
+  // --- marker note: "still warm" + arrow, sits beside the ticket ------------
+  await typeShot('note-still-warm', `
+    <div style="padding:4px 6px;text-align:center">
+      <div style="font-family:Marker;font-size:17px;line-height:1.1;text-transform:uppercase;color:${C.olive}">Still<br>warm</div>
+      <svg width="34" height="26" viewBox="0 0 40 30" style="margin-top:2px"><path d="M38 4 C28 2, 12 8, 4 24" fill="none" stroke="${C.olive}" stroke-width="2.5" stroke-linecap="round"/><path d="M2 16 L4 25 L13 23" fill="none" stroke="${C.olive}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>`, '');
+
+  // --- story band: brisket photo (torn edges baked in) + white copy + pill ---
+  // Photo lifted from the Figma "Pellet Pioneers" comp (Emails page); the whole
+  // band is one linked image so the copy degrades to alt text.
+  // JPG on paper, like footer-band: this band now ships in EVERY email's footer,
+  // and as a PNG it was 323KB, pushing four templates past the 900KB budget.
+  await shot('story-band', `
+    <img src="${asset('ym-story-meat.png')}" style="display:block;width:600px;height:auto">
+    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:470px;text-align:center">
+      <div style="font-family:Bananas;font-weight:600;font-size:16px;line-height:1.5;letter-spacing:.05em;text-transform:uppercase;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.85),0 0 24px rgba(0,0,0,.6);padding-bottom:16px">
+        Welcome to Yard Microwaves, where childhood friends turned grillmasters add a satirical twist to BBQ, igniting unforgettable moments and mouthwatering flavors.
+      </div>
+      <div style="display:inline-block;font-family:Milenia;font-size:24px;line-height:1;color:#fff;background:${C.red};border-radius:20px;padding:12px 34px 14px;box-shadow:0 3px 10px rgba(0,0,0,.4)">Our Story</div>
+    </div>
+  `, '', { w: 600, jpg: true, quality: 82, bg: C.paper });
+
   // --- footer transition: paper tears away to reveal the dark footer ---------
   await shot('torn-to-dark', `
     <div style="position:absolute;left:0;right:0;top:44px;bottom:0;background:${C.dark}"></div>
     <img src="${asset('ym-torn-edge-merged.png')}" style="position:absolute;left:-2%;top:-2px;width:104%;display:block">
   `, '', { w: 600, h: 100 });
+
+  // --- footer band: hero-video still (the smoker in the yard, ym-hero.mp4
+  // @12s), torn paper edge on top. -------------------------------------------
+  // The frame runs FULL WIDTH and uncropped (600x338): zooming in to fill the
+  // whole 470px band turned it into an unreadable close-up, with the smoker's
+  // chrome handle streaking behind the hot links. Instead the photo occupies
+  // the top of the band and the scrim fades it to solid #141414 by y=338, so
+  // the copy sits on the photo and the hot links / fine print sit on flat dark.
+  // Sized to hold the WHOLE footer; build.mjs asserts this height because
+  // Outlook ignores background-size and tiles a short band.
+  await shot('footer-band', `
+    <img src="${asset('ym-footer-frame.jpg')}" style="position:absolute;left:0;top:0;width:600px;height:auto;filter:contrast(1.12) saturate(0.9)">
+    <div style="position:absolute;left:0;right:0;top:0;height:338px;background:linear-gradient(180deg, rgba(14,14,14,.56) 0%, rgba(13,13,13,.80) 50%, rgba(20,20,20,1) 100%)"></div>
+    <div style="position:absolute;left:0;right:0;top:336px;bottom:0;background:#141414"></div>
+    <img src="${asset('ym-torn-edge-merged.png')}" style="position:absolute;left:-2%;top:-2px;width:104%;display:block">
+  `, '', { w: 600, h: 470, jpg: true, quality: 78, bg: C.paper });
 
   // --- HOT LINKS heading + sausage chain split into three linkable thirds ---
   await typeShot('hotlinks-heading', `<div class="t">Hot Links</div>`,
@@ -203,6 +257,10 @@ async function main() {
       <img src="${asset(icon)}" style="position:absolute;left:50%;top:38px;transform:translateX(-50%);height:22px;width:auto;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))">
     `, '', { w: 196, h: 100 });
   }
+
+  // --- sample product shots (for template-render previews) ------------------
+  await shot('sample-rubplug', `<img src="${asset('ym-rubplug-bone-folded.png')}" style="display:block;width:240px;height:auto">`, '', { w: 240 });
+  await shot('sample-smokesig', `<img src="${asset('ym-smokesig-briquette-folded.png')}" style="display:block;width:240px;height:auto">`, '', { w: 240 });
 
   // --- straight copies / simple crops ---------------------------------------
   copyFileSync(resolve(THEME_ASSETS, 'ym-mascot.png'), resolve(OUT, 'mascot.png'));

@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+@@FONTS@@
+    body { margin: 0; background: #ede4d3; }
+    a { color: #cc0000; } a:hover { color: #FF0000; }
+  </style>
+</helmet>
+<div style="position: relative; z-index: 0; width: 750px; background-color: #ede4d3; display: flex; flex-direction: column; align-items: center;">
+  <img src="paper.jpg" alt="" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; z-index: -1;">
+
+@@HEADER@@
+
+  <div style="width: 620px; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 18px 0 16px;">
+    <div style="font-family: 'Milenia', cursive; font-size: 58px; line-height: 1.05; color: #918450; text-align: center;">A little sauce on the house</div>
+    <div style="font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.45; letter-spacing: 0.05em; text-transform: uppercase; color: #918450; text-align: center;">Sauce boss status: confirmed.</div>
+  </div>
+
+  <div style="width: 520px; background: #FFB563; border: 2px dashed #cc0000; border-radius: 10px; padding: 18px 30px; margin: 2px 0 14px; font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 19px; line-height: 1.45; letter-spacing: 0.05em; text-transform: uppercase; color: #3B3229; text-align: center;">Use code <span style="color: #cc0000;">[COUPON]</span> for 15% off your cart &mdash; good for the next 48 hours, then it drips away.</div>
+
+  <div style="width: 540px; background: #F0EEE2; border: 2px dashed #918450; border-radius: 12px; padding: 22px 26px 14px; display: flex; flex-direction: column; gap: 0;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; padding-bottom: 10px;">
+      <span style="font-family: 'Marker', cursive; font-size: 25px; line-height: 1; letter-spacing: 0.04em; text-transform: uppercase; color: #918450;">Your order ticket</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 18px; padding: 12px 0;">
+      <img src="tee-rubplug.png" alt="Rub &amp; Plug Tee" style="display: block; width: 116px; height: auto; border-radius: 8px;">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 3px;">
+        <div style="font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 21px; line-height: 1.2; color: #3B3229;">Rub &amp; Plug Tee</div>
+        <div style="font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 500; font-size: 15px; letter-spacing: 0.05em; text-transform: uppercase; color: #918450;">Bone / L &middot; Qty 1</div>
+      </div>
+      <div style="font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 21px; color: #cc0000; white-space: nowrap;">$29.00</div>
+    </div>
+    <div style="border-top: 1px dashed #918450; display: flex; align-items: center; gap: 18px; padding: 12px 0;">
+      <img src="tee-smokesig.png" alt="Smoke Signal Tee" style="display: block; width: 116px; height: auto; border-radius: 8px;">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 3px;">
+        <div style="font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 21px; line-height: 1.2; color: #3B3229;">Smoke Signal Tee</div>
+        <div style="font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 500; font-size: 15px; letter-spacing: 0.05em; text-transform: uppercase; color: #918450;">Briquette / M &middot; Qty 1</div>
+      </div>
+      <div style="font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 21px; color: #cc0000; white-space: nowrap;">$29.00</div>
+    </div>
+  </div>
+
+  <div style="padding: 22px 0 8px;">
+    <a href="#" style="display: inline-block; background: #FF0000; border-radius: 22px; padding: 15px 44px 17px; font-family: 'Milenia', cursive; font-size: 27px; line-height: 1; color: #ffffff; text-decoration: none;">Claim 15% off</a>
+  </div>
+
+  <div style="position: relative; width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; margin: 8px 0 4px;">
+    <img src="starburst.png" alt="" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px;">
+    <div style="position: relative; transform: rotate(-8deg); font-family: 'BananasExp', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.1; text-transform: uppercase; color: #ffffff; text-align: center; padding: 0 24px;">Free shipping on $50+</div>
+  </div>
+
+  <div style="width: 520px; display: flex; align-items: center; gap: 14px; padding: 18px 0 26px;">
+    <img src="pellets.png" alt="" style="width: 44px; height: auto;">
+    <div style="flex-grow: 1; font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 15px; line-height: 1.5; letter-spacing: 0.05em; text-transform: uppercase; color: #918450; text-align: center;">Quality beyond compare. Preshrunk for perfection. Just like your brisket, our shirts exceed expectations. Guaranteed.</div>
+  </div>
+
+@@FOOTER@@
+
+</div>
+</x-dc>
+</body>
+</html>

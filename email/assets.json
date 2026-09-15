@@ -1,8 +1,8 @@
 {
  "paper-bg": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/b2df05d4-4dd6-427a-924d-058e08fe965b.jpeg",
-  "id": "361398925",
-  "hash": "c65530d42794",
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/e03d2941-26c8-4755-bf11-4cc0d9c1e6be.jpeg",
+  "id": "362458245",
+  "hash": "eb14ce3753ab",
   "w": 600,
   "h": 900,
   "file": "paper-bg.jpg"
@@ -40,83 +40,83 @@
   "file": "nav-story.png"
  },
  "h-welcome-new": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/b2e2dd7d-fcbc-4ecd-87ff-85e5d0119415.png",
-  "id": "361398931",
-  "hash": "4a734c6e2e43",
-  "w": 393,
-  "h": 64,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/58f8382b-6c64-46f1-997a-7deabde7c24f.png",
+  "id": "362071785",
+  "hash": "ddae75f24e10",
+  "w": 501,
+  "h": 82,
   "file": "h-welcome-new.png"
  },
  "h-welcome-exist": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/f391bf9c-a57c-4f04-bdea-3b6a3e335705.png",
-  "id": "361398933",
-  "hash": "52d6b0435a70",
-  "w": 356,
-  "h": 64,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/f5addde8-0a3b-4936-af14-dca18795d1e6.png",
+  "id": "362071807",
+  "hash": "8242bb85c040",
+  "w": 453,
+  "h": 82,
   "file": "h-welcome-exist.png"
  },
  "h-follow": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/dddbb356-bdac-4430-9fb7-be6a2e3887bf.png",
-  "id": "361398934",
-  "hash": "d2226ac73f04",
-  "w": 295,
-  "h": 64,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/9d7720c3-5cdb-45d9-ae3a-d0692dc1cb5e.png",
+  "id": "362071871",
+  "hash": "70dcc002ca6f",
+  "w": 375,
+  "h": 82,
   "file": "h-follow.png"
  },
  "h-review-req": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/5af200ee-445a-4112-9b59-396fc90df89a.png",
-  "id": "361398935",
-  "hash": "f8dcf3aa4b5d",
-  "w": 361,
-  "h": 64,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/1c951aaf-0732-4907-95d7-4e780a6d402c.png",
+  "id": "362071875",
+  "hash": "5361d5aa3a0f",
+  "w": 460,
+  "h": 82,
   "file": "h-review-req.png"
  },
  "h-review-rem": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/0e0eac80-96be-40db-b923-51861842a7d9.png",
-  "id": "361398937",
-  "hash": "10c682acd9ac",
-  "w": 463,
-  "h": 64,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/0f74ffb6-e652-486a-a407-7e35e271004b.png",
+  "id": "362071881",
+  "hash": "c1ba8bb9544d",
+  "w": 542,
+  "h": 147,
   "file": "h-review-rem.png"
  },
  "h-shipping": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/c3080bae-16a1-4499-a3f6-194c7ce29984.png",
-  "id": "361398939",
-  "hash": "6d5f221189df",
-  "w": 274,
-  "h": 64,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/d6ea8bf7-90ed-435b-85ad-a3f3cd7253b5.png",
+  "id": "362071883",
+  "hash": "0520845bf7e3",
+  "w": 348,
+  "h": 82,
   "file": "h-shipping.png"
  },
  "h-order": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/39a19e0f-96da-4b0a-a488-5621e906b17e.png",
-  "id": "361398940",
-  "hash": "8b3c0ce40205",
-  "w": 440,
-  "h": 64,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/7fdfc645-aa9b-430f-915b-6235e601da6d.png",
+  "id": "362071888",
+  "hash": "7a40484bfe1e",
+  "w": 542,
+  "h": 147,
   "file": "h-order.png"
  },
  "h-cart-1": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/bf712c0b-ffea-4f16-9208-df8800760251.png",
-  "id": "361398941",
-  "hash": "c121e91cd793",
-  "w": 502,
-  "h": 116,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/2de463a0-f23a-4608-b1a9-37291833a8d5.png",
+  "id": "362071895",
+  "hash": "3f17d657c6aa",
+  "w": 542,
+  "h": 147,
   "file": "h-cart-1.png"
  },
  "h-cart-2": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/1e060008-aaae-41b6-8a76-ef923b420264.png",
-  "id": "361398942",
-  "hash": "c7293eacdf0b",
-  "w": 502,
-  "h": 116,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/a5d905e0-5eb1-4268-9772-2112e956900b.png",
+  "id": "362071985",
+  "hash": "e85066f69563",
+  "w": 542,
+  "h": 147,
   "file": "h-cart-2.png"
  },
  "h-browse": {
-  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/e27b5aed-b91a-44a6-91b6-9cea86282d73.png",
-  "id": "361398943",
-  "hash": "941e40544ed1",
-  "w": 502,
-  "h": 116,
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/fa957563-9b23-4f22-97ca-3989972d5b6d.png",
+  "id": "362072131",
+  "hash": "d645c16dbcd4",
+  "w": 542,
+  "h": 147,
   "file": "h-browse.png"
  },
  "b-shop-now": {
@@ -366,5 +366,93 @@
   "w": 40,
   "h": 40,
   "file": "star.png"
+ },
+ "h-cart-heads": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/200730d3-ab5d-492a-8503-e19b07c1f1df.png",
+  "id": "362072042",
+  "hash": "c6a7245d5e88",
+  "w": 470,
+  "h": 82,
+  "file": "h-cart-heads.png"
+ },
+ "h-cart-rested": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/e3c2c7cb-70b1-42ef-a83e-8ca32eaa1bdf.png",
+  "id": "362072043",
+  "hash": "646122972299",
+  "w": 472,
+  "h": 82,
+  "file": "h-cart-rested.png"
+ },
+ "h-cart-sauce": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/8b12978e-0e5a-43f6-bd6b-cfdb8f344561.png",
+  "id": "362072054",
+  "hash": "ce9b5e726af1",
+  "w": 542,
+  "h": 147,
+  "file": "h-cart-sauce.png"
+ },
+ "b-claim-15": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/2757f6b3-099f-41f1-8202-83c62d7ecf88.png",
+  "id": "362057796",
+  "hash": "642ccb9aab2f",
+  "w": 128,
+  "h": 34,
+  "file": "b-claim-15.png"
+ },
+ "pill-claim-15": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/cdcc5322-b1ac-4a7c-b16d-ae71bb9ac8eb.png",
+  "id": "362057798",
+  "hash": "8ebc199272d0",
+  "w": 204,
+  "h": 56,
+  "file": "pill-claim-15.png"
+ },
+ "story-band": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/3d849f2d-c700-40bc-a994-333a25c75236.png",
+  "id": "362057806",
+  "hash": "ca0739662f0e",
+  "w": 600,
+  "h": 346,
+  "file": "story-band.png"
+ },
+ "ticket-header": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/94134e2a-8bd1-48d3-973a-f200c5de7498.png",
+  "id": "362072153",
+  "hash": "e8e397e1c5aa",
+  "w": 348,
+  "h": 32,
+  "file": "ticket-header.png"
+ },
+ "note-still-warm": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/cef38dac-45db-45d2-b863-101498b8d138.png",
+  "id": "362072154",
+  "hash": "0ce8ee04a950",
+  "w": 71,
+  "h": 77,
+  "file": "note-still-warm.png"
+ },
+ "sample-rubplug": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/0bfbba1b-db33-47ee-97e8-5b747073a29b.png",
+  "id": "362072851",
+  "hash": "5d3d99809e54",
+  "w": 240,
+  "h": 240,
+  "file": "sample-rubplug.png"
+ },
+ "sample-smokesig": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/a3cdf854-ef9b-40b8-b2da-353348006b52.png",
+  "id": "362072853",
+  "hash": "9e59a3a139d7",
+  "w": 240,
+  "h": 240,
+  "file": "sample-smokesig.png"
+ },
+ "footer-band": {
+  "url": "https://d3k81ch9hvuctc.cloudfront.net/company/V6xuPQ/images/24000aa2-7f25-48ff-b96f-fcc0d94a9975.jpeg",
+  "id": "362470989",
+  "hash": "77909a425208",
+  "w": 600,
+  "h": 260,
+  "file": "footer-band.jpg"
  }
 }
