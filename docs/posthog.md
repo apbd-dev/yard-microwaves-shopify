@@ -6,11 +6,11 @@ checkout → purchase**, per drop, in one funnel.
 
 Standing decision: **PostHog Cloud, not self-hosted** (2026-06-05).
 
-**Project: [545620](https://us.posthog.com/project/545620)** on US Cloud — the
-*shared* Deep Seas project, the same one `deep-seas/payload` reports into. YM
-events are not in a project of their own, so every event this theme sends
-carries `brand: "yard-microwaves"` and `shop_domain`. **Filter on `brand` or
-you are looking at deepseas.dev's traffic mixed in with the store's.**
+**Project: [613208 — Yard Microwaves](https://us.posthog.com/project/613208)**
+on US Cloud. YM has its own project (one per business: Deep Seas, APBD, Yard
+Microwaves), so the Activity feed is the store and nothing else. Every event
+still carries `brand: "yard-microwaves"` and `shop_domain`, which keeps a second
+storefront or domain separable later.
 
 ---
 
@@ -51,7 +51,7 @@ The token, host and both toggles are committed in
 
 | Setting | Value |
 |---|---|
-| Project token | `phc_mBws4f…` (project 545620) |
+| Project token | `phc_rAYLqh…` (project 613208) |
 | API host | `https://us.i.posthog.com` (US Cloud) |
 | Record session replays | on |
 | Respect customer privacy consent | on |
@@ -122,9 +122,8 @@ a repeat buyer on a second device resolves to one person.
 Give it a few minutes, then watch **Activity** in PostHog.
 
 1. **Storefront** — load the homepage. Expect `$pageview` with `template`,
-   `shop_domain`, `brand: yard-microwaves`. Filter the Activity feed on
-   `brand = yard-microwaves` first — 545620 is shared, so the raw feed also
-   carries deepseas.dev traffic.
+   `shop_domain`, `brand: yard-microwaves`. The project holds only the store, so the raw
+   Activity feed is enough.
 2. **Product** — open a product. Expect `product_viewed` with `sku` and `price`.
 3. **Add to cart** — expect `product_added_to_cart`.
 4. **Checkout** — expect `checkout_started`, then the `*_submitted` steps.

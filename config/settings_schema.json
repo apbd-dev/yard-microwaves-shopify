@@ -2347,7 +2347,7 @@
       },
       {
         "type": "paragraph",
-        "content": "Storefront analytics, PostHog project 545620 (shared Deep Seas). These values ship from config/settings_data.json in the repo - a deploy overwrites anything changed here, so edit them in git. Leave the token blank to load no analytics at all. Checkout and purchase events need the custom pixel as well - see docs/posthog.md."
+        "content": "Storefront analytics, PostHog project 613208 (Yard Microwaves). These values ship from config/settings_data.json in the repo - a deploy overwrites anything changed here, so edit them in git. Leave the token blank to load no analytics at all. Checkout and purchase events need the custom pixel as well - see docs/posthog.md."
       },
       {
         "type": "text",
