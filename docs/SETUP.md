@@ -155,6 +155,15 @@ Edit `templates/index.json` to modify homepage sections, or use the visual theme
 ---
 
 
+## Analytics
+
+PostHog covers the storefront (theme snippet) and the checkout (custom pixel). Both halves are required — with only the theme snippet installed, conversion reads 0%.
+
+See **[posthog.md](./posthog.md)** for install, identity stitching, and verification.
+
+---
+
+
 ## Useful Commands
 
 | Command | Description |
