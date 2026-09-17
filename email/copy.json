@@ -1,0 +1,229 @@
+{
+ "_readme": "Approved copy for every Yard Microwaves Klaviyo message. Plain text with tokens: {first name}, {order #}, {coupon}, {checkout link}, {tracking link}. Blank line in body = new paragraph. copy.mjs turns this into HTML + Klaviyo tags. Edited through the Copy tab of the YM Email Inventory sheet (node sheet.mjs pull) — see README.",
+ "emails": {
+  "welcome-1-new": {
+   "id": "E01",
+   "name": "Welcome #1 - New Subscriber (10% Off)",
+   "take": "B",
+   "subject": "Welcome to the Yard. Mind the extension cord.",
+   "preheader": "10% off your first tee. Nobody's hurt yet.",
+   "headline": "You joined a barbecue email list. On purpose.",
+   "lede": "Hey {first name}.",
+   "body": "Two childhood friends, one backyard, more extension cord than common sense. That's us.\n\nNow you get the drop previews, the deals, and an unreasonable amount of brisket. Here's 10% off your first tee. Don't tell the neighbors.",
+   "coupon": "Use code {coupon} for 10% off your first tee",
+   "cta": {
+    "key": "grab-10",
+    "label": "Grab 10% off"
+   }
+  },
+  "welcome-1-existing": {
+   "id": "E02",
+   "name": "Welcome #1 - Existing Customer",
+   "take": "C",
+   "subject": "Regular status: confirmed",
+   "preheader": "Drops on Saturdays. You're first now.",
+   "headline": "You're on the list.",
+   "lede": "You've got the tee, {first name}.",
+   "body": "Now you get the drops first. Saturdays. That's the deal.",
+   "cta": {
+    "key": "shop-yard",
+    "label": "Shop the Yard"
+   }
+  },
+  "welcome-2-follow": {
+   "id": "E03",
+   "name": "Welcome #2 - Follow Us",
+   "take": "B",
+   "subject": "We misbehave on Instagram",
+   "preheader": "Come watch us nearly burn things.",
+   "headline": "Follow us. Watch us learn.",
+   "lede": "This email list is the well-behaved version of us.",
+   "body": "Instagram gets the rest: drop previews, design sketches, and every time a fire extinguisher makes an appearance. Come for the tees. Stay for the poor decisions.",
+   "cta": {
+    "key": "follow-chaos",
+    "label": "Follow the chaos"
+   }
+  },
+  "abandoned-cart-1": {
+   "id": "E04",
+   "name": "Abandoned Cart #1",
+   "take": "canvas",
+   "subject": "HEADS UP, PITMASTER!",
+   "preheader": "You left the lid up! Your cart’s losing heat—and flavor.",
+   "headline": "Heads up, Pitmaster!",
+   "lede": "You left the lid up! Your cart's losing heat — and flavor.",
+   "body": "We saved everything right where you left it. Come back and close that lid before the smoke escapes.",
+   "cta": {
+    "key": "back-to-cart",
+    "label": "Back to my cart"
+   }
+  },
+  "abandoned-cart-2": {
+   "id": "E05",
+   "name": "Abandoned Cart #2",
+   "take": "canvas",
+   "subject": "TRUE BARBECUE WISDOM INCOMING",
+   "preheader": "It’s rested. It’s ready. Time to carve into that cart and claim your reward.",
+   "headline": "It's rested. It's ready.",
+   "lede": "True barbecue wisdom: low and slow wins — but not this slow.",
+   "body": "Your cart has had plenty of time to rest. Time to carve into it and claim your reward.",
+   "cta": {
+    "key": "back-to-cart",
+    "label": "Back to my cart"
+   }
+  },
+  "abandoned-cart-3": {
+   "id": "E06",
+   "name": "Abandoned Cart #3 (15% Off)",
+   "take": "canvas",
+   "subject": "FOR THE SAUCE LOVERS OUT THERE",
+   "preheader": "Sauce boss status: confirmed. Use your 15% before it drips away.",
+   "headline": "A little sauce on the house",
+   "lede": "Sauce boss status: confirmed.",
+   "coupon": "Use code {coupon} for 15% off your cart — good for the next 48 hours, then it drips away.",
+   "cta": {
+    "key": "claim-15",
+    "label": "Claim 15% off"
+   }
+  },
+  "browse-abandonment-1": {
+   "id": "E07",
+   "name": "Browse Abandonment #1",
+   "take": "B",
+   "subject": "You looked. We noticed.",
+   "preheader": "The internet told us. Sorry.",
+   "headline": "We saw that.",
+   "lede": "You looked at a tee and walked off, {first name}.",
+   "body": "Happens to us in the sauce aisle all the time. It's still there. Fewer of them than there were, but still there.",
+   "cta": {
+    "key": "go-back",
+    "label": "Go back for it"
+   }
+  },
+  "browse-abandonment-2": {
+   "id": "E08",
+   "name": "Browse Abandonment #2",
+   "take": "A",
+   "subject": "Last look before it's gone",
+   "preheader": "We won't bring it up again.",
+   "headline": "Final call from the pit.",
+   "lede": "This is the last time we'll mention it, {first name}.",
+   "body": "The tee's still in stock today. Once the drop sells through, it doesn't come back until the next one, and that's weeks out. Your call.",
+   "cta": {
+    "key": "grab-now",
+    "label": "Grab it now"
+   }
+  },
+  "review-request": {
+   "id": "E09",
+   "name": "Review Request",
+   "take": "B",
+   "subject": "Did it survive the cookout?",
+   "preheader": "Sauce stains count as a review.",
+   "headline": "Tell us how it went.",
+   "lede": "By now your tee has met smoke, sauce, or both.",
+   "body": "We'd like to know how it held up, {first name}. Be honest. We've heard worse from each other.",
+   "cta": {
+    "key": "review-tee",
+    "label": "Review the tee"
+   }
+  },
+  "review-reminder": {
+   "id": "E10",
+   "name": "Review Reminder",
+   "take": "B",
+   "subject": "Your tee is still not reviewed",
+   "preheader": "We checked. Twice. It's not there.",
+   "headline": "The tee's feeling ignored.",
+   "lede": "Not to nag, {first name},",
+   "body": "but the tee's been home a while now and hasn't heard a word. A sentence will do. “Fits, funny, smells like hickory” is a perfectly good review.",
+   "cta": {
+    "key": "say-something",
+    "label": "Say something"
+   }
+  },
+  "order-confirmation": {
+   "id": "E11",
+   "name": "Order Confirmation",
+   "take": "B",
+   "subject": "You bought a shirt from us. Thank you.",
+   "preheader": "Order {order #} confirmed. We're already bragging about it.",
+   "headline": "Somebody bought a tee!",
+   "lede": "Order {order #} is confirmed, {first name}, and we're genuinely thrilled.",
+   "body": "We're printing it now, which is quieter than it sounds. Shipping email lands in a few days. In the meantime, go put something on the smoker.",
+   "cta": {
+    "key": "view-order",
+    "label": "View your order"
+   }
+  },
+  "shipping-confirmation": {
+   "id": "E12",
+   "name": "Shipping Confirmation",
+   "take": "C",
+   "subject": "Shipped: order {order #}",
+   "preheader": "Tracking link below.",
+   "headline": "On its way.",
+   "lede": "Order {order #} shipped, {first name}.",
+   "body": "Track it below. Watch the mailbox, not the pot.",
+   "cta": {
+    "key": "track-package",
+    "label": "Track your package"
+   }
+  }
+ },
+ "sms": {
+  "S01": {
+   "name": "Cart reminder SMS",
+   "flow": "U62Fdc",
+   "action": "82606459",
+   "body": "Oops, you left the lid open. You'd better come back and close that cart before the smoke escapes.\nPlug In,\nYard Microwaves {checkout link}"
+  },
+  "S02": {
+   "name": "Order confirmation SMS",
+   "flow": "VWK4Pz",
+   "action": "82610122",
+   "body": "Order’s locked, shirt’s coming, chicken’s smoking. You’re living right."
+  },
+  "S03": {
+   "name": "Shipping confirmation SMS",
+   "flow": "R9pGEY",
+   "action": "82610276",
+   "body": "Your tee’s on the move—smoked, packed, and headed for glory {order #} have been shipped. Click here to track your package: {tracking link}"
+  },
+  "S04": {
+   "name": "Review invite SMS",
+   "flow": "SNGPCE",
+   "action": "82610547",
+   "body": "That tee’s broken in by now—mind dropping a quick review between grill sessions?"
+  }
+ },
+ "campaigns": {
+  "drop-announcement": {
+   "id": "C01",
+   "name": "Drop Announcement",
+   "subject": "",
+   "preheader": "",
+   "headline": "",
+   "lede": "",
+   "body": "",
+   "cta": {
+    "key": "",
+    "label": ""
+   }
+  },
+  "finale": {
+   "id": "C02",
+   "name": "Finale (Drop 5)",
+   "subject": "",
+   "preheader": "",
+   "headline": "",
+   "lede": "",
+   "body": "",
+   "cutoff": "",
+   "cta": {
+    "key": "",
+    "label": ""
+   }
+  }
+ }
+}

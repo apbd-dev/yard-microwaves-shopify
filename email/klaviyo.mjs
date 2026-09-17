@@ -181,6 +181,22 @@ async function wire() {
     changed++;
     await sleep(600);
   }
+  // Flow text messages: the body lives on the flow action, no template involved.
+  const { SMS } = await import('./copy.mjs');
+  for (const [id, sms] of Object.entries(SMS)) {
+    const cur = await api('GET', `/flow-actions/${sms.action}/`, undefined, 0, FLOW_REV);
+    const def = cur.data.attributes.definition;
+    const m = def?.data?.message;
+    if (!m || def.type !== 'send-sms') { console.log(`  ! ${id}: action ${sms.action} is not a send-sms action`); continue; }
+    if (m.body === sms.body) { console.log(`  = ${id} ${sms.name} up to date`); continue; }
+    console.log(`  ${dry ? '?' : '~'} ${id} ${sms.name} (action ${sms.action})\n      body "${m.body}" → "${sms.body}"`);
+    pending++;
+    if (dry) continue;
+    m.body = sms.body;
+    await api('PATCH', `/flow-actions/${sms.action}/`, { data: { type: 'flow-action', id: sms.action, attributes: { definition: def } } }, 0, FLOW_REV);
+    changed++;
+    await sleep(600);
+  }
   if (!dry) writeFileSync(FLOWS_JSON, JSON.stringify(flows, null, 1));
   console.log(`wire: ${dry ? `${pending} message${pending === 1 ? '' : 's'} would change` : `${changed} message${changed === 1 ? '' : 's'} updated`}`);
 }

@@ -353,6 +353,21 @@ const TEMPLATES = {
   ],
 };
 
+// Campaigns (one-off sends) build from the same components once their copy is
+// written in copy.json: hero, headline, lede/body, optional order-by cutoff
+// line, CTA to the shop, tee showcase, quality band. No new art required.
+for (const [slug, c] of Object.entries(COPY)) {
+  if (!c.campaign) continue;
+  TEMPLATES[slug] = [
+    hero(),
+    ...copyRows(slug),
+    ...(c.cutoff ? [region([lede(c.cutoff)])] : []),
+    ctaFor(slug, `${SITE}/collections/all`),
+    showcase(),
+    quality(),
+  ];
+}
+
 // ------------------------------------------------------------------ build ----
 const strip = (h) => h.replace(/<[^>]+>/g, ' ').replace(/&nbsp;|&bull;|&middot;|&#11088;/g, ' ').replace(/&mdash;/g, '—').replace(/&ldquo;|&rdquo;/g, '"').replace(/\s+/g, ' ').trim();
 /** Plain-text alternative, built from the copy rather than the HTML: slicing
@@ -372,7 +387,7 @@ for (const [slug, rows] of Object.entries(TEMPLATES)) {
   const c = COPY[slug];
   const html = page(rows);
   writeFileSync(resolve(OUT, `${slug}.html`), html);
-  index[slug] = { name: c.name, subject: c.subject, preheader: c.preheader, text: textVersion(slug) };
+  index[slug] = { name: c.campaign ? `Campaign - ${c.name}` : c.name, subject: c.subject, preheader: c.preheader, text: textVersion(slug) };
   console.log(`  ${slug.padEnd(24)} ${(html.length / 1024).toFixed(1)}KB`);
 }
 writeFileSync(resolve(OUT, 'index.json'), JSON.stringify(index, null, 1));
