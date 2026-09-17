@@ -1,5 +1,5 @@
 {
- "_readme": "Approved copy for every Yard Microwaves Klaviyo message. Plain text with tokens: {first name}, {order #}, {coupon}, {checkout link}, {tracking link}. Blank line in body = new paragraph. copy.mjs turns this into HTML + Klaviyo tags. Edited through the Copy tab of the YM Email Inventory sheet (node sheet.mjs pull) — see README.",
+ "_readme": "Every word Yard Microwaves sends, as plain text. Tokens: {first name}, {order #}, {coupon}, {checkout link}, {tracking link}. A blank line in a body starts a new paragraph. copy.mjs turns this into HTML + Klaviyo tags. Rich writes the copy in the Obsidian note 'YM Email Copy' (04 - Content/newsletter) — `node doc.mjs pull` brings his edits here, `node doc.mjs push` rewrites the note. See README.md.",
  "emails": {
   "welcome-1-new": {
    "id": "E01",
@@ -173,24 +173,28 @@
  },
  "sms": {
   "S01": {
+   "id": "S01",
    "name": "Cart reminder SMS",
    "flow": "U62Fdc",
    "action": "82606459",
    "body": "Oops, you left the lid open. You'd better come back and close that cart before the smoke escapes.\nPlug In,\nYard Microwaves {checkout link}"
   },
   "S02": {
+   "id": "S02",
    "name": "Order confirmation SMS",
    "flow": "VWK4Pz",
    "action": "82610122",
    "body": "Order’s locked, shirt’s coming, chicken’s smoking. You’re living right."
   },
   "S03": {
+   "id": "S03",
    "name": "Shipping confirmation SMS",
    "flow": "R9pGEY",
    "action": "82610276",
    "body": "Your tee’s on the move—smoked, packed, and headed for glory {order #} have been shipped. Click here to track your package: {tracking link}"
   },
   "S04": {
+   "id": "S04",
    "name": "Review invite SMS",
    "flow": "SNGPCE",
    "action": "82610547",

@@ -7,10 +7,11 @@
   "old_template": "RadtHy",
   "action": "82610732",
   "assigned": {
-   "id": "U5tMFm",
+   "id": "SzRWuy",
    "of": "SJNc9e",
    "hash": "232b65b4d890",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "caa52978aceb"
   }
  },
  "welcome-1-existing": {
@@ -20,10 +21,11 @@
   "old_template": "UUjKri",
   "action": "82610731",
   "assigned": {
-   "id": "RzpBcR",
+   "id": "T3Cuqp",
    "of": "Y3sAjh",
    "hash": "c421ab5cf56c",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "97e109c16bd7"
   }
  },
  "welcome-2-follow": {
@@ -33,10 +35,11 @@
   "old_template": "UErYp8",
   "action": "82610734",
   "assigned": {
-   "id": "Xv53Zx",
+   "id": "SWZe4Z",
    "of": "WMqv63",
    "hash": "8787b722298e",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "82f339477158"
   }
  },
  "review-request": {
@@ -46,10 +49,11 @@
   "old_template": "V8cwiX",
   "action": "82610548",
   "assigned": {
-   "id": "WMqK3w",
+   "id": "SSmXHB",
    "of": "XWPjXT",
    "hash": "8cdb28054497",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "b391a91cc827"
   }
  },
  "review-reminder": {
@@ -59,10 +63,11 @@
   "old_template": "W3HAaD",
   "action": "82610550",
   "assigned": {
-   "id": "RjvQaF",
+   "id": "TX9yg5",
    "of": "XjNhmg",
    "hash": "5ad49c236a7d",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "64ff63c7734b"
   }
  },
  "shipping-confirmation": {
@@ -72,10 +77,11 @@
   "old_template": "REAfQg",
   "action": "82610277",
   "assigned": {
-   "id": "Uhkyz2",
+   "id": "Xtn4VD",
    "of": "Yvd8f8",
    "hash": "5b502b5ececc",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "f86c363fbc80"
   }
  },
  "order-confirmation": {
@@ -85,10 +91,11 @@
   "old_template": "WkdBpG",
   "action": "82610123",
   "assigned": {
-   "id": "ReSzPh",
+   "id": "Xi7yeR",
    "of": "RRTnur",
    "hash": "2d00f2f04e8b",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "73b36ef25f01"
   }
  },
  "abandoned-cart-1": {
@@ -98,10 +105,11 @@
   "old_template": "UZyfP4",
   "action": "82606460",
   "assigned": {
-   "id": "VZ9bJ7",
+   "id": "YnT8Mj",
    "of": "T3idnh",
    "hash": "7d95264df128",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "17c27dbc7ad9"
   }
  },
  "abandoned-cart-2": {
@@ -111,10 +119,11 @@
   "old_template": "RaNHKU",
   "action": "82606464",
   "assigned": {
-   "id": "Tv4ZfB",
+   "id": "YdCC6x",
    "of": "SqhaKE",
    "hash": "4a5fdcdc5f75",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "f30fa1a62c3c"
   }
  },
  "abandoned-cart-3": {
@@ -124,10 +133,11 @@
   "old_template": "VFbyCy",
   "action": "82607142",
   "assigned": {
-   "id": "U3sMwQ",
+   "id": "TnJKQj",
    "of": "VZ8VLC",
    "hash": "e7b2f77e65bd",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "ebcf0ceb599c"
   }
  },
  "browse-abandonment-1": {
@@ -137,10 +147,11 @@
   "old_template": "Sy6jxr",
   "action": "82605598",
   "assigned": {
-   "id": "UzQzN5",
+   "id": "V6xnZq",
    "of": "SWEX2T",
    "hash": "28601464cac2",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "e97dcbbbf3d8"
   }
  },
  "browse-abandonment-2": {
@@ -150,10 +161,11 @@
   "old_template": "XFud2G",
   "action": "82606227",
   "assigned": {
-   "id": "VKfqFV",
+   "id": "W6FHcu",
    "of": "SjDUqg",
    "hash": "ab13e89e6a31",
-   "at": "2026-09-15"
+   "at": "2026-09-17",
+   "cloneSha": "41cab0f07dde"
   }
  }
 }

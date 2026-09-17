@@ -5,20 +5,21 @@ The repo is the source of truth; Klaviyo holds code templates it never rewrites.
 
 ## Changing copy (the common case)
 
-Copy lives in **`copy.json`** as plain text. Rich edits it through the **Copy tab**
-of the [YM Email Inventory](https://docs.google.com/spreadsheets/d/1Ppl-zgbqZvi7G_AkR3JGCHuiuDzBEqc7tVrCSB2mRnY/edit)
-sheet: column D is the current copy, column E is his replacement.
+Every word lives in ONE markdown file Rich edits in Obsidian:
+`vault/04 - Content/newsletter/YM Email Copy.md` (path in `doc.json`). The repo
+keeps the same copy as data in `copy.json`.
 
 ```
-npm run copy:check   # show the edits waiting on the sheet, change nothing
-npm run copy:sync    # pull edits → render type → upload → build → push templates
-                     # → wire flows (emails + SMS) → preview → refresh the tab
+npm run copy:check   # show what he changed in the note, touch nothing
+npm run copy:sync    # pull the note → render type → upload → build → push templates
+                     # → wire flows (emails + SMS) → preview → rewrite the note
+npm run copy:doc     # note ← copy.json, after editing the copy from chat
 ```
 
-`copy:sync` needs `KLAVIYO_YM_API_KEY` in the environment and the `gws` CLI
-signed in. After it runs, the edits have become the current copy and column E
-is empty again. Review `build/previews/contact-sheet.png`, then commit `copy.json`,
-`assets.json`, `templates.json` and `flows.json`.
+`copy:sync` needs `KLAVIYO_YM_API_KEY` in the environment. It is idempotent: run
+it twice with no edits and nothing changes anywhere. Review
+`build/previews/contact-sheet.png`, then commit `copy.json`, `assets.json`,
+`templates.json`, `flows.json` and the note in the vault repo.
 
 Tokens: `{first name}`, `{order #}`, `{coupon}` (still the `INSERT-COUPON`
 placeholder), `{checkout link}` and `{tracking link}` (SMS). A blank line in a
@@ -34,14 +35,26 @@ art is required.
 | File | What it is |
 |---|---|
 | `copy.json` / `copy.mjs` | the copy, and its conversion to HTML + Klaviyo tags |
-| `sheet.mjs` / `sheet.json` | Copy tab ↔ `copy.json` (`push`, `pull`) |
+| `doc.mjs` / `doc.json` | the Obsidian note ↔ `copy.json` (`push`, `pull`) |
 | `render-assets.mjs`, `build-footer-gif.mjs` | brand type and art → PNG/GIF (`npm run assets`) |
 | `build.mjs` | composes the templates from shared components |
 | `klaviyo.mjs` | `upload` assets, `push` templates, `render` previews, `wire` flows |
 | `flows.json` | which flow action sends which email, and the template clone Klaviyo made |
 | `design/` | the YM Email System canvas sources (design + Klaviyo previews) |
 
-Klaviyo quirks worth knowing: flow actions are only editable at API revision
-2025-10-15 and the whole definition must be sent back; assigning a template to
-a flow message clones it, so `wire` tracks clones by source hash; templates push
-as `editor_type: CODE`.
+Klaviyo quirks worth knowing, all of them learned the hard way:
+
+- Flow actions are only editable at API revision **2025-10-15**, and the whole
+  definition must be sent back or it rejects the change.
+- Assigning a template to a flow message **clones** it. The clone is read-only
+  through the API (GET works, PATCH 404s) and comes back normalised, so its HTML
+  never equals ours. `wire` therefore decides by bookkeeping in `flows.json`
+  (clone id, source hash, and a fingerprint of the clone) rather than by
+  comparing content — and re-assigns when someone edits the flow's copy inside
+  Klaviyo, since the repo is the source of truth.
+- Image uploads are **permanent** (no delete endpoint), so the asset render must
+  be byte-stable or every sync leaks an image. `npm run assets` builds the
+  animated footer band; `assets:still` does not and must never be used in the
+  sync, or the footer silently downgrades to a still and re-uploads.
+- Templates push as `editor_type: CODE`; drag-and-drop refuses HTML with no
+  regions and rewrites what it accepts.

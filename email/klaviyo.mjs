@@ -147,10 +147,11 @@ async function render() {
 const FLOW_REV = '2025-10-15';
 async function wire() {
   const dry = process.argv.includes('--dry-run');
-  const index = loadJson(resolve(HERE, 'build', 'templates', 'index.json'));
+  const dir = resolve(HERE, 'build', 'templates');
+  const index = loadJson(resolve(dir, 'index.json'));
   const state = loadJson(TEMPLATES_JSON);
   const flows = loadJson(FLOWS_JSON);
-  let changed = 0, pending = 0;
+  let changed = 0, pending = 0, adopted = 0;
   for (const [slug, f] of Object.entries(flows)) {
     if (slug.startsWith('_')) continue;
     const tpl = state[slug]?.id, meta = index[slug];
@@ -164,11 +165,31 @@ async function wire() {
     // library template directly. flows.json remembers which clone came from
     // which push (template id + content hash); a re-push changes the hash and
     // triggers a fresh assignment.
+    // Klaviyo CLONES a template when you assign it to a flow message, and the
+    // clone is read-only through the API (GET works, PATCH 404s) and comes back
+    // normalised (attributes reordered, CSS reformatted), so its HTML never
+    // equals ours byte for byte. Assigning again is the only way to change what
+    // a flow sends, and each assignment mints another clone — so decide with
+    // bookkeeping, not comparison: the flow is current when it points at the
+    // clone we made, from this template, at this content hash, and that clone
+    // has not been edited in the Klaviyo UI since (fingerprint below).
     const a = f.assigned || {};
-    const templateCurrent = a.of === tpl && a.hash === state[slug].hash && m.template_id === a.id;
+    let cloneSha = null;
+    if (m.template_id) {
+      try {
+        const clone = await api('GET', `/templates/${m.template_id}/?fields[template]=html`);
+        cloneSha = sha(Buffer.from(clone.data.attributes.html));
+      } catch { /* clone gone: fall through and re-assign */ }
+    }
+    const matches = a.of === tpl && a.hash === state[slug].hash && a.id === m.template_id && cloneSha;
+    // A clone recorded before fingerprinting existed: adopt it rather than churn.
+    if (matches && a.cloneSha === undefined) { f.assigned = { ...a, cloneSha }; adopted++; }
+    const templateCurrent = Boolean(matches && (a.cloneSha === undefined || a.cloneSha === cloneSha));
+    if (matches && a.cloneSha !== undefined && a.cloneSha !== cloneSha) console.log(`  · ${slug}: the flow's copy was edited inside Klaviyo — replacing it with the repo's`);
+
     const want = { subject_line: meta.subject, preview_text: meta.preheader };
     const diffs = Object.entries(want).filter(([k, v]) => m[k] !== v).map(([k, v]) => `${k} "${m[k] ?? ''}" → "${v}"`);
-    if (!templateCurrent) diffs.unshift(`template ${m.template_id} → ${tpl} (${state[slug].hash})`);
+    if (!templateCurrent) diffs.unshift(`content differs → assign ${tpl} (Klaviyo will clone it)`);
     if (!diffs.length) { console.log(`  = ${slug} (${f.flow_name}) up to date`); continue; }
     console.log(`  ${dry ? '?' : '~'} ${slug} (${f.flow_name} · action ${f.action})\n      ${diffs.join('\n      ')}`);
     pending++;
@@ -177,7 +198,10 @@ async function wire() {
     if (!templateCurrent) m.template_id = tpl;
     await api('PATCH', `/flow-actions/${f.action}/`, { data: { type: 'flow-action', id: f.action, attributes: { definition: def } } }, 0, FLOW_REV);
     const after = await api('GET', `/flow-actions/${f.action}/`, undefined, 0, FLOW_REV);
-    f.assigned = { id: after.data.attributes.definition.data.message.template_id, of: tpl, hash: state[slug].hash, at: new Date().toISOString().slice(0, 10) };
+    const newId = after.data.attributes.definition.data.message.template_id;
+    let newSha = null;
+    try { newSha = sha(Buffer.from((await api('GET', `/templates/${newId}/?fields[template]=html`)).data.attributes.html)); } catch { /* fingerprint next run */ }
+    f.assigned = { id: newId, of: tpl, hash: state[slug].hash, cloneSha: newSha, at: new Date().toISOString().slice(0, 10) };
     changed++;
     await sleep(600);
   }
@@ -198,7 +222,8 @@ async function wire() {
     await sleep(600);
   }
   if (!dry) writeFileSync(FLOWS_JSON, JSON.stringify(flows, null, 1));
-  console.log(`wire: ${dry ? `${pending} message${pending === 1 ? '' : 's'} would change` : `${changed} message${changed === 1 ? '' : 's'} updated`}`);
+  if (adopted && !dry) writeFileSync(FLOWS_JSON, JSON.stringify(flows, null, 1));
+  console.log(`wire: ${dry ? `${pending} message${pending === 1 ? '' : 's'} would change` : `${changed} message${changed === 1 ? '' : 's'} updated`}${adopted ? `, ${adopted} already-current clone${adopted === 1 ? '' : 's'} fingerprinted` : ''}`);
 }
 
 const cmd = process.argv[2];

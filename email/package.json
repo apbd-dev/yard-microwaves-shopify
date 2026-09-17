@@ -12,9 +12,9 @@
     "all": "npm run assets && npm run upload && npm run build && npm run preview && npm run push",
     "assets:still": "node render-assets.mjs",
     "wire": "node klaviyo.mjs wire",
-    "copy:check": "node sheet.mjs pull --dry-run",
-    "copy:pull": "node sheet.mjs pull",
-    "copy:sync": "node sheet.mjs pull && npm run assets:still && npm run upload && npm run build && npm run push && node klaviyo.mjs wire && node klaviyo.mjs render && npm run preview && node sheet.mjs push"
+    "copy:check": "node doc.mjs pull --dry-run",
+    "copy:doc": "node doc.mjs push",
+    "copy:sync": "node doc.mjs pull && npm run assets && npm run upload && npm run build && npm run push && node klaviyo.mjs wire && node klaviyo.mjs render && npm run preview && node doc.mjs push"
   },
   "devDependencies": {
     "playwright": "1.61.1"
