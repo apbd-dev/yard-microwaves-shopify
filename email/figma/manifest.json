@@ -1,0 +1,80 @@
+{
+ "paper": {
+  "file": "paper.jpg",
+  "w": 1200,
+  "h": 1600,
+  "colour": "#e9decc"
+ },
+ "card": {
+  "top": {
+   "file": "card-top.png",
+   "w": 928,
+   "h": 172
+  },
+  "bottom": {
+   "file": "card-bottom.png",
+   "w": 928,
+   "h": 172
+  },
+  "fill": "#dfe5dc",
+  "widthCss": 464
+ },
+ "footer": {
+  "file": "footer.jpg",
+  "w": 1200,
+  "h": 998,
+  "colour": "#424642"
+ },
+ "logo": {
+  "file": "logo.png",
+  "w": 234,
+  "h": 120,
+  "widthCss": 117
+ },
+ "note": {
+  "file": "note.png",
+  "w": 320,
+  "h": 112,
+  "widthCss": 160
+ },
+ "layout": {
+  "emailWidth": 600,
+  "frameWidth": 750,
+  "scale": 0.8,
+  "headline": {
+   "font": "Milenia",
+   "size": 58,
+   "colour": "#918450",
+   "lineHeight": 64
+  },
+  "lede": {
+   "font": "BananasVF",
+   "size": 32,
+   "colour": "#918450"
+  },
+  "sub": {
+   "font": "BananasVF",
+   "size": 26,
+   "colour": "#000000"
+  },
+  "cardTitle": {
+   "font": "Milenia",
+   "size": 26,
+   "colour": "#000000"
+  },
+  "pill": {
+   "font": "Milenia",
+   "size": 28,
+   "colour": "#ffffff",
+   "bg": "#ff0000",
+   "radius": 16,
+   "w": 247,
+   "h": 46
+  },
+  "footerCopy": {
+   "font": "BananasVF",
+   "size": 22,
+   "colour": "#ffffff"
+  }
+ }
+}

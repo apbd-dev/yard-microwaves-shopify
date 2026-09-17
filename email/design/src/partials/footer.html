@@ -1,0 +1,48 @@
+  <!-- COMMON FOOTER — shared by every email artboard via the FOOTER marker.
+       Edit here only; build-canvas.mjs substitutes it into each src/*.dc.src.html.
+
+       One full-bleed band: the paper tears away at the top to reveal the hero
+       video (the smoker in the yard, ym-hero.mp4 — the shot at 9.9-13.1s)
+       running edge to edge, with the Our Story copy and pill sitting on it,
+       then the small HOT LINKS chain and the legal fine print.
+
+       footer-band.gif is the ANIMATED band, built by email/build-footer-gif.mjs
+       with the torn edge and the gradient scrim already composited in — so it
+       is one background here, not three layers. This is the 750px canvas cut;
+       the email ships the same composition at 600px. Clients that can't
+       animate it fall back to frame 1, which is the still design.
+       Fine print copy is CAN-SPAM required — keep verbatim.
+       The band is an <img>, NOT a CSS background: the canvas editor strips
+       background-image declarations once the filename is substituted for a
+       data: URI, so a CSS background renders as a flat colour here (that is
+       what turned this footer into a black box). The email still uses a td
+       background — that is the right call there. Keep the img FIRST so the
+       positioned content after it paints on top.
+       Mirrors email/build.mjs footer(). -->
+  <div style="position: relative; width: 750px; box-sizing: border-box; background-color: #141414; display: flex; flex-direction: column; align-items: center; padding: 104px 40px 34px; overflow: hidden;">
+    <img src="footer-band.gif" alt="" style="position: absolute; left: 0; top: 0; width: 750px; height: auto; display: block;">
+
+    <div style="position: relative; width: 490px; font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 17px; line-height: 1.5; letter-spacing: 0.05em; text-transform: uppercase; color: #ffffff; text-align: center; text-shadow: 0 1px 8px rgba(0,0,0,0.85), 0 0 24px rgba(0,0,0,0.6);">Welcome to Yard Microwaves, where childhood friends turned grillmasters add a satirical twist to BBQ, igniting unforgettable moments and mouthwatering flavors.</div>
+
+    <a href="https://yardmicrowaves.com/pages/our-story" style="position: relative; display: inline-block; margin: 20px 0 30px; background: #FF0000; border-radius: 20px; padding: 12px 40px 14px; font-family: 'Milenia', cursive; font-size: 24px; line-height: 1; color: #ffffff; text-decoration: none; box-shadow: 0 3px 10px rgba(0,0,0,0.4);">Our Story</a>
+
+    <div style="position: relative; font-family: 'BananasExp', 'Arial Narrow', sans-serif; font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: 0.05em; text-transform: uppercase; color: #F16022;">Hot Links</div>
+
+    <!-- Sausage centres are NOT even thirds: alpha-weighted centroids measured
+         from the source 1192x89 chain land at 17.7% / 50% / 82.2%, ink median
+         at 51% (same figures as .ym-footer-cta__hot-link in ym-custom.css). -->
+    <div style="position: relative; width: 420px; height: 31.4px; margin: 12px 0 20px; line-height: 0;">
+      <img src="hotlinks-chain.png" alt="" style="display: block; width: 420px; height: auto;">
+      <a href="https://instagram.com/yardmicrowaves" style="position: absolute; left: 17.7%; top: 51%; transform: translate(-50%, -50%); width: 26%; height: 100%; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+        <img src="icon-instagram.png" alt="Instagram" style="height: 16px; width: auto; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));">
+      </a>
+      <a href="https://facebook.com/yardmicrowaves" style="position: absolute; left: 50%; top: 51%; transform: translate(-50%, -50%); width: 26%; height: 100%; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+        <img src="icon-facebook.png" alt="Facebook" style="height: 16px; width: auto; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));">
+      </a>
+      <a href="https://tiktok.com/@yardmicrowaves" style="position: absolute; left: 82.2%; top: 51%; transform: translate(-50%, -50%); width: 26%; height: 100%; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+        <img src="icon-tiktok.png" alt="TikTok" style="height: 16px; width: auto; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));">
+      </a>
+    </div>
+
+    <div style="position: relative; font-family: 'Bananas', 'Arial Narrow', sans-serif; font-weight: 400; font-size: 13px; line-height: 1.8; color: #CBBFA2; text-align: center;">Yard Microwaves &middot; 24002 Via Fabricante #225, Mission Viejo, CA 92691<br>You&#39;re getting this because you signed up at the Yard. &middot; <span style="color: #FFB563;">Unsubscribe</span></div>
+  </div>
