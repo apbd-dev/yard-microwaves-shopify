@@ -1,0 +1,70 @@
+name: Sync staging with main
+
+# The two-branch standard (README § Branches): `main` is live, `staging` is
+# next, and `staging` always contains `main`. Every push to `main` (a release
+# merge, a hotfix, or a customizer edit Shopify committed to the published
+# theme's branch) is merged back into `staging` here.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: sync-staging
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Merge main into staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge main into staging
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if ! git ls-remote --exit-code --heads origin staging >/dev/null; then
+            echo "No staging branch yet: creating it from main."
+            git push origin "${GITHUB_SHA}:refs/heads/staging"
+            exit 0
+          fi
+
+          git checkout -B staging origin/staging
+          if git merge-base --is-ancestor origin/main staging; then
+            echo "staging already contains main."
+            exit 0
+          fi
+
+          if git merge --ff-only origin/main || git merge --no-edit origin/main; then
+            git push origin staging
+          else
+            git merge --abort
+            echo "::warning::main does not merge cleanly into staging; opening a sync PR."
+            open=$(gh pr list --base staging --head main --state open --json number --jq 'length')
+            if [ "$open" = "0" ]; then
+              gh pr create --base staging --head main \
+                --title "Sync main into staging" \
+                --body "\`main\` changed (a hotfix or a customizer edit on the published theme) and conflicts with unreleased work on \`staging\`. Resolve the conflict on this PR and merge it so \`staging\` contains \`main\` again (README § Branches)."
+            fi
+            exit 0
+          fi
+
+          # A push made with the Actions token never starts another workflow,
+          # so on CLI-lane stores refresh the staging theme explicitly.
+          if [ -f .github/workflows/deploy-staging.yml ]; then
+            gh workflow run deploy-staging.yml --ref staging
+          fi
