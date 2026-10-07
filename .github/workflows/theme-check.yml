@@ -3,6 +3,7 @@ name: Theme Check
 on:
   pull_request:
     branches:
+      - staging
       - main
 
 jobs:
