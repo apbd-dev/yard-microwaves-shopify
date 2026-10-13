@@ -1,9 +1,17 @@
-name: Deploy to live theme
+name: Deploy to main theme
 
 on:
-  release:
-    types: [published]
-  # Manual fallback — same guarded path as a release.
+  # A merge into main is the release (RELEASING.md in deep-seas/shopify-theme-template):
+  # it deploys the Main theme. Docs- and workflow-only pushes don't redeploy.
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+      - '.sealab/**'
+      - '**.md'
+      - 'docs/**'
+  # Manual fallback, same guarded path.
   workflow_dispatch:
 
 jobs:
