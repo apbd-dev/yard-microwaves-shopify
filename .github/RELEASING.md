@@ -22,6 +22,10 @@ Both branches are connected in the store's admin (Online Store → Themes → Ad
 
 **Roll back:** `git revert -m 1 <release merge commit>` on a `hotfix/` branch, PR into `main`.
 
+## Deployments
+
+`deployments.yml` records a GitHub deployment on every push to `staging` (environment `staging`) and `main` (environment `production`), so the repo's **Deployments** panel shows when each theme was last sent what. Customizer saves Shopify commits back are skipped. Set the repo variables `STAGING_URL` and `PRODUCTION_URL` to give each environment a link.
+
 ## Release notes live in git
 
 The repo settings take every merge commit's message from the PR title and description, so:
@@ -39,6 +43,7 @@ The repo settings take every merge commit's message from the PR title and descri
 | `.github/workflows/pr-changes.yml` | writes each PR's commits and files into its description; moves stray PRs from `main` to `staging` |
 | `.github/workflows/release-pr.yml` | opens and refreshes the `staging → main` release PR |
 | `.github/workflows/sync-staging.yml` | merges `main` back into `staging` |
+| `.github/workflows/deployments.yml` | records each send to `staging` / `production` as a GitHub deployment |
 | `.github/pull_request_template.md` | what changed, how to check it |
 | `.github/RELEASING.md` | this file |
 

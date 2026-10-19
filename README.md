@@ -28,7 +28,9 @@ Work PRs into `staging`; `pr-changes.yml` lists each PR's commits and files in i
 description. `release-pr.yml` keeps one `staging → main` release PR open that lists
 every PR in the release; merge it with **Create a merge commit** (never squash), and
 the merge commit records that list. `sync-staging.yml` merges `main` back into
-`staging`. Hotfix: a `hotfix/*` branch off `main`, PR into `main`.
+`staging`. Hotfix: a `hotfix/*` branch off `main`, PR into `main`. `deployments.yml`
+records every send as a GitHub deployment (`staging`, `production`), so the repo's
+Deployments panel shows when each theme last went out.
 
 Today the live theme is the stock "Savor" theme, not this repo. Launch = connect `main` in admin
 and publish the theme it creates ([LAUNCH.md](LAUNCH.md)).
