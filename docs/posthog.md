@@ -42,12 +42,11 @@ They are split so nothing double-counts:
 The token, host and both toggles are committed in
 `config/settings_data.json` and deploy with the theme. Nothing to paste.
 
-> **Do not set these in the Shopify theme editor.** `deploy-live.yml` runs
-> `shopify theme push`, which ships `config/settings_data.json` from the repo
-> and overwrites the live theme's settings. A token entered in the customizer
-> survives until the next release and then silently disappears — taking all
-> analytics with it, with no error anywhere. The repo is the source of truth.
-> To change any of it, edit `config/settings_data.json` and deploy.
+> **Change these in `config/settings_data.json` by PR, not in the theme
+> editor.** On Shopify's GitHub integration a customizer edit is committed back
+> to the theme's branch, so it is not lost, but a broken token takes all
+> analytics with it and no error shows anywhere. A PR puts the change in
+> review. The repo is the source of truth.
 
 | Setting | Value |
 |---|---|

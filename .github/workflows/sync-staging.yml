@@ -1,9 +1,10 @@
 name: Sync staging with main
 
-# The two-branch standard (README § Branches): `main` is live, `staging` is
+# The two-branch standard (.github/RELEASING.md): `main` is live, `staging` is
 # next, and `staging` always contains `main`. Every push to `main` (a release
 # merge, a hotfix, or a customizer edit Shopify committed to the published
-# theme's branch) is merged back into `staging` here.
+# theme's branch) is merged back into `staging` here. Shopify's GitHub
+# integration picks the push up like any other, so the Staging theme follows.
 
 on:
   push:
@@ -58,13 +59,11 @@ jobs:
             if [ "$open" = "0" ]; then
               gh pr create --base staging --head main \
                 --title "Sync main into staging" \
-                --body "\`main\` changed (a hotfix or a customizer edit on the published theme) and conflicts with unreleased work on \`staging\`. Resolve the conflict on this PR and merge it so \`staging\` contains \`main\` again (README § Branches)."
+                --body "\`main\` changed (a hotfix or a customizer edit on the published theme) and conflicts with unreleased work on \`staging\`. Resolve the conflict on this PR and merge it with **Create a merge commit** so \`staging\` contains \`main\` again (.github/RELEASING.md)."
             fi
             exit 0
           fi
 
-          # A push made with the Actions token never starts another workflow,
-          # so on CLI-lane stores refresh the staging theme explicitly.
-          if [ -f .github/workflows/deploy-staging.yml ]; then
-            gh workflow run deploy-staging.yml --ref staging
-          fi
+          # A push made with the Actions token starts no workflow, so refresh
+          # the open release PR explicitly.
+          gh workflow run release-pr.yml --ref staging
