@@ -1,0 +1,36 @@
+name: Deployments
+
+# Records a GitHub deployment each time a branch is sent to its theme:
+# `staging` → the `staging` environment, `main` → `production`
+# (.github/RELEASING.md). Shopify's GitHub integration does the deploy itself
+# within seconds of the push; this job is the ledger, so the repo's
+# Deployments page shows what each theme last got and when. Customizer saves
+# that Shopify commits back to the branch are not sends, so they are skipped.
+# sync-staging.yml dispatches this after its push, since a push made with the
+# Actions token starts no workflow.
+#
+# Optional repo variables PRODUCTION_URL and STAGING_URL (e.g. the store and
+# the Staging theme preview link) become each environment's link.
+
+on:
+  push:
+    branches:
+      - staging
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deployment-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  record:
+    name: Record deployment
+    if: (github.ref_name == 'staging' || github.ref_name == 'main') && !startsWith(github.event.head_commit.message, 'Update from Shopify for theme')
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+      url: ${{ vars[github.ref_name == 'main' && 'PRODUCTION_URL' || 'STAGING_URL'] }}
+    steps:
+      - name: Record
+        run: echo "${GITHUB_REF_NAME} at ${GITHUB_SHA::7} sent to its theme by ${GITHUB_ACTOR}."
