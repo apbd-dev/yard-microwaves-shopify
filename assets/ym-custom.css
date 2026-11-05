@@ -2364,10 +2364,16 @@ html { scroll-behavior: smooth; }
    ============================================= */
 .ym-footer {
   position: relative;
-  margin-top: 20px;
-  padding: clamp(56px, 6vw, 96px) 0 24px;
-  background-color: var(--color-ym-dark);
+  margin-top: clamp(40px, 4vw, 64px);
+  padding: clamp(12px, 1.5vw, 24px) 0 24px;
   color: var(--color-ym-cream);
+  background-color: var(--color-ym-dark);
+  /* Smoky dark, not flat: an ember glow rising behind the wordmark and a
+     fine film grain over everything (the torn edge shares the grain). */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.88 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 70% 38% at 50% 100%, rgba(241, 96, 34, 0.22), rgba(241, 96, 34, 0) 70%);
+  background-repeat: repeat, no-repeat;
   /* Clip sideways only (ticker + pellets bleed); the torn edge must still
      hang above the footer's top. */
   overflow-x: clip;
@@ -2378,17 +2384,37 @@ html { scroll-behavior: smooth; }
   position: absolute;
   left: calc((100% - 100vw) / 2);
   width: 100vw;
-  top: 0;
-  transform: translateY(-36%);
+  bottom: calc(100% - 1px);
+  height: clamp(28px, 4vw, 60px);
   pointer-events: none;
   z-index: 2;
   line-height: 0;
 }
 
-.ym-footer .ym-footer__torn-edge img {
+.ym-footer .ym-footer__torn-edge svg {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+}
+
+/* The tear is painted with the footer's own grained black, masked to the
+   rip, so tear and body read as one surface with no seam. */
+.ym-footer .ym-footer__torn-edge::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 -1px;
+  background-color: var(--color-ym-dark);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.88 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0 60 L0 30.0 L10 30.6 L22 31.8 L38 26.2 L44 30.8 L54 27.4 L76 27.3 L95 27.2 L112 23.1 L128 28.4 L142 31.6 L159 26.0 L177 27.5 L188 21.9 L208 22.3 L225 27.9 L243 33.4 L255 36.8 L268 41.6 L288 35.4 L296 31.3 L318 30.4 L334 27.8 L348 26.6 L360 28.0 L375 33.3 L392 38.4 L411 43.7 L428 38.1 L448 43.2 L468 42.7 L486 37.8 L505 37.9 L516 31.7 L535 37.7 L543 40.7 L555 35.2 L566 38.1 L586 31.5 L602 25.6 L619 23.9 L639 30.6 L654 36.8 L665 30.8 L680 24.8 L689 24.2 L705 20.4 L712 26.0 L723 32.2 L743 30.4 L756 30.7 L773 31.8 L788 33.1 L809 32.9 L822 35.4 L831 32.3 L853 32.4 L868 26.0 L881 27.4 L887 29.1 L903 23.7 L919 23.9 L936 22.6 L953 26.4 L960 21.2 L976 27.9 L986 27.6 L1002 25.5 L1014 23.6 L1026 25.5 L1036 24.4 L1055 19.0 L1070 23.0 L1081 20.2 L1100 17.9 L1109 18.3 L1126 14.5 L1137 13.9 L1156 14.8 L1176 12.1 L1187 15.8 L1208 16.6 L1217 13.2 L1232 11.0 L1251 17.1 L1259 15.6 L1278 18.8 L1297 18.0 L1305 16.6 L1324 15.0 L1336 15.5 L1348 15.8 L1369 12.9 L1375 20.2 L1395 27.3 L1408 33.2 L1429 29.4 L1440 33.7 L1440 60 Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0 60 L0 30.0 L10 30.6 L22 31.8 L38 26.2 L44 30.8 L54 27.4 L76 27.3 L95 27.2 L112 23.1 L128 28.4 L142 31.6 L159 26.0 L177 27.5 L188 21.9 L208 22.3 L225 27.9 L243 33.4 L255 36.8 L268 41.6 L288 35.4 L296 31.3 L318 30.4 L334 27.8 L348 26.6 L360 28.0 L375 33.3 L392 38.4 L411 43.7 L428 38.1 L448 43.2 L468 42.7 L486 37.8 L505 37.9 L516 31.7 L535 37.7 L543 40.7 L555 35.2 L566 38.1 L586 31.5 L602 25.6 L619 23.9 L639 30.6 L654 36.8 L665 30.8 L680 24.8 L689 24.2 L705 20.4 L712 26.0 L723 32.2 L743 30.4 L756 30.7 L773 31.8 L788 33.1 L809 32.9 L822 35.4 L831 32.3 L853 32.4 L868 26.0 L881 27.4 L887 29.1 L903 23.7 L919 23.9 L936 22.6 L953 26.4 L960 21.2 L976 27.9 L986 27.6 L1002 25.5 L1014 23.6 L1026 25.5 L1036 24.4 L1055 19.0 L1070 23.0 L1081 20.2 L1100 17.9 L1109 18.3 L1126 14.5 L1137 13.9 L1156 14.8 L1176 12.1 L1187 15.8 L1208 16.6 L1217 13.2 L1232 11.0 L1251 17.1 L1259 15.6 L1278 18.8 L1297 18.0 L1305 16.6 L1324 15.0 L1336 15.5 L1348 15.8 L1369 12.9 L1375 20.2 L1395 27.3 L1408 33.2 L1429 29.4 L1440 33.7 L1440 60 Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
+
+.ym-footer .ym-footer__rip {
+  display: none;
+}
+
+.ym-footer .ym-footer__rip-lip {
+  fill: #cfc6b6;
 }
 
 .ym-footer .ym-footer__inner {
@@ -2400,13 +2426,12 @@ html { scroll-behavior: smooth; }
 .ym-footer .ym-footer__ticker {
   position: relative;
   z-index: 4;
-  width: 104%;
-  margin: 0 -2% clamp(56px, 7vw, 96px);
+  width: 110%;
+  margin: clamp(16px, 2vw, 28px) -5% clamp(64px, 7vw, 104px);
   background: var(--color-ym-orange);
   color: var(--color-ym-dark);
-  transform: rotate(-1.6deg);
+  transform: rotate(-1.4deg);
   padding: 14px 0 12px;
-  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.35);
   overflow: hidden;
 }
 
