@@ -1,0 +1,312 @@
+{%- comment -%}
+  YM - Footer: the full store footer.
+  Torn-paper edge into the dark, then: brand column (mascot + line), menu
+  columns (blocks), HOT LINKS socials (blocks), email signup, a jumbo
+  wordmark and a bottom bar with copyright and the store's policy links.
+  Styles live in ym-custom.css under "YM FOOTER".
+{%- endcomment -%}
+
+{%- liquid
+  assign menu_blocks = section.blocks | where: 'type', 'menu'
+  assign social_blocks = section.blocks | where: 'type', 'social_link'
+  assign form_id = 'ym-footer-signup-' | append: section.id
+  assign mid_cols = menu_blocks.size
+  if social_blocks.size > 0
+    assign mid_cols = mid_cols | plus: 1
+  endif
+-%}
+
+<div class="ym-footer" id="ym-footer">
+  <div class="ym-footer__torn-edge" aria-hidden="true">
+    <img
+      src="{{ 'ym-torn-edge-merged.png' | asset_url }}"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      width="1920"
+      height="196"
+    >
+  </div>
+
+  <div class="ym-container ym-footer__inner">
+    <div class="ym-footer__grid" style="--ym-footer-mid-cols: {{ mid_cols }};">
+      <div class="ym-footer__brand">
+        {%- if section.settings.brand_image != blank -%}
+          {{
+            section.settings.brand_image
+            | image_url: width: 400
+            | image_tag: class: 'ym-footer__mascot', loading: 'lazy', alt: shop.name
+          }}
+        {%- else -%}
+          <img
+            class="ym-footer__mascot"
+            src="{{ 'ym-mascot.png' | asset_url }}"
+            alt="{{ shop.name | escape }}"
+            loading="lazy"
+            width="250"
+            height="180"
+          >
+        {%- endif -%}
+        {%- if section.settings.brand_text != blank -%}
+          <div class="ym-footer__brand-text">{{ section.settings.brand_text }}</div>
+        {%- endif -%}
+      </div>
+
+      {%- for block in menu_blocks -%}
+        {%- assign menu = linklists[block.settings.menu] -%}
+        <nav class="ym-footer__col ym-footer__menu" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.heading != blank -%}
+            <h2 class="ym-footer__heading">{{ block.settings.heading }}</h2>
+          {%- endif -%}
+          {%- if menu.links.size > 0 -%}
+            <ul class="ym-footer__links" role="list">
+              {%- for link in menu.links -%}
+                <li>
+                  <a
+                    href="{{ link.url }}"
+                    class="ym-footer__link"
+                    {% if link.current %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    {{- link.title -}}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </nav>
+      {%- endfor -%}
+
+      {%- if social_blocks.size > 0 -%}
+        <div class="ym-footer__col ym-footer__social">
+          {%- if section.settings.social_heading != blank -%}
+            <h2 class="ym-footer__heading">{{ section.settings.social_heading }}</h2>
+          {%- endif -%}
+          <ul class="ym-footer__hot-links" role="list">
+            {%- for block in social_blocks -%}
+              {%- if block.settings.url != blank -%}
+                <li {{ block.shopify_attributes }}>
+                  <a
+                    href="{{ block.settings.url }}"
+                    class="ym-footer__hot-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {{- block.settings.label -}}
+                    <span class="visually-hidden"> (opens in a new tab)</span>
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <div class="ym-footer__col ym-footer__signup">
+        {%- if section.settings.signup_heading != blank -%}
+          <h2 class="ym-footer__heading ym-footer__heading--signup">{{ section.settings.signup_heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.signup_text != blank -%}
+          <div class="ym-footer__signup-text">{{ section.settings.signup_text }}</div>
+        {%- endif -%}
+
+        {%- form 'customer', id: form_id, class: 'ym-footer__form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="ym-footer__form-msg" role="status" tabindex="-1" autofocus>
+              {{ section.settings.signup_success }}
+            </p>
+          {%- else -%}
+            <div class="ym-footer__field">
+              <label class="visually-hidden" for="{{ form_id }}-email">Email address</label>
+              <input
+                id="{{ form_id }}-email"
+                class="ym-footer__input"
+                type="email"
+                name="contact[email]"
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                placeholder="Email address"
+                required
+                {% if form.errors %}
+                  aria-invalid="true" aria-describedby="{{ form_id }}-error"
+                {% endif %}
+              >
+              <button type="submit" class="ym-footer__submit">
+                {{- section.settings.signup_button | default: 'Plug in' -}}
+              </button>
+            </div>
+            {%- if form.errors -%}
+              <p class="ym-footer__form-msg ym-footer__form-msg--error" id="{{ form_id }}-error" role="alert">
+                {{ form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}
+              </p>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_wordmark -%}
+      {%- comment -%} SVG textLength stretches the wordmark to the container width at every viewport, no font-size guessing. {%- endcomment -%}
+      <div class="ym-footer__wordmark" aria-hidden="true">
+        <svg viewBox="0 0 1000 118" preserveAspectRatio="xMidYMid meet" focusable="false">
+          <text x="0" y="104" textLength="1000" lengthAdjust="spacingAndGlyphs">
+            {{- section.settings.wordmark_text | default: shop.name | upcase | escape -}}
+          </text>
+        </svg>
+      </div>
+    {%- endif -%}
+
+    <div class="ym-footer__bottom">
+      <p class="ym-footer__copyright">
+        &copy; {{ 'now' | date: '%Y' }}
+        {{ shop.name | link_to: routes.root_url }}
+      </p>
+      {%- if shop.policies.size > 0 -%}
+        <ul class="ym-footer__policies" role="list">
+          {%- for policy in shop.policies -%}
+            <li><a href="{{ policy.url }}" class="ym-footer__link">{{ policy.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "YM - Footer",
+  "tag": "footer",
+  "class": "ym-footer-section",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "image_picker",
+      "id": "brand_image",
+      "label": "Brand image",
+      "info": "Defaults to the YM mascot."
+    },
+    {
+      "type": "richtext",
+      "id": "brand_text",
+      "label": "Brand line",
+      "default": "<p>We do not make grills. We never have. Please stop asking.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Socials"
+    },
+    {
+      "type": "text",
+      "id": "social_heading",
+      "label": "Socials heading",
+      "default": "Hot links"
+    },
+    {
+      "type": "header",
+      "content": "Email signup"
+    },
+    {
+      "type": "text",
+      "id": "signup_heading",
+      "label": "Heading",
+      "default": "Get plugged in"
+    },
+    {
+      "type": "richtext",
+      "id": "signup_text",
+      "label": "Text",
+      "default": "<p>Drops, deals and hot links, straight to your inbox. Extension cords not included.</p>"
+    },
+    {
+      "type": "text",
+      "id": "signup_button",
+      "label": "Button label",
+      "default": "Plug in"
+    },
+    {
+      "type": "text",
+      "id": "signup_success",
+      "label": "Success message",
+      "default": "You're plugged in. Watch your inbox."
+    },
+    {
+      "type": "header",
+      "content": "Wordmark"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wordmark",
+      "label": "Show jumbo wordmark",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "wordmark_text",
+      "label": "Wordmark text",
+      "default": "Yard Microwaves"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "main-menu"
+        }
+      ]
+    },
+    {
+      "type": "social_link",
+      "name": "Social link",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Instagram"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Profile URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YM - Footer",
+      "blocks": [
+        { "type": "menu", "settings": { "heading": "Shop", "menu": "main-menu" } },
+        { "type": "menu", "settings": { "heading": "Help", "menu": "footer" } },
+        { "type": "social_link", "settings": { "label": "Instagram" } },
+        { "type": "social_link", "settings": { "label": "Facebook" } },
+        { "type": "social_link", "settings": { "label": "TikTok" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

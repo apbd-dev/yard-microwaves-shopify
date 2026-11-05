@@ -2353,3 +2353,274 @@ html { scroll-behavior: smooth; }
 .header-actions__cart-icon.ym-cart-smoker svg {
   mask: none;
 }
+
+/* =============================================
+   YM FOOTER (sections/ym-footer.liquid)
+   Full store footer: torn edge, brand, menus, hot links, signup,
+   jumbo wordmark, policy bar. Selectors are scoped under .ym-footer
+   so they outrank the generic footer-group overrides above.
+   ============================================= */
+.ym-footer {
+  position: relative;
+  margin-top: 20px;
+  padding: clamp(72px, 8vw, 120px) 0 24px;
+  background-color: var(--color-ym-dark);
+  color: var(--color-ym-cream);
+}
+
+/* Same flipped butcher-paper edge as the hero; spans the viewport so the
+   PNG's hard corners always sit off-screen. */
+.ym-footer .ym-footer__torn-edge {
+  position: absolute;
+  left: calc((100% - 100vw) / 2);
+  width: 100vw;
+  top: 0;
+  transform: translateY(-36%);
+  pointer-events: none;
+  z-index: 2;
+  line-height: 0;
+}
+
+.ym-footer .ym-footer__torn-edge img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ym-footer .ym-footer__inner {
+  position: relative;
+  z-index: 3;
+}
+
+.ym-footer .ym-footer__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) repeat(var(--ym-footer-mid-cols, 3), minmax(0, 1fr)) minmax(0, 1.6fr);
+  gap: 40px;
+  align-items: start;
+}
+
+.ym-footer .ym-footer__mascot {
+  display: block;
+  width: 150px;
+  height: auto;
+  margin-bottom: 16px;
+}
+
+.ym-footer .ym-footer__brand-text,
+.ym-footer .ym-footer__signup-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(240, 238, 226, 0.72);
+  max-width: 32ch;
+}
+
+.ym-footer .ym-footer__brand-text p,
+.ym-footer .ym-footer__signup-text p {
+  margin: 0;
+}
+
+.ym-footer .ym-footer__heading {
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ym-orange);
+  margin: 0 0 18px;
+  line-height: 1.1;
+}
+
+.ym-footer .ym-footer__heading--signup {
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+
+.ym-footer .ym-footer__links,
+.ym-footer .ym-footer__hot-links,
+.ym-footer .ym-footer__policies {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ym-footer .ym-footer__links li + li {
+  margin-top: 10px;
+}
+
+.ym-footer .ym-footer__link {
+  color: rgba(240, 238, 226, 0.8);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.15s ease;
+}
+
+.ym-footer .ym-footer__link:hover,
+.ym-footer .ym-footer__link:focus-visible,
+.ym-footer .ym-footer__link[aria-current='page'] {
+  color: var(--color-ym-orange);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Stacked display-type socials, the Figma footer's treatment. */
+.ym-footer .ym-footer__hot-link {
+  display: inline-block;
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 2vw, 1.9rem);
+  line-height: 1.15;
+  text-transform: uppercase;
+  color: var(--color-ym-cream);
+  text-decoration: none;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.ym-footer .ym-footer__hot-link:hover,
+.ym-footer .ym-footer__hot-link:focus-visible {
+  color: var(--color-ym-orange);
+  transform: translateX(4px);
+}
+
+.ym-footer .ym-footer__form {
+  margin-top: 18px;
+}
+
+.ym-footer .ym-footer__field {
+  display: flex;
+  border-bottom: 2px solid rgba(240, 238, 226, 0.5);
+  transition: border-color 0.15s ease;
+}
+
+.ym-footer .ym-footer__field:focus-within {
+  border-color: var(--color-ym-orange);
+}
+
+.ym-footer .ym-footer__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 12px 0;
+  font-size: 1rem;
+  color: var(--color-ym-cream);
+  outline: none;
+  box-shadow: none;
+}
+
+.ym-footer .ym-footer__input::placeholder {
+  color: rgba(240, 238, 226, 0.5);
+}
+
+.ym-footer .ym-footer__submit {
+  flex: 0 0 auto;
+  background: var(--color-ym-orange);
+  color: var(--color-ym-dark);
+  border: 0;
+  border-radius: 0;
+  margin: 6px 0;
+  padding: 0 20px;
+  min-height: 44px;
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.ym-footer .ym-footer__submit:hover,
+.ym-footer .ym-footer__submit:focus-visible {
+  background: var(--color-ym-peach);
+}
+
+.ym-footer .ym-footer__form-msg {
+  margin: 12px 0 0;
+  font-size: 0.95rem;
+  color: var(--color-ym-peach);
+}
+
+.ym-footer .ym-footer__form-msg--error {
+  color: #ff8a65;
+}
+
+.ym-footer .ym-footer__wordmark {
+  margin-top: clamp(48px, 6vw, 88px);
+  line-height: 0;
+}
+
+.ym-footer .ym-footer__wordmark svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ym-footer .ym-footer__wordmark text {
+  font-family: var(--font-ym-heading);
+  font-weight: 700;
+  font-size: 124px;
+  fill: var(--color-ym-orange);
+}
+
+.ym-footer .ym-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px 24px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(240, 238, 226, 0.15);
+  font-size: 0.85rem;
+  color: rgba(240, 238, 226, 0.6);
+}
+
+.ym-footer .ym-footer__copyright {
+  margin: 0;
+}
+
+.ym-footer .ym-footer__copyright a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ym-footer .ym-footer__policies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.ym-footer .ym-footer__bottom .ym-footer__link {
+  font-size: 0.85rem;
+  color: rgba(240, 238, 226, 0.6);
+}
+
+@media (max-width: 1099px) {
+  .ym-footer .ym-footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 32px;
+  }
+
+  .ym-footer .ym-footer__brand,
+  .ym-footer .ym-footer__signup {
+    grid-column: 1 / -1;
+  }
+
+  .ym-footer .ym-footer__signup {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 749px) {
+  .ym-footer .ym-footer__mascot {
+    width: 120px;
+  }
+
+  .ym-footer .ym-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
