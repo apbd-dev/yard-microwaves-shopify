@@ -22,21 +22,21 @@
         "social_instagram": {
           "type": "social_link",
           "settings": {
-            "label": "Instagram",
+            "platform": "Instagram",
             "url": "https://instagram.com/yardmicrowaves"
           }
         },
         "social_facebook": {
           "type": "social_link",
           "settings": {
-            "label": "Facebook",
+            "platform": "Facebook",
             "url": "https://facebook.com/yardmicrowaves"
           }
         },
         "social_tiktok": {
           "type": "social_link",
           "settings": {
-            "label": "TikTok",
+            "platform": "TikTok",
             "url": "https://tiktok.com/@yardmicrowaves"
           }
         }
