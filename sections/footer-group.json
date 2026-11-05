@@ -2,12 +2,23 @@
   "type": "footer",
   "name": "Footer",
   "sections": {
-    "ym_footer_cta": {
-      "type": "ym-footer-cta",
-      "settings": {
-        "heading": "HOT LINKS"
-      },
+    "ym_footer": {
+      "type": "ym-footer",
       "blocks": {
+        "menu_shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "menu_help": {
+          "type": "menu",
+          "settings": {
+            "heading": "Help",
+            "menu": "footer"
+          }
+        },
         "social_instagram": {
           "type": "social_link",
           "settings": {
@@ -31,28 +42,16 @@
         }
       },
       "block_order": [
+        "menu_shop",
+        "menu_help",
         "social_instagram",
         "social_facebook",
         "social_tiktok"
-      ]
-    },
-    "footer_section": {
-      "type": "footer",
-      "blocks": {
-        "footer_utilities": {
-          "type": "footer-utilities",
-          "settings": {},
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "footer_utilities"
       ],
       "settings": {}
     }
   },
   "order": [
-    "ym_footer_cta",
-    "footer_section"
+    "ym_footer"
   ]
 }
