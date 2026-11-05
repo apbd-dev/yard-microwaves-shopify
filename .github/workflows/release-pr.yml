@@ -1,0 +1,112 @@
+name: Release PR
+
+# Keeps one open `staging → main` pull request whose description lists every
+# pull request (and every direct commit, e.g. customizer saves) on `staging`
+# that `main` does not have yet (.github/RELEASING.md). Merging it with
+# "Create a merge commit" is the release. The repo uses the PR title and
+# description as the merge commit message, so `main`'s history carries the
+# list of pull requests in each release.
+
+on:
+  push:
+    branches:
+      - staging
+  schedule:
+    # Weekdays, 08:00 Pacific in summer (07:00 in winter).
+    - cron: '0 15 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: release-pr
+  cancel-in-progress: true
+
+jobs:
+  release-pr:
+    name: Open or refresh the release PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Write the release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main staging
+          range=origin/main..origin/staging
+          if [ -z "$(git rev-list --no-merges "$range")" ]; then
+            echo "staging has nothing main does not: no release to open."
+            exit 0
+          fi
+
+          # Pull requests merged into staging whose merge commit main lacks.
+          # `main → staging` sync PRs carry main's own commits, so skip them.
+          gh pr list --base staging --state merged --limit 300 \
+            --json number,title,author,mergedAt,mergeCommit,headRefName \
+            --jq '.[] | select(.headRefName != "main") | [.mergedAt, .mergeCommit.oid, .number, .author.login, .title] | @tsv' \
+            > merged.tsv
+          : > prs.tsv
+          : > pr-commits.txt
+          while IFS=$'\t' read -r merged oid num author title; do
+            git cat-file -e "${oid}^{commit}" 2>/dev/null || continue
+            git merge-base --is-ancestor "$oid" origin/staging || continue
+            git merge-base --is-ancestor "$oid" origin/main && continue
+            printf '%s\t%s\t%s\t%s\n' "$merged" "$num" "$author" "$title" >> prs.tsv
+            # The PR's own commits: the squash commit, or the merge and its branch.
+            git rev-list "$oid" "^${oid}^1" >> pr-commits.txt
+          done < merged.tsv
+
+          git rev-list --no-merges --reverse "$range" | { grep -vxF -f pr-commits.txt || true; } > direct.txt
+          n_prs=$(wc -l < prs.tsv | tr -d ' ')
+          n_direct=$(wc -l < direct.txt | tr -d ' ')
+
+          {
+            echo '<!-- release-notes:start -->'
+            echo "## Pull requests in this release ($n_prs)"
+            echo
+            if [ "$n_prs" = 0 ]; then
+              echo '_None: only the direct commits below._'
+            else
+              sort prs.tsv | while IFS=$'\t' read -r merged num author title; do
+                echo "- #$num $title (@$author)"
+              done
+            fi
+            echo
+            if [ "$n_direct" != 0 ]; then
+              echo "<details><summary>Direct commits on staging, outside a PR: customizer saves and pushes ($n_direct)</summary>"
+              echo
+              head -n 100 direct.txt | while read -r sha; do
+                git log -1 --format='- `%h` %s' "$sha"
+              done
+              if [ "$n_direct" -gt 100 ]; then echo "- …and $((n_direct - 100)) more"; fi
+              echo
+              echo '</details>'
+              echo
+            fi
+            echo "**Diff:** $(git diff --shortstat origin/main origin/staging)"
+            echo
+            echo 'Merge with **Create a merge commit**, never squash: `staging` must stay an ancestor of `main`. The merge commit message is this description, so `main` keeps the list. Each PR passed Theme Check on its way into `staging`. This section is rewritten by `release-pr.yml` on every push to `staging` and on weekday mornings; add your own notes above it.'
+            echo '<!-- release-notes:end -->'
+          } > notes.md
+
+          title="Release $(TZ=America/Los_Angeles date +%F)"
+          existing=$(gh pr list --base main --head staging --state open --json number --jq '.[0].number // empty')
+          if [ -z "$existing" ]; then
+            gh pr create --base main --head staging --title "$title" --body-file notes.md
+            exit 0
+          fi
+
+          gh pr view "$existing" --json body --jq .body > old.md
+          if grep -q '<!-- release-notes:start -->' old.md; then
+            NOTES="$(cat notes.md)" perl -0pe 's/<!-- release-notes:start -->.*<!-- release-notes:end -->/$ENV{NOTES}/s' old.md > body.md
+          else
+            { cat old.md; echo; echo; cat notes.md; } > body.md
+          fi
+          gh pr edit "$existing" --title "$title" --body-file body.md

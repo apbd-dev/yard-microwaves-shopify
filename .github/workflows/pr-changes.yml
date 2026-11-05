@@ -1,0 +1,85 @@
+name: PR changes
+
+# Every pull request lists its changes (.github/RELEASING.md): this writes the
+# commits and files into the PR description, between markers, on every push.
+# A squash merge into `staging` uses the description as the commit message, so
+# the list lands in history too. It also moves a PR opened against `main` to
+# `staging`, unless it is the release (`staging`) or a `hotfix/*` branch.
+# The release PR itself is written by release-pr.yml.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+    branches:
+      - staging
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-changes-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: List changes
+    if: github.event.pull_request.head.ref != 'staging' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send PRs into staging
+        if: github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref != 'main' && !startsWith(github.event.pull_request.head.ref, 'hotfix/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr edit "$PR" --base staging
+          gh pr comment "$PR" --body "Moved to \`staging\`: work merges into \`staging\` and reaches \`main\` in the next release PR. Only the release (\`staging\`) and \`hotfix/*\` branches PR into \`main\` (.github/RELEASING.md)."
+
+      - name: Write the changes into the description
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          api="repos/$GH_REPO/pulls/$PR"
+          gh api "$api/commits" --paginate --jq '.[] | "- `\(.sha[0:7])` \(.commit.message | split("\n")[0])"' > commits.md
+          gh api "$api/files" --paginate --jq '.[] | "| \(.status) | `\(.filename)` | +\(.additions) −\(.deletions) |"' > files.md
+          stats=$(gh pr view "$PR" --json additions,deletions,changedFiles --jq '"\(.changedFiles) files, +\(.additions) −\(.deletions)"')
+          n_commits=$(wc -l < commits.md | tr -d ' ')
+
+          {
+            echo '<!-- pr-changes:start -->'
+            echo '## Changes'
+            echo
+            echo "**$n_commits commits** · $stats"
+            echo
+            head -n 50 commits.md
+            if [ "$n_commits" -gt 50 ]; then echo "- …and $((n_commits - 50)) more"; fi
+            echo
+            echo '<details><summary>Files</summary>'
+            echo
+            echo '| | File | Lines |'
+            echo '| --- | --- | --- |'
+            head -n 300 files.md
+            echo
+            echo '</details>'
+            echo
+            echo '_Listed by `pr-changes.yml` on every push._'
+            echo '<!-- pr-changes:end -->'
+          } > notes.md
+
+          gh pr view "$PR" --json body --jq '.body // ""' > old.md
+          if grep -q '<!-- pr-changes:start -->' old.md; then
+            NOTES="$(cat notes.md)" perl -0pe 's/<!-- pr-changes:start -->.*<!-- pr-changes:end -->/$ENV{NOTES}/s' old.md > body.md
+          else
+            { cat old.md; echo; echo; cat notes.md; } > body.md
+          fi
+          if cmp -s old.md body.md; then
+            echo "Description already lists these changes."
+            exit 0
+          fi
+          gh pr edit "$PR" --body-file body.md
