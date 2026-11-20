@@ -1,10 +1,22 @@
 name: Theme Check
 
+# The one gate on every pull request (.github/RELEASING.md). This file is
+# identical in every apbd-dev Shopify repo: the canonical copy lives in
+# apbd-dev/apbd-shopify and apbd-dev/shopify-pipeline `scripts/ci-standard.sh`
+# checks the others against it. Per-repo extras hang off the optional steps
+# below (bin/check-theme.mjs, an npm `test` script), never edits here.
+
 on:
   pull_request:
     branches:
       - staging
       - main
+
+env:
+  # Used when the repo does not pin @shopify/cli in package.json, so the gate
+  # only moves with a commit. shopify/theme-check-action@v2 crashes on the
+  # Node 24 runners GitHub forces since June 2026, so we run the CLI directly.
+  SHOPIFY_CLI_VERSION: 4.9.4
 
 jobs:
   theme-check:
@@ -19,10 +31,37 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install Shopify CLI
-        run: npm install -g @shopify/cli
+      - name: Install tooling
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund
+          elif [ -f package.json ]; then
+            npm install --no-audit --no-fund
+          fi
+          if [ -x node_modules/.bin/shopify ]; then
+            echo "$PWD/node_modules/.bin" >> "$GITHUB_PATH"
+          else
+            npm install -g "@shopify/cli@${SHOPIFY_CLI_VERSION}" --no-audit --no-fund
+          fi
 
-      # shopify/theme-check-action@v2 crashes on the Node 24 runners GitHub
-      # forces since June 2026, so we run the check via the CLI directly.
       - name: Run Theme Check
         run: shopify theme check --fail-level error
+
+      # Rules the store upload enforces and Theme Check passes.
+      - name: Check upload rules
+        if: hashFiles('bin/check-theme.mjs') != ''
+        run: node bin/check-theme.mjs
+
+      - name: Run repo tests
+        if: hashFiles('package.json') != ''
+        run: |
+          if ! jq -e '.scripts.test' package.json >/dev/null; then
+            echo "No npm test script."
+            exit 0
+          fi
+          if [ -d node_modules/playwright ]; then
+            npx playwright install --with-deps chromium
+          fi
+          npm test
