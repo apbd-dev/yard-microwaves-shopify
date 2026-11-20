@@ -65,6 +65,5 @@ jobs:
           fi
 
           # A push made with the Actions token starts no workflow, so record
-          # the staging deployment and refresh the release PR explicitly.
+          # the staging deployment explicitly.
           gh workflow run deployments.yml --ref staging
-          gh workflow run release-pr.yml --ref staging
