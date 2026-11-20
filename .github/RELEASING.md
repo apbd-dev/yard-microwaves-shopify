@@ -15,7 +15,7 @@ Both branches are connected in the store's admin (Online Store → Themes → Ad
 
 1. **Work:** branch off `staging`, open a PR into `staging`. `theme-check.yml` gates it and `pr-changes.yml` lists its commits and files in the description. Merge (squash is fine). The Staging theme updates.
 2. **Review** on the Staging theme.
-3. **Release:** `release-pr.yml` keeps one open PR `staging → main`, titled `Release <YYYY-MM-DD>`, listing every PR (and direct commit) in it. It is refreshed on every push to `staging` and on weekday mornings, or run it from the Actions tab. Merge it with **Create a merge commit**, never squash. The published theme updates.
+3. **Release:** when `staging` is ready to go live, open a PR `staging → main` by hand (`gh pr create --base main --head staging`). Nothing opens one automatically. `pr-changes.yml` lists its commits and files in the description. Merge it with **Create a merge commit**, never squash. The published theme updates.
 4. **Sync:** `sync-staging.yml` merges `main` back into `staging` after every push to `main` (releases, hotfixes, customizer edits). A conflict opens a `Sync main into staging` PR; merge it with a merge commit.
 
 **Hotfix:** branch `hotfix/<name>` off `main`, PR into `main`; the sync carries it to `staging`. Any other PR opened against `main` is moved to `staging` automatically.
@@ -41,7 +41,6 @@ The repo settings take every merge commit's message from the PR title and descri
 | --- | --- |
 | `.github/workflows/theme-check.yml` | PR gate: `shopify theme check --fail-level error`, plus `bin/check-theme.mjs` and `npm test` when the repo has them |
 | `.github/workflows/pr-changes.yml` | writes each PR's commits and files into its description; moves stray PRs from `main` to `staging` |
-| `.github/workflows/release-pr.yml` | opens and refreshes the `staging → main` release PR |
 | `.github/workflows/sync-staging.yml` | merges `main` back into `staging` |
 | `.github/workflows/deployments.yml` | records each send to `staging` / `production` as a GitHub deployment |
 | `.github/pull_request_template.md` | what changed, how to check it |

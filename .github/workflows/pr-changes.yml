@@ -5,7 +5,6 @@ name: PR changes
 # A squash merge into `staging` uses the description as the commit message, so
 # the list lands in history too. It also moves a PR opened against `main` to
 # `staging`, unless it is the release (`staging`) or a `hotfix/*` branch.
-# The release PR itself is written by release-pr.yml.
 
 on:
   pull_request:
