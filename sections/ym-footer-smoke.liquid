@@ -1,0 +1,356 @@
+{%- comment -%}
+  YM - Smoke footer (#127, concept 05B "Smoke Clears").
+  The page ends in a bank of smoke. As the visitor scrolls in, the smoke
+  rolls away and the footer comes out of it: a taped polaroid, the
+  "Plug In" signup, the menus and the socials as meat tags, over a looping
+  clip of meat on the grill. Styles: assets/ym-footer-smoke.css.
+  Motion: assets/ym-footer-smoke.js. Without JS, or under
+  prefers-reduced-motion, there is no smoke and the footer is simply there.
+{%- endcomment -%}
+
+{%- liquid
+  assign menu_blocks = section.blocks | where: 'type', 'menu'
+  assign social_blocks = section.blocks | where: 'type', 'social_link'
+  assign form_id = 'ym-smoke-signup-' | append: section.id
+-%}
+
+{{ 'ym-footer-smoke.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ym-footer-smoke.js' | asset_url }}" defer></script>
+
+<ym-smoke-footer
+  class="ym-sf"
+  data-smoke-cover="{{ section.settings.smoke_cover }}"
+  data-smoke-ambient="{{ section.settings.smoke_ambient }}"
+>
+  <div class="ym-sf__bg" aria-hidden="true">
+    {%- if section.settings.video != blank -%}
+      {{
+        section.settings.video
+        | video_tag:
+          autoplay: false,
+          loop: true,
+          muted: true,
+          playsinline: true,
+          preload: 'none',
+          class: 'ym-sf__video'
+      }}
+    {%- else -%}
+      <video
+        class="ym-sf__video"
+        loop
+        muted
+        playsinline
+        preload="none"
+        poster="{{ 'ym-footer-grill-poster.jpg' | asset_url }}"
+      >
+        <source src="{{ 'ym-footer-grill.mp4' | asset_url }}" type="video/mp4">
+      </video>
+    {%- endif -%}
+  </div>
+  <canvas class="ym-sf__ambient" aria-hidden="true"></canvas>
+
+  <div class="ym-container ym-sf__inner">
+    <div class="ym-sf__grid">
+      <div class="ym-sf__photo">
+        <figure class="ym-sf__polaroid">
+          <span class="ym-sf__tape" aria-hidden="true"></span>
+          <div class="ym-sf__print">
+            {%- if section.settings.photo != blank -%}
+              {{
+                section.settings.photo
+                | image_url: width: 900
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '300, 450, 600, 900',
+                  sizes: '(min-width: 990px) 380px, 80vw',
+                  class: 'ym-sf__img',
+                  alt: section.settings.photo.alt
+              }}
+            {%- else -%}
+              <img
+                class="ym-sf__img"
+                src="{{ 'ym-footer-cookout.jpg' | asset_url }}"
+                alt="Two people working a big flat-top grill at a Yard Microwaves cookout"
+                loading="lazy"
+                width="435"
+                height="405"
+              >
+            {%- endif -%}
+          </div>
+          {%- if section.settings.caption != blank -%}
+            <figcaption class="ym-sf__caption">{{ section.settings.caption | escape }}</figcaption>
+          {%- endif -%}
+        </figure>
+      </div>
+
+      <div class="ym-sf__main">
+        {%- if section.settings.kicker != blank -%}
+          <p class="ym-sf__kicker">{{ section.settings.kicker | escape }}</p>
+        {%- endif -%}
+        <h2 class="ym-sf__heading">
+          <span>{{ section.settings.heading | escape }}</span>
+          <svg class="ym-sf__loop" viewBox="0 0 400 140" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <path d="M30 70 C 20 20, 160 6, 260 12 C 360 18, 398 50, 386 86 C 372 128, 200 136, 110 128 C 40 122, 6 96, 22 60 C 34 34, 80 24, 120 22"/>
+          </svg>
+        </h2>
+
+        {%- form 'customer', id: form_id, class: 'ym-sf__form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="ym-sf__form-msg" role="status" tabindex="-1" autofocus>
+              {{ section.settings.signup_success | escape }}
+            </p>
+          {%- else -%}
+            <div class="ym-sf__field">
+              <label class="visually-hidden" for="{{ form_id }}-email">Email address</label>
+              <input
+                id="{{ form_id }}-email"
+                class="ym-sf__input"
+                type="email"
+                name="contact[email]"
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                placeholder="{{ section.settings.signup_placeholder | escape }}"
+                required
+                {% if form.errors %}
+                  aria-invalid="true" aria-describedby="{{ form_id }}-error"
+                {% endif %}
+              >
+              <button type="submit" class="ym-sf__submit">
+                {{- section.settings.signup_button | default: 'Plug in' | escape -}}
+                <span aria-hidden="true">&rarr;</span>
+              </button>
+            </div>
+            {%- if form.errors -%}
+              <p class="ym-sf__form-msg ym-sf__form-msg--error" id="{{ form_id }}-error" role="alert">
+                {{ form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}
+              </p>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+
+        {%- if menu_blocks.size > 0 -%}
+          <div class="ym-sf__menus">
+            {%- for block in menu_blocks -%}
+              {%- assign menu = linklists[block.settings.menu] -%}
+              <nav class="ym-sf__menu" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="ym-sf__menu-heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                {%- if menu.links.size > 0 -%}
+                  <ul class="ym-sf__links" role="list">
+                    {%- for link in menu.links -%}
+                      <li>
+                        <a
+                          href="{{ link.url }}"
+                          class="ym-sf__link"
+                          {% if link.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{- link.title -}}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </nav>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- if social_blocks.size > 0 -%}
+          <ul class="ym-sf__tags" role="list">
+            {%- for block in social_blocks -%}
+              {%- if block.settings.url != blank -%}
+                <li>
+                  <a
+                    href="{{ block.settings.url }}"
+                    class="ym-sf__tag"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style="--rot: {% cycle '-4deg', '3deg', '-2deg' %}"
+                    {{ block.shopify_attributes }}
+                  >
+                    {%- if block.settings.note != blank -%}
+                      <small>{{ block.settings.note | escape }}</small>
+                    {%- endif -%}
+                    <b>{{ block.settings.platform | escape }}</b>
+                    <span class="visually-hidden">(opens in a new tab)</span>
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="ym-sf__bottom">
+      <p class="ym-sf__copyright">
+        &copy; {{ 'now' | date: '%Y' }}
+        {{ shop.name | link_to: routes.root_url }}
+      </p>
+      {%- if shop.policies.size > 0 -%}
+        <ul class="ym-sf__policies" role="list">
+          {%- for policy in shop.policies -%}
+            <li><a href="{{ policy.url }}" class="ym-sf__policy">{{ policy.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <canvas class="ym-sf__cover" aria-hidden="true"></canvas>
+</ym-smoke-footer>
+
+{% schema %}
+{
+  "name": "YM - Smoke footer",
+  "tag": "footer",
+  "class": "ym-sf-section",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Smoke"
+    },
+    {
+      "type": "checkbox",
+      "id": "smoke_cover",
+      "label": "Smoke clears on scroll",
+      "info": "The footer starts in a bank of smoke that rolls away as visitors scroll to it. Off for anyone who prefers reduced motion.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "smoke_ambient",
+      "label": "Drifting smoke in the background",
+      "default": true
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background loop",
+      "info": "A short, silent loop of something on the grill. It plays darkened and warm-tinted behind the footer. Leave empty to use the built-in clip."
+    },
+    {
+      "type": "header",
+      "content": "Polaroid"
+    },
+    {
+      "type": "image_picker",
+      "id": "photo",
+      "label": "Photo",
+      "info": "Leave empty to use the built-in cookout photo."
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "Caption",
+      "default": "Thanks for coming out"
+    },
+    {
+      "type": "header",
+      "content": "Email signup"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "Before you go,"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Plug In"
+    },
+    {
+      "type": "text",
+      "id": "signup_placeholder",
+      "label": "Email placeholder",
+      "default": "staring@ourmeats.com"
+    },
+    {
+      "type": "text",
+      "id": "signup_button",
+      "label": "Button label",
+      "default": "Plug in"
+    },
+    {
+      "type": "text",
+      "id": "signup_success",
+      "label": "Success message",
+      "default": "You're plugged in. Watch your inbox."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "main-menu"
+        }
+      ]
+    },
+    {
+      "type": "social_link",
+      "name": "Meat tag (social)",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "select",
+          "id": "platform",
+          "label": "Platform",
+          "options": [
+            { "value": "Instagram", "label": "Instagram" },
+            { "value": "Facebook", "label": "Facebook" },
+            { "value": "TikTok", "label": "TikTok" }
+          ],
+          "default": "Instagram"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Profile URL"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Small print on the tag",
+          "default": "Fresh daily"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "YM - Smoke footer",
+      "blocks": [
+        { "type": "menu", "settings": { "heading": "Shop", "menu": "main-menu" } },
+        { "type": "menu", "settings": { "heading": "Help", "menu": "footer" } },
+        { "type": "social_link", "settings": { "platform": "Instagram", "note": "Fresh daily" } },
+        { "type": "social_link", "settings": { "platform": "Facebook", "note": "Cut to order" } },
+        { "type": "social_link", "settings": { "platform": "TikTok", "note": "Hot links" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
