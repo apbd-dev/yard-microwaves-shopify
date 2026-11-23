@@ -134,36 +134,6 @@
           {%- endif -%}
         {%- endform -%}
 
-        {%- if menu_blocks.size > 0 -%}
-          <div class="ym-sf__menus">
-            {%- for block in menu_blocks -%}
-              {%- assign menu = linklists[block.settings.menu] -%}
-              <nav class="ym-sf__menu" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
-                {%- if block.settings.heading != blank -%}
-                  <h2 class="ym-sf__menu-heading">{{ block.settings.heading | escape }}</h2>
-                {%- endif -%}
-                {%- if menu.links.size > 0 -%}
-                  <ul class="ym-sf__links" role="list">
-                    {%- for link in menu.links -%}
-                      <li>
-                        <a
-                          href="{{ link.url }}"
-                          class="ym-sf__link"
-                          {% if link.current %}
-                            aria-current="page"
-                          {% endif %}
-                        >
-                          {{- link.title -}}
-                        </a>
-                      </li>
-                    {%- endfor -%}
-                  </ul>
-                {%- endif -%}
-              </nav>
-            {%- endfor -%}
-          </div>
-        {%- endif -%}
-
         {%- if social_blocks.size > 0 -%}
           <div class="ym-sf__hot">
             {%- if section.settings.social_heading != blank -%}
@@ -210,6 +180,37 @@
             </div>
           </div>
         {%- endif -%}
+
+        {%- if menu_blocks.size > 0 -%}
+          <div class="ym-sf__menus">
+            {%- for block in menu_blocks -%}
+              {%- assign menu = linklists[block.settings.menu] -%}
+              <nav class="ym-sf__menu" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="ym-sf__menu-heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                {%- if menu.links.size > 0 -%}
+                  <ul class="ym-sf__links" role="list">
+                    {%- for link in menu.links -%}
+                      <li>
+                        <a
+                          href="{{ link.url }}"
+                          class="ym-sf__link"
+                          {% if link.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{- link.title -}}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </nav>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
       </div>
     </div>
 
