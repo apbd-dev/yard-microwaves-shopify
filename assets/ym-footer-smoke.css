@@ -280,14 +280,16 @@ ym-smoke-footer { display: block; }
 
 /* ---------- hot links: the sausage chain (chain + link geometry from ym-custom.css) ---------- */
 .ym-sf .ym-sf__hot {
+  /* Same width as the signup form, sitting right under the email field. */
   width: 100%;
-  margin-top: 8px;
+  max-width: 440px;
+  margin-top: -8px;
 }
 
 .ym-sf .ym-sf__hot-heading {
   position: relative;
   display: inline-block;
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   font-family: var(--font-ym-accent);
   font-weight: 400;
   font-size: clamp(22px, 2.2vw, 28px);
@@ -312,7 +314,7 @@ ym-smoke-footer { display: block; }
 
 .ym-sf .ym-sf__chain {
   width: 100%;
-  max-width: 560px;
+  max-width: none;
   margin: 0;
   transform-origin: 50% 0;
 }
