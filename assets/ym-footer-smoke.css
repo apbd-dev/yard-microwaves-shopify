@@ -17,17 +17,6 @@ ym-smoke-footer { display: block; }
   background-color: var(--color-ym-dark);
 }
 
-/* The page's cream fades into the smoke instead of meeting the footer on a hard line. */
-.ym-sf::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 90px;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(214, 207, 196, 0.55), rgba(214, 207, 196, 0));
-}
-
 /* ---------- background: the grill loop, darkened and warm-tinted ---------- */
 .ym-sf .ym-sf__bg {
   position: absolute;
@@ -45,7 +34,18 @@ ym-smoke-footer { display: block; }
   filter: sepia(0.7) saturate(1.8) hue-rotate(-14deg) brightness(0.62) contrast(1.12);
 }
 
+.ym-sf .ym-sf__bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 .ym-sf .ym-sf__bg::after {
+  z-index: 1;
   content: '';
   position: absolute;
   inset: 0;
@@ -76,7 +76,7 @@ ym-smoke-footer { display: block; }
 .ym-sf .ym-sf__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  gap: clamp(32px, 5vw, 72px);
+  gap: clamp(28px, 3vw, 72px);
   align-items: center;
   padding-bottom: clamp(48px, 5vw, 80px);
 }
@@ -153,24 +153,39 @@ ym-smoke-footer { display: block; }
 }
 
 .ym-sf .ym-sf__heading {
-  position: relative;
   margin: -6px 0 0;
-  padding: 10px 22px;
+  padding: 0;
+  max-width: none;
   font-family: var(--font-ym-heading);
-  font-weight: 700;
-  font-size: clamp(48px, 6.5vw, 92px);
+  font-style: normal;
+  font-weight: 800;
+  font-variation-settings: 'wght' 800;
+  font-size: clamp(44px, 7vw, 86px);
   line-height: 0.9;
+  letter-spacing: normal;
   text-transform: uppercase;
   color: var(--color-ym-cream);
 }
 
+/* The loop hugs the words: it is sized by this inline-block, not by the heading box. */
+.ym-sf .ym-sf__plug {
+  position: relative;
+  display: inline-block;
+  padding: 10px 18px;
+  white-space: nowrap;
+}
+
 .ym-sf svg.ym-sf__loop {
   position: absolute;
-  inset: -6% -6% -10%;
+  top: -6%;
+  left: -6%;
   width: 112%;
   height: 120%;
+  max-width: none;
+  max-height: none;
   overflow: visible;
   pointer-events: none;
+  fill: none;
 }
 
 .ym-sf .ym-sf__loop path {
@@ -218,10 +233,10 @@ ym-smoke-footer { display: block; }
   padding: 0 16px;
   background: var(--color-ym-dark);
   color: var(--color-ym-cream);
-  font-family: var(--font-ym-heading);
+  font-family: inherit;
   font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 0.04em;
+  font-size: 13px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
@@ -250,8 +265,9 @@ ym-smoke-footer { display: block; }
 
 .ym-sf .ym-sf__link {
   font-family: var(--font-ym-heading);
-  font-weight: 700;
-  font-size: clamp(22px, 2.2vw, 28px);
+  font-weight: 800;
+  font-variation-settings: 'wght' 800;
+  font-size: clamp(22px, 1.9vw, 26px);
   line-height: 1.12;
   text-transform: uppercase;
   text-decoration: none;
@@ -263,13 +279,13 @@ ym-smoke-footer { display: block; }
 .ym-sf .ym-sf__link[aria-current='page'] { color: var(--color-ym-orange); }
 
 /* ---------- meat tags ---------- */
-.ym-sf .ym-sf__tags { display: flex; flex-wrap: wrap; gap: 14px; list-style: none; margin: 4px 0 0; padding: 0; }
+.ym-sf .ym-sf__tags { display: flex; flex-wrap: wrap; gap: 12px; list-style: none; margin: 4px 0 0; padding: 0; }
 
 .ym-sf .ym-sf__tag {
   position: relative;
   display: grid;
   gap: 2px;
-  padding: 12px 18px 12px 36px;
+  padding: 12px 16px 12px 34px;
   background: var(--color-ym-paper);
   color: var(--color-ym-dark);
   text-decoration: none;
@@ -305,8 +321,9 @@ ym-smoke-footer { display: block; }
 
 .ym-sf .ym-sf__tag b {
   font-family: var(--font-ym-heading);
-  font-weight: 700;
-  font-size: 20px;
+  font-weight: 800;
+  font-variation-settings: 'wght' 800;
+  font-size: clamp(17px, 1.6vw, 20px);
   line-height: 1;
   text-transform: uppercase;
 }
