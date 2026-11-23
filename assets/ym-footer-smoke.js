@@ -1,10 +1,10 @@
 /* YM smoke footer (sections/ym-footer-smoke.liquid, #127).
    Three jobs, all skipped under prefers-reduced-motion:
-   1. A bank of smoke covers the footer and rolls away as the visitor
-      scrolls to it. Progress is measured against how far the page can
-      actually scroll, so reaching the bottom always clears it. Once it has
-      fully cleared it stays clear for the page view. Focus inside the footer
-      clears it at once, and so does selecting the footer in the theme editor.
+   1. A bank of smoke covers the footer. Once a quarter of the footer is on
+      screen, the smoke rolls away over REVEAL_MS, so every visitor sees it
+      whatever the page length or scroll speed. It stays clear for the page
+      view. Focus inside the footer clears it at once, and so does selecting
+      the footer in the theme editor.
    2. Soft smoke drifts up behind the footer content.
    3. The background loop plays only while the footer is on screen.
    Both canvases render at half resolution and stop when off screen. */
@@ -13,6 +13,8 @@
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = (v) => Math.max(0, Math.min(1, v));
+  const REVEAL_MS = 2600;
+  const REVEAL_AT = 0.25; // share of the footer on screen that starts the reveal
 
   function puffSprite(size, puffs, inner, mid) {
     const c = document.createElement('canvas');
@@ -38,8 +40,9 @@
     connectedCallback() {
       this.visible = false;
       this.cleared = false;
-      this.p = 1;
+      this.p = 0;
       this.time = 0;
+      this.revealStart = 0;
       this.video = this.querySelector('.ym-sf__video, .ym-sf__bg video');
       this.coverCv = this.querySelector('.ym-sf__cover');
       this.ambientCv = this.querySelector('.ym-sf__ambient');
@@ -47,7 +50,6 @@
       this.useCover = this.dataset.smokeCover === 'true' && !reduce.matches;
       this.useAmbient = this.dataset.smokeAmbient === 'true' && !reduce.matches;
 
-      this.onScroll = () => this.requestTick();
       this.onResize = () => { this.size(); this.requestTick(); };
       this.onFocus = () => this.clearNow();
       // In the theme editor, selecting the footer (or one of its blocks) clears the smoke so it can be edited.
@@ -56,8 +58,6 @@
       if (this.useCover) {
         this.classList.add('is-armed');
         this.coverSprite = puffSprite(200, 9, 'rgba(236,230,220,.62)', 'rgba(214,206,194,.3)');
-        // Capture on the document hears every scroll, the window's or any inner scroll container's.
-        document.addEventListener('scroll', this.onScroll, { passive: true, capture: true });
         this.addEventListener('focusin', this.onFocus);
         document.addEventListener('shopify:section:select', this.onEditorSelect);
         document.addEventListener('shopify:block:select', this.onEditorSelect);
@@ -71,12 +71,15 @@
 
       this.io = new IntersectionObserver(([entry]) => {
         this.visible = entry.isIntersecting;
+        if (this.useCover && !this.cleared && !this.revealStart && entry.intersectionRatio >= REVEAL_AT) {
+          this.revealStart = performance.now();
+        }
         if (this.video) {
           if (this.visible && !reduce.matches) this.video.play().catch(() => {});
           else this.video.pause();
         }
         if (this.visible) this.start();
-      });
+      }, { threshold: [0, REVEAL_AT, 0.5] });
       this.io.observe(this);
 
       this.size();
@@ -84,7 +87,6 @@
     }
 
     disconnectedCallback() {
-      document.removeEventListener('scroll', this.onScroll, { capture: true });
       window.removeEventListener('resize', this.onResize);
       this.removeEventListener('focusin', this.onFocus);
       document.removeEventListener('shopify:section:select', this.onEditorSelect);
@@ -139,40 +141,14 @@
       this.H = H;
     }
 
-    /* ---------- scroll progress ---------- */
-    scroller() {
-      for (let el = this.parentElement; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
-        const oy = getComputedStyle(el).overflowY;
-        if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight) return el;
-      }
-      return document.scrollingElement || document.documentElement;
-    }
-
-    progress() {
-      const sc = this.scroller();
-      const isRoot = sc === document.scrollingElement || sc === document.documentElement;
-      const vh = isRoot ? window.innerHeight : sc.clientHeight;
-      const viewTop = isRoot ? 0 : sc.getBoundingClientRect().top;
-      const scrollTop = isRoot ? window.scrollY : sc.scrollTop;
-      const top = this.getBoundingClientRect().top - viewTop + scrollTop;
-      const maxScroll = (isRoot ? document.documentElement.scrollHeight : sc.scrollHeight) - vh;
-      // Clearing starts once the footer's top passes 60% of the screen and ends at the
-      // bottom of the page (or when the footer's top nears the top of the screen).
-      const start = top - vh * 0.6;
-      const end = Math.min(top - vh * 0.1, maxScroll);
-      if (end - start < 60) return 1;
-      return clamp((scrollTop - start) / (end - start));
-    }
-
+    /* ---------- reveal ---------- */
     requestTick() {
       if (this.tickQueued) return;
       this.tickQueued = true;
       requestAnimationFrame(() => {
         this.tickQueued = false;
         if (!this.useCover || this.cleared) return;
-        this.p = this.progress();
-        if (this.p >= 0.999) this.clearNow();
-        else this.start();
+        this.start();
       });
     }
 
@@ -181,7 +157,6 @@
       this.cleared = true;
       this.p = 1;
       this.classList.add('is-clear');
-      document.removeEventListener('scroll', this.onScroll, { capture: true });
       const ctx = this.coverCv.getContext('2d');
       ctx.clearRect(0, 0, this.coverCv.width, this.coverCv.height);
       this.coverCv.hidden = true;
@@ -198,7 +173,14 @@
         const dt = Math.min(0.05, (now - this.last) / 1000);
         this.last = now;
         this.time += dt;
-        if (this.useCover && !this.cleared) this.drawCover();
+        if (this.useCover && !this.cleared) {
+          if (this.revealStart) {
+            const k = clamp((now - this.revealStart) / REVEAL_MS);
+            this.p = k * k * (3 - 2 * k);
+            if (k >= 1) this.clearNow();
+          }
+          if (!this.cleared) this.drawCover();
+        }
         if (this.useAmbient) this.drawAmbient(dt);
         if (this.visible && ((this.useCover && !this.cleared) || this.useAmbient)) requestAnimationFrame(loop);
         else this.running = false;
