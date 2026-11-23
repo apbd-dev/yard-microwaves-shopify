@@ -13,6 +13,7 @@ ym-smoke-footer { display: block; }
   isolation: isolate;
   overflow: hidden;
   margin-top: clamp(40px, 4vw, 64px);
+  margin: 0;
   color: var(--color-ym-cream);
   background-color: var(--color-ym-dark);
 }

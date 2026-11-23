@@ -5,6 +5,7 @@
       actually scroll, so reaching the bottom always clears it. Once it has
       fully cleared it stays clear for the page view. Focus inside the footer
       clears it at once, and the theme editor never shows it.
+      clears it at once, and so does selecting the footer in the theme editor.
    2. Soft smoke drifts up behind the footer content.
    3. The background loop plays only while the footer is on screen.
    Both canvases render at half resolution and stop when off screen. */
