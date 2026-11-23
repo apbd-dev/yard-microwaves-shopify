@@ -4,7 +4,7 @@
       scrolls to it. Progress is measured against how far the page can
       actually scroll, so reaching the bottom always clears it. Once it has
       fully cleared it stays clear for the page view. Focus inside the footer
-      clears it at once, and the theme editor never shows it.
+      clears it at once, and so does selecting the footer in the theme editor.
    2. Soft smoke drifts up behind the footer content.
    3. The background loop plays only while the footer is on screen.
    Both canvases render at half resolution and stop when off screen. */
@@ -44,24 +44,30 @@
       this.coverCv = this.querySelector('.ym-sf__cover');
       this.ambientCv = this.querySelector('.ym-sf__ambient');
 
-      const designMode = window.Shopify && window.Shopify.designMode;
-      this.useCover = this.dataset.smokeCover === 'true' && !reduce.matches && !designMode;
+      this.useCover = this.dataset.smokeCover === 'true' && !reduce.matches;
       this.useAmbient = this.dataset.smokeAmbient === 'true' && !reduce.matches;
 
       this.onScroll = () => this.requestTick();
       this.onResize = () => { this.size(); this.requestTick(); };
       this.onFocus = () => this.clearNow();
+      // In the theme editor, selecting the footer (or one of its blocks) clears the smoke so it can be edited.
+      this.onEditorSelect = (e) => { if (e.target && (e.target === this || e.target.contains(this) || this.contains(e.target))) this.clearNow(); };
 
       if (this.useCover) {
         this.classList.add('is-armed');
         this.coverSprite = puffSprite(200, 9, 'rgba(236,230,220,.62)', 'rgba(214,206,194,.3)');
-        window.addEventListener('scroll', this.onScroll, { passive: true });
+        // Capture on the document hears every scroll, the window's or any inner scroll container's.
+        document.addEventListener('scroll', this.onScroll, { passive: true, capture: true });
         this.addEventListener('focusin', this.onFocus);
+        document.addEventListener('shopify:section:select', this.onEditorSelect);
+        document.addEventListener('shopify:block:select', this.onEditorSelect);
       } else {
         this.classList.add('is-clear');
       }
       if (this.useAmbient) this.ambientSprites = [0, 1, 2].map(() => puffSprite(256, 7, 'rgba(225,215,200,.55)', 'rgba(210,200,185,.22)'));
       window.addEventListener('resize', this.onResize, { passive: true });
+      this.ro = new ResizeObserver(() => this.onResize());
+      this.ro.observe(this);
 
       this.io = new IntersectionObserver(([entry]) => {
         this.visible = entry.isIntersecting;
@@ -78,10 +84,13 @@
     }
 
     disconnectedCallback() {
-      window.removeEventListener('scroll', this.onScroll);
+      document.removeEventListener('scroll', this.onScroll, { capture: true });
       window.removeEventListener('resize', this.onResize);
       this.removeEventListener('focusin', this.onFocus);
+      document.removeEventListener('shopify:section:select', this.onEditorSelect);
+      document.removeEventListener('shopify:block:select', this.onEditorSelect);
       if (this.io) this.io.disconnect();
+      if (this.ro) this.ro.disconnect();
       this.running = false;
     }
 
@@ -131,14 +140,28 @@
     }
 
     /* ---------- scroll progress ---------- */
+    scroller() {
+      for (let el = this.parentElement; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+        const oy = getComputedStyle(el).overflowY;
+        if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight) return el;
+      }
+      return document.scrollingElement || document.documentElement;
+    }
+
     progress() {
-      const vh = window.innerHeight;
-      const top = this.getBoundingClientRect().top + window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - vh;
-      const start = top - vh * 0.85;
-      const end = Math.min(top - vh * 0.25, maxScroll);
+      const sc = this.scroller();
+      const isRoot = sc === document.scrollingElement || sc === document.documentElement;
+      const vh = isRoot ? window.innerHeight : sc.clientHeight;
+      const viewTop = isRoot ? 0 : sc.getBoundingClientRect().top;
+      const scrollTop = isRoot ? window.scrollY : sc.scrollTop;
+      const top = this.getBoundingClientRect().top - viewTop + scrollTop;
+      const maxScroll = (isRoot ? document.documentElement.scrollHeight : sc.scrollHeight) - vh;
+      // Clearing starts once the footer's top passes 60% of the screen and ends at the
+      // bottom of the page (or when the footer's top nears the top of the screen).
+      const start = top - vh * 0.6;
+      const end = Math.min(top - vh * 0.1, maxScroll);
       if (end - start < 60) return 1;
-      return clamp((window.scrollY - start) / (end - start));
+      return clamp((scrollTop - start) / (end - start));
     }
 
     requestTick() {
@@ -158,7 +181,7 @@
       this.cleared = true;
       this.p = 1;
       this.classList.add('is-clear');
-      window.removeEventListener('scroll', this.onScroll);
+      document.removeEventListener('scroll', this.onScroll, { capture: true });
       const ctx = this.coverCv.getContext('2d');
       ctx.clearRect(0, 0, this.coverCv.width, this.coverCv.height);
       this.coverCv.hidden = true;
@@ -187,7 +210,7 @@
       const ctx = this.coverCv.getContext('2d'), W = this.W, H = this.H, p = this.p;
       if (!this.cover) return;
       ctx.clearRect(0, 0, W, H);
-      const base = Math.pow(clamp(1 - p * 1.5), 1.4);
+      const base = Math.pow(clamp(1 - p * 1.2), 1.2);
       if (base > 0) {
         ctx.fillStyle = `rgba(206,199,188,${(0.94 * base).toFixed(3)})`;
         ctx.fillRect(0, 0, W, H);
