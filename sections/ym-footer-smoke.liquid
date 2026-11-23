@@ -88,10 +88,12 @@
           <p class="ym-sf__kicker">{{ section.settings.kicker | escape }}</p>
         {%- endif -%}
         <h2 class="ym-sf__heading">
-          <span>{{ section.settings.heading | escape }}</span>
-          <svg class="ym-sf__loop" viewBox="0 0 400 140" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-            <path d="M30 70 C 20 20, 160 6, 260 12 C 360 18, 398 50, 386 86 C 372 128, 200 136, 110 128 C 40 122, 6 96, 22 60 C 34 34, 80 24, 120 22"/>
-          </svg>
+          <span class="ym-sf__plug">
+            {{- section.settings.heading | escape -}}
+            <svg class="ym-sf__loop" viewBox="0 0 400 140" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path d="M30 70 C 20 20, 160 6, 260 12 C 360 18, 398 50, 386 86 C 372 128, 200 136, 110 128 C 40 122, 6 96, 22 60 C 34 34, 80 24, 120 22"/>
+            </svg>
+          </span>
         </h2>
 
         {%- form 'customer', id: form_id, class: 'ym-sf__form' -%}
