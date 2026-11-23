@@ -1082,6 +1082,24 @@ html { scroll-behavior: smooth; }
   }
 }
 
+/* Mobile fixes (2026-11-23): on phones every canvas child goes static,
+   which also un-positioned the tag card, so its absolutely placed UI
+   (hero shirt, color thumbs, sizes, total, Add to Cart) scattered across the
+   section. Keep the card a positioned box, and keep the decorative sparkles
+   and pellets out of the flow. The Our Story CTA kept its desktop
+   translateX(-50%) and hung off the left edge. */
+@media (max-width: 749px) {
+  .ym-showcase__canvas > .ym-showcase__card { position: relative; left: auto; top: auto; }
+  .ym-showcase__canvas > .ym-showcase__sparkle,
+  .ym-showcase__canvas > .ym-showcase__pellets { display: none; }
+  .ym-story__canvas > .ym-story__cta {
+    display: block;
+    width: fit-content;
+    margin: 8px auto 0;
+    transform: none;
+  }
+}
+
 /* =============================================
    QUALITY BANNER SECTION — Figma node 2393:157.
    Permanent Marker 25px, gold #918450, centered, uppercase.
