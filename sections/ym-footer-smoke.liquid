@@ -2,7 +2,7 @@
   YM - Smoke footer (#127, concept 05B "Smoke Clears").
   The page ends in a bank of smoke. As the visitor scrolls in, the smoke
   rolls away and the footer comes out of it: a taped polaroid, the
-  "Plug In" signup, the menus and the socials as meat tags, over a looping
+  "Plug In" signup, the menus and the socials as the Hot links sausage chain, over a looping
   clip of meat on the grill. Styles: assets/ym-footer-smoke.css.
   Motion: assets/ym-footer-smoke.js. Without JS, or under
   prefers-reduced-motion, there is no smoke and the footer is simply there.
@@ -165,28 +165,50 @@
         {%- endif -%}
 
         {%- if social_blocks.size > 0 -%}
-          <ul class="ym-sf__tags" role="list">
-            {%- for block in social_blocks -%}
-              {%- if block.settings.url != blank -%}
-                <li>
+          <div class="ym-sf__hot">
+            {%- if section.settings.social_heading != blank -%}
+              <h2 class="ym-sf__hot-heading">
+                {{ section.settings.social_heading | escape }}
+                <svg class="ym-sf__hot-arrow" viewBox="0 0 80 60" aria-hidden="true" focusable="false">
+                  <path d="M6 8 C 30 4, 52 18, 60 46" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M46 40 L 61 50 L 68 32" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </h2>
+            {%- endif -%}
+            <div class="ym-footer-cta__hot-links ym-sf__chain">
+              <img
+                class="ym-footer-cta__hot-links-chain"
+                src="{{ 'ym-hot-links-chain.png' | asset_url }}"
+                alt=""
+                role="presentation"
+                loading="lazy"
+                width="1192"
+                height="89"
+              >
+              {%- for block in social_blocks -%}
+                {%- if block.settings.url != blank -%}
+                  {%- assign platform_slug = block.settings.platform | downcase -%}
                   <a
                     href="{{ block.settings.url }}"
-                    class="ym-sf__tag"
+                    class="ym-footer-cta__hot-link ym-footer-cta__hot-link--{{ platform_slug }}"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style="--rot: {% cycle '-4deg', '3deg', '-2deg' %}"
+                    aria-label="{{ block.settings.platform }} (opens in a new tab)"
                     {{ block.shopify_attributes }}
                   >
-                    {%- if block.settings.note != blank -%}
-                      <small>{{ block.settings.note | escape }}</small>
-                    {%- endif -%}
-                    <b>{{ block.settings.platform | escape }}</b>
-                    <span class="visually-hidden">(opens in a new tab)</span>
+                    {%- case block.settings.platform -%}
+                      {%- when 'Instagram' -%}
+                        <img src="{{ 'ym-icon-instagram.png' | asset_url }}" alt="" loading="lazy" width="285" height="49">
+                      {%- when 'Facebook' -%}
+                        <img src="{{ 'ym-icon-facebook.png' | asset_url }}" alt="" loading="lazy" width="256" height="49">
+                      {%- when 'TikTok' -%}
+                        <img src="{{ 'ym-icon-tiktok.png' | asset_url }}" alt="" loading="lazy" width="175" height="49">
+                    {%- endcase -%}
                   </a>
-                </li>
-              {%- endif -%}
-            {%- endfor -%}
-          </ul>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
         {%- endif -%}
       </div>
     </div>
@@ -259,6 +281,16 @@
     },
     {
       "type": "header",
+      "content": "Hot links"
+    },
+    {
+      "type": "text",
+      "id": "social_heading",
+      "label": "Heading",
+      "default": "Hot links"
+    },
+    {
+      "type": "header",
       "content": "Email signup"
     },
     {
@@ -314,7 +346,7 @@
     },
     {
       "type": "social_link",
-      "name": "Meat tag (social)",
+      "name": "Hot link (social)",
       "limit": 3,
       "settings": [
         {
@@ -332,12 +364,6 @@
           "type": "url",
           "id": "url",
           "label": "Profile URL"
-        },
-        {
-          "type": "text",
-          "id": "note",
-          "label": "Small print on the tag",
-          "default": "Fresh daily"
         }
       ]
     }
@@ -348,9 +374,9 @@
       "blocks": [
         { "type": "menu", "settings": { "heading": "Shop", "menu": "main-menu" } },
         { "type": "menu", "settings": { "heading": "Help", "menu": "footer" } },
-        { "type": "social_link", "settings": { "platform": "Instagram", "note": "Fresh daily" } },
-        { "type": "social_link", "settings": { "platform": "Facebook", "note": "Cut to order" } },
-        { "type": "social_link", "settings": { "platform": "TikTok", "note": "Hot links" } }
+        { "type": "social_link", "settings": { "platform": "Instagram" } },
+        { "type": "social_link", "settings": { "platform": "Facebook" } },
+        { "type": "social_link", "settings": { "platform": "TikTok" } }
       ]
     }
   ]
